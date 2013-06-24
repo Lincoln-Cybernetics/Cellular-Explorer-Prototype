@@ -21,14 +21,15 @@ import javax.swing.event.*;
 
 class CellComponent extends JComponent implements Runnable, MouseInputListener
 {
-  //main variables
-	int xsiz = 300;
-	int ysiz = 150;
+	//main variables
+	int xsiz = 500;
+	int ysiz = 300;
 	boolean[][] current = new boolean[xsiz][ysiz] ;
 	boolean[][] newstate = new boolean[xsiz][ysiz];
 	Cell[][] culture = new Cell[xsiz][ysiz];
 	int[][] celltype = new int[xsiz][ysiz];
-	int ztime = 50;
+	int[][] maturity = new int[xsiz][ysiz];
+	int ztime = 2;
 	//general array counters
 	int x;
 	int y;
@@ -46,6 +47,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	boolean editcellflag = false;
 	boolean firstrunflag = true;
 	
+	int workcell = 0;
 	int magnify = 5;
 	int demoflag = 0;
 	
@@ -60,6 +62,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				 current[x][y] = false;
 				 newstate[x][y] = false;
 				 celltype[x][y] = 5;
+				 maturity[x][y] = 1;
 				 populate(x,y);
 			 }}
 				
@@ -74,19 +77,21 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				
 				public void populate(int a, int b){
 					switch (celltype[a][b]){
-						case 0: culture[a][b] = new Cell();
+						case 0: culture[a][b] = new Cell(maturity[a][b]);
 						break;
-						case 1: culture[a][b] = new onCell();
+						case 1: culture[a][b] = new onCell(maturity[a][b]);
 						break;
-						case 2: culture[a][b] = new blinkCell();
+						case 2: culture[a][b] = new blinkCell(maturity[a][b]);
 						break;
-						case 3: culture[a][b] = new blinkCell2();
+						case 3: culture[a][b] = new blinkCell2(maturity[a][b]);
 						break;
-						case 4: culture[a][b] = new Randcell();
+						case 4: culture[a][b] = new Randcell(maturity[a][b]);
 						break;
-						case 5: culture[a][b] = new Conway();
+						case 5: culture[a][b] = new Conway(maturity[a][b]);
 						break;
-						default: culture[a][b] = new Cell();
+						case 6: culture[a][b] = new Seeds(maturity[a][b]);
+						break;
+						default: culture[a][b] = new Cell(maturity[a][b]);
 						break;}
 					}
 			
@@ -102,16 +107,23 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						for(x=0;x<=xsiz-1;x++){
 					switch(demoflag){
 					 case 0://normal
-					celltype[x][y] = 5;
+					celltype[x][y] =5;
 					populate(x,y);
 					break;
 					
 					case 1: // glider bomb
-				  if(x==150 && y<145 &&y>5){celltype[x][y] =2;}
-				  else{celltype[x][y] = 5;} populate(x,y);
+				  if(x==250 && y<195 &&y>5){celltype[x][y] =2;}
+				  else{if (x<100 && x>50){celltype[x][y] = 6;}
+				  else{celltype[x][y] = 5;}} populate(x,y);
 				  break;
 				  
-				
+					case 2:// assorted
+					if (x<100 && y>100){celltype[x][y] = 6;}
+					else{celltype[x][y] = 5;}
+					if(x==xsiz-1){celltype[x][y] = 1;}
+					if (y==0){celltype[x][y] = 2;}
+					if (y==ysiz-1){celltype[x][y] = 4;}
+				  populate(x,y); break;
 				 
 				default:
 				celltype[x][y] = 1;
@@ -200,8 +212,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
-							//if(csflag == true && x == xlocal && y == ylocal){current[x][y] = !current[x][y];
-							//csflag = false;}
+							
 							// normal color setting
 							g.setColor(current[x][y] ? Color.green : Color.black);
 							// cell editing colors
@@ -213,20 +224,28 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 									case 3: g.setColor(Color.blue); break;
 									case 4: g.setColor(Color.orange); break;
 									case 5: g.setColor(Color.green); break;
+									case 6: g.setColor(Color.cyan); break;
 									default: g.setColor(Color.black); break;
 								}}
 							g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
-							if (hiliteflag == true && x==xlocal && y == ylocal){
-							g.setColor(Color.red);	g.drawRect(x*magnify,y*magnify,magnify,magnify);}
+							//if (hiliteflag == true && x==xlocal && y == ylocal){
+							//g.setColor(Color.red);	g.drawRect(x*magnify,y*magnify,magnify,magnify);}
 							
 						}}
 						}
 					public void mouseMoved( MouseEvent e){
-					if(editflag == true || editcellflag == true){hiliteflag = true;
-					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;repaint();}
-					else{hiliteflag = false;repaint();}}
-					
-					public void mouseDragged(MouseEvent e) {}
+					//if(editflag == true || editcellflag == true){hiliteflag = true;
+					//xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;repaint();}
+					//else{hiliteflag = false;repaint();}}
+				}
+					public void mouseDragged(MouseEvent e) {
+						//edit state
+						if(editflag == true){xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
+						current[xlocal][ylocal] = !current[xlocal][ylocal]; repaint();}
+						//editcell
+						if (editcellflag == true){
+					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify; celltype[xlocal][ylocal] = workcell; 
+					populate(xlocal, ylocal);repaint();}}
 					public void mouseEntered(MouseEvent e){}
 					public void mouseExited(MouseEvent e){}
 					public void mousePressed(MouseEvent e){}
@@ -239,10 +258,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						repaint();}
 						//edit celltype
 						if(editcellflag == true){
-						if(e.isMetaDown() == true){if(celltype[xlocal][ylocal] == 0){celltype[xlocal][ylocal] = 5;} 
-						else{celltype[xlocal][ylocal] -=1;}}	
-						else{if(celltype[xlocal][ylocal] == 5){celltype[xlocal][ylocal] = 0;}
-						else{celltype[xlocal][ylocal] +=1;}}
+						celltype[xlocal][ylocal] = workcell;
 						populate(xlocal,ylocal); repaint();}
 						}
 					
