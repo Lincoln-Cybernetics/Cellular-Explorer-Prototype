@@ -1,6 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import javax.swing.event.*;
 /*Cellular Explorer Prototype proof of concept
  * Copyright(C) 02013 Matt Ahlschwede
  *  This program is free software: you can redistribute it and/or modify
@@ -18,7 +19,7 @@ import java.awt.event.*;
 */
 
 
-class controlComponent extends JComponent implements ActionListener{
+class controlComponent extends JComponent implements ActionListener, ChangeListener{
 JButton newc;
 JButton ss;
 JButton rnd;
@@ -27,21 +28,24 @@ JButton edc;
 JButton demo;
 JButton clear;
 JButton about;
+String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds"};
+SpinnerListModel modelA = new SpinnerListModel(cells);
+JSpinner cellpicker = new JSpinner( modelA);
 
-CellComponent[] tray = new CellComponent[2];
+CellComponent[] tray = new CellComponent[3];
 int windowflag = 0;
 
-boolean[] firstflag = new boolean[2];
-boolean[] pflag = new boolean[2];
+boolean[] firstflag = new boolean[3];
+boolean[] pflag = new boolean[3];
 boolean cflag = false;
 
 
 int xx = 0;
 int yy = 0;
-int[] magholder = new int[2];
+int[] magholder = new int[3];
 public controlComponent(){
-  
-	for(windowflag=0;windowflag<=1;windowflag++){
+	
+	for(windowflag=0;windowflag<=2;windowflag++){
 		
 		firstflag[windowflag] = true;
 		pflag[windowflag] = false;
@@ -53,6 +57,7 @@ public controlComponent(){
 	eds= new JButton("Edit State");
 	edc = new JButton("Edit Cells");
 	demo = new JButton("Demo");
+	
 	clear = new JButton("Clear");
 	about = new JButton("About");
 	setLayout( new FlowLayout() );
@@ -65,8 +70,10 @@ public controlComponent(){
 	add(rnd);
 	add(eds);
 	add(edc);
+	add(cellpicker);
 	add(about);
 	
+	cellpicker.addChangeListener(this);
 	ss.addActionListener(this);
 	newc.addActionListener(this);
 	eds.addActionListener(this);
@@ -75,6 +82,7 @@ public controlComponent(){
 	demo.addActionListener(this);
 	clear.addActionListener(this);
 	about.addActionListener(this);
+	
 	}
 
 public void actionPerformed(ActionEvent e){
@@ -85,7 +93,7 @@ public void actionPerformed(ActionEvent e){
 		JFrame garden = new JFrame("Game of Life");
 		garden.getContentPane().add( new JScrollPane(tray[0]) );
 		garden.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		tray[0].xsiz = 300; tray[0].ysiz = 150;tray[0].magnify = 5;
+		tray[0].xsiz = 400; tray[0].ysiz = 150;tray[0].magnify = 5;
 		garden.setSize(tray[0].xsiz*tray[0].magnify, tray[0].ysiz*tray[0].magnify);
 		garden.setVisible( true );
 		cflag = true; tray[0].demoflag =0; windowflag = 0;firstflag[0] = true;
@@ -97,11 +105,13 @@ public void actionPerformed(ActionEvent e){
 		JFrame carden = new JFrame("Glider Bomb");
 		carden.getContentPane().add( new JScrollPane(tray[1]) );
 		carden.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		tray[1].xsiz = 300; tray[1].ysiz = 150;tray[1].magnify = 3;
+		tray[1].xsiz = 500; tray[1].ysiz = 300;tray[1].magnify = 3;
 		carden.setSize(tray[1].xsiz*tray[1].magnify, tray[1].ysiz*tray[1].magnify);
 		carden.setVisible( true );
 		cflag = true; tray[1].demoflag =1;windowflag = 1;firstflag[1] = true;
 	}
+	
+	
 	
 	
 	
@@ -126,8 +136,11 @@ public void actionPerformed(ActionEvent e){
 		
 	if(e.getSource() == edc){ if (cflag == true){if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
 	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; if(tray[windowflag].magnify<=5){magholder[windowflag] = tray[windowflag].magnify; tray[windowflag].magnify = 5;}
-	tray[windowflag].repaint();}else{tray[windowflag].editcellflag = false;tray[windowflag].hiliteflag = false; if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
-	pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}	
+	tray[windowflag].repaint();}
+		else{tray[windowflag].editcellflag = false;tray[windowflag].hiliteflag = false;
+		if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
+		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}	
+	
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
@@ -154,6 +167,17 @@ public void actionPerformed(ActionEvent e){
 	}
 }
 
+public void stateChanged(ChangeEvent e){
+	if (e.getSource() == cellpicker){
+		if(modelA.getValue()=="Cell") {tray[windowflag].workcell = 0;}
+		if(modelA.getValue()=="onCell") {tray[windowflag].workcell = 1;}
+		if(modelA.getValue()=="Blinkcell") {tray[windowflag].workcell = 2;}
+		if(modelA.getValue()=="Blinkcell2"){ tray[windowflag].workcell = 3;}
+		if(modelA.getValue()=="Random cell") {tray[windowflag].workcell = 4;} 
+		if(modelA.getValue()=="Life") {tray[windowflag].workcell = 5;}
+		if(modelA.getValue()=="Seeds") {tray[windowflag].workcell = 6;}
+		}
+		 }
 
 
 }
