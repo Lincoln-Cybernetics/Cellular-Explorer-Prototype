@@ -16,9 +16,10 @@ import java.util.Random;
 */
 
 class Randcell extends Cell{
-  
+	
 	Random wiggler = new Random();
 	public boolean iterate(boolean neighborhood[][]){
 		return wiggler.nextBoolean();}
 		public Randcell(){}
+		public Randcell(int a){}
 	}
