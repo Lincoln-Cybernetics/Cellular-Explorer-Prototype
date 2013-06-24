@@ -17,7 +17,7 @@ import javax.swing.*;
 */
 public class Prototype
 {
-  public static void main( String[] args){
+	public static void main( String[] args){
 		//sets up the window, adds the logic component
 		JFrame cpanel = new JFrame("Cellular Explorer Prototype");
 		cpanel.getContentPane().add( new controlComponent() );
