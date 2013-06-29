@@ -46,6 +46,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	boolean hiliteflag = false;
 	boolean editcellflag = false;
 	boolean firstrunflag = true;
+	boolean paintflag = false;
 	
 	int workcell = 0;
 	int magnify = 5;
@@ -61,9 +62,32 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 		for(x=0;x<=xsiz-1;x++){	
 				 current[x][y] = false;
 				 newstate[x][y] = false;
-				 celltype[x][y] = 5;
+				// celltype[x][y] = 5;
 				 maturity[x][y] = 1;
-				 populate(x,y);
+				// populate(x,y);/
+				switch(demoflag){
+					 case 0://normal
+					celltype[x][y] =5;
+					populate(x,y);
+					break;
+					
+					case 1: // glider bomb
+				  if(x==250 && y<195 &&y>5){celltype[x][y] =2;}
+				  else{if (x<100 && x>50){celltype[x][y] = 6;}
+				  else{celltype[x][y] = 5;}} populate(x,y);
+				  break;
+				  
+					case 2:// assorted
+					if (x<100 && y>100){celltype[x][y] = 6;}
+					else{celltype[x][y] = 5;}
+					if(x==xsiz-1){celltype[x][y] = 1;}
+					if (y==0){celltype[x][y] = 2;}
+					if (y==ysiz-1){celltype[x][y] = 4;}
+				  populate(x,y); break;
+				 
+				default:
+				celltype[x][y] = 1;
+				populate(x,y); break;}
 			 }}
 				
 				
@@ -105,34 +129,14 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				if (firstrunflag == true){
 					 for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
-					switch(demoflag){
-					 case 0://normal
-					celltype[x][y] =5;
-					populate(x,y);
-					break;
-					
-					case 1: // glider bomb
-				  if(x==250 && y<195 &&y>5){celltype[x][y] =2;}
-				  else{if (x<100 && x>50){celltype[x][y] = 6;}
-				  else{celltype[x][y] = 5;}} populate(x,y);
-				  break;
-				  
-					case 2:// assorted
-					if (x<100 && y>100){celltype[x][y] = 6;}
-					else{celltype[x][y] = 5;}
-					if(x==xsiz-1){celltype[x][y] = 1;}
-					if (y==0){celltype[x][y] = 2;}
-					if (y==ysiz-1){celltype[x][y] = 4;}
-				  populate(x,y); break;
-				 
-				default:
-				celltype[x][y] = 1;
-				populate(x,y); break;}}}
+					}}
 				firstrunflag = false;}
 							
 					
 					
 				while(true){
+					//update display
+						repaint();
 					//pauses the program
 					try{	while (pauseflag ==true){
 			  Thread.sleep(100);} 
@@ -192,8 +196,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				for(y=0;y<=ysiz-1;y++){
 					for(x=0;x<=xsiz-1;x++){
 						current[x][y] = newstate[x][y];}}
-						//update display
-						repaint();
+						
 						//timeout between grid-wide iterations
 						try{
 				Thread.sleep(ztime);
@@ -241,11 +244,11 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					public void mouseDragged(MouseEvent e) {
 						//edit state
 						if(editflag == true){xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
-						current[xlocal][ylocal] = !current[xlocal][ylocal]; repaint();}
+						current[xlocal][ylocal] = !current[xlocal][ylocal];paintflag = true; repaint();}
 						//editcell
 						if (editcellflag == true){
 					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify; celltype[xlocal][ylocal] = workcell; 
-					populate(xlocal, ylocal);repaint();}}
+					populate(xlocal, ylocal);paintflag = true;repaint();}}
 					public void mouseEntered(MouseEvent e){}
 					public void mouseExited(MouseEvent e){}
 					public void mousePressed(MouseEvent e){}
@@ -255,11 +258,11 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						//edit state
 						if(editflag == true){
 						current[xlocal][ylocal] = !current[xlocal][ylocal];
-						repaint();}
+						paintflag = true; repaint();}
 						//edit celltype
 						if(editcellflag == true){
 						celltype[xlocal][ylocal] = workcell;
-						populate(xlocal,ylocal); repaint();}
+						populate(xlocal,ylocal);paintflag = true; repaint();}
 						}
 					
 				
