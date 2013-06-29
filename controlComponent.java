@@ -96,7 +96,7 @@ public void actionPerformed(ActionEvent e){
 		tray[0].xsiz = 400; tray[0].ysiz = 150;tray[0].magnify = 5;
 		garden.setSize(tray[0].xsiz*tray[0].magnify, tray[0].ysiz*tray[0].magnify);
 		garden.setVisible( true );
-		cflag = true; tray[0].demoflag =0; windowflag = 0;firstflag[0] = true;
+		cflag = true; tray[0].demoflag =0; windowflag = 0;firstflag[0] = true;setWC();
 	}
 	
 		if(e.getSource() == demo){
@@ -108,7 +108,7 @@ public void actionPerformed(ActionEvent e){
 		tray[1].xsiz = 500; tray[1].ysiz = 300;tray[1].magnify = 3;
 		carden.setSize(tray[1].xsiz*tray[1].magnify, tray[1].ysiz*tray[1].magnify);
 		carden.setVisible( true );
-		cflag = true; tray[1].demoflag =1;windowflag = 1;firstflag[1] = true;
+		cflag = true; tray[1].demoflag =1;windowflag = 1;firstflag[1] = true;setWC();
 	}
 	
 	
@@ -167,15 +167,19 @@ public void actionPerformed(ActionEvent e){
 	}
 }
 
-public void stateChanged(ChangeEvent e){
-	if (e.getSource() == cellpicker){
-		if(modelA.getValue()=="Cell") {tray[windowflag].workcell = 0;}
+public void setWC(){
+	if(modelA.getValue()=="Cell") {tray[windowflag].workcell = 0;}
 		if(modelA.getValue()=="onCell") {tray[windowflag].workcell = 1;}
 		if(modelA.getValue()=="Blinkcell") {tray[windowflag].workcell = 2;}
 		if(modelA.getValue()=="Blinkcell2"){ tray[windowflag].workcell = 3;}
 		if(modelA.getValue()=="Random cell") {tray[windowflag].workcell = 4;} 
 		if(modelA.getValue()=="Life") {tray[windowflag].workcell = 5;}
 		if(modelA.getValue()=="Seeds") {tray[windowflag].workcell = 6;}
+}
+
+public void stateChanged(ChangeEvent e){
+	if (e.getSource() == cellpicker){
+		setWC();
 		}
 		 }
 
