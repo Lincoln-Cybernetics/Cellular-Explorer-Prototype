@@ -62,10 +62,19 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 		for(x=0;x<=xsiz-1;x++){	
 				 current[x][y] = false;
 				 newstate[x][y] = false;
-				// celltype[x][y] = 5;
+				 celltype[x][y] = 5;
 				 maturity[x][y] = 1;
-				// populate(x,y);/
-				switch(demoflag){
+				 populate(x,y);
+			
+			 }}
+				
+				
+			repaint();
+			}
+			public void create(){
+				for(y=0;y<=ysiz-1;y++){
+					for(x=0;x<=xsiz-1;x++){
+					switch(demoflag){
 					 case 0://normal
 					celltype[x][y] =5;
 					populate(x,y);
@@ -87,13 +96,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				 
 				default:
 				celltype[x][y] = 1;
-				populate(x,y); break;}
-			 }}
-				
-				
-			repaint();
-			}
-			
+				populate(x,y); break;}		
+						
+				}}}
 			
 			
 			 public boolean begin(){
