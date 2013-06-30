@@ -23,3 +23,58 @@ class Randcell extends Cell{
 		public Randcell(){}
 		public Randcell(int a){}
 	}
+	
+	class OddCell extends Cell{
+	boolean[][] neighborhood = new boolean[3][3];
+	int counter = 0;
+	int cellstate;
+	int a;
+	int b;
+	boolean active;
+	public OddCell(){}
+	public OddCell(int a){
+		maturity = a;}
+		
+	public boolean iterate(boolean neighborhood[][]){
+		counter += 1;
+		if (counter == maturity){ counter = 0;
+		cellstate = 0;
+		for(b=0;b<=2;b++){
+			for(a=0;a<=2;a++){
+				if (neighborhood[a][b] == true){ cellstate+=1;}
+			}}
+			if(neighborhood[1][1] == true){cellstate-=1;}
+			if(cellstate%2 == 1){active = true;}
+			else{active = false;}
+		return active;}
+		else{return neighborhood[1][1];}
+	}
+}
+
+class EvenCell extends Cell{
+	boolean[][] neighborhood = new boolean[3][3];
+	int counter = 0;
+	int cellstate;
+	int a;
+	int b;
+	boolean active;
+	public EvenCell(){}
+	public EvenCell(int a){
+		maturity = a;}
+		
+	public boolean iterate(boolean neighborhood[][]){
+		counter += 1;
+		if (counter == maturity){ counter = 0;
+		cellstate = 0;
+		for(b=0;b<=2;b++){
+			for(a=0;a<=2;a++){
+				if (neighborhood[a][b] == true){ cellstate+=1;}
+			}}
+			if(neighborhood[1][1] == true){cellstate-=1;}
+			if(cellstate%2 == 0){active = true;}
+			else{active = false;}
+		return active;}
+		else{return neighborhood[1][1];}
+	}
+}
+
