@@ -15,6 +15,8 @@ Red:  blinks on and off (starts on)
 Blue:  blinks on and off(starts off)
 Orange: cell changes state randomly
 Green: Conway's Game of Life (B3/S2)
+Pink:   turns on if an odd number of its neighbors are on (otherwise off)
+Yellow: turns on if an even number of its neighbors are on (otherwise off)
 To return to normal running after Editing the cells or their states, press "Play/Pause".
 
 
