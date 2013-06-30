@@ -28,7 +28,7 @@ JButton edc;
 JButton demo;
 JButton clear;
 JButton about;
-String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds"};
+String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 
@@ -175,6 +175,8 @@ public void setWC(){
 		if(modelA.getValue()=="Random cell") {tray[windowflag].workcell = 4;} 
 		if(modelA.getValue()=="Life") {tray[windowflag].workcell = 5;}
 		if(modelA.getValue()=="Seeds") {tray[windowflag].workcell = 6;}
+		if(modelA.getValue()=="OddCell") {tray[windowflag].workcell = 7;}
+		if(modelA.getValue()=="EvenCell") {tray[windowflag].workcell = 8;}
 }
 
 public void stateChanged(ChangeEvent e){
