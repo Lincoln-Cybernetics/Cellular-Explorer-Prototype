@@ -96,7 +96,7 @@ public void actionPerformed(ActionEvent e){
 		tray[0].xsiz = 400; tray[0].ysiz = 150;tray[0].magnify = 5;
 		garden.setSize(tray[0].xsiz*tray[0].magnify, tray[0].ysiz*tray[0].magnify);
 		garden.setVisible( true );
-		cflag = true; tray[0].demoflag =0; windowflag = 0;firstflag[0] = true;setWC();
+		cflag = true; tray[0].demoflag =0;tray[0].create(); windowflag = 0;firstflag[0] = true;setWC();
 	}
 	
 		if(e.getSource() == demo){
@@ -108,7 +108,7 @@ public void actionPerformed(ActionEvent e){
 		tray[1].xsiz = 500; tray[1].ysiz = 300;tray[1].magnify = 3;
 		carden.setSize(tray[1].xsiz*tray[1].magnify, tray[1].ysiz*tray[1].magnify);
 		carden.setVisible( true );
-		cflag = true; tray[1].demoflag =1;windowflag = 1;firstflag[1] = true;setWC();
+		cflag = true; tray[1].demoflag =1; tray[1].create();windowflag = 1;firstflag[1] = true;setWC();
 	}
 	
 	
