@@ -16,34 +16,55 @@
 class Cell{
 		boolean[][] neighborhood = new boolean[3][3];
 		int maturity = 1;
+		String hood = "None";
 		public Cell(int a){}
 		public Cell(){}
-		public boolean iterate(boolean neighborhood[][]){return false;}
+		public String getNeighborhood(){ return hood;}
+		public boolean iterate(){return false;}
+		public boolean iterate(boolean s){return false;}
+		public boolean iterate(boolean neighborhood[][]){
+			return false;}
 	}	
 
 class blinkCell extends Cell{
 	boolean blinkstate = false;
+	int counter = 0;
+	String hood = "Self";
+	public String getNeighborhood(){ return hood;}
 	public blinkCell(){}
-	public blinkCell(int a){}
-	public boolean iterate(boolean neighborhood[][]){ 
+	public blinkCell(int a){maturity = a;}
+	public boolean iterate(boolean s){ 
+		counter +=1;
+		if (counter == maturity){
+			counter = 0;
 		if (blinkstate == false){ blinkstate = true; return blinkstate;}
-		else{blinkstate = false; return blinkstate;}
+		else{blinkstate = false; return blinkstate;}}
+		else{return s;}
 	}
 }
 
 class onCell extends Cell{
+	String hood = "None";
 	public onCell(){}
 	public onCell(int a){}
-	public boolean iterate(boolean neighborhood[][]){return true;}
+	public String getNeighborhood(){ return hood;}
+	public boolean iterate(){return true;}
 }
 
 class blinkCell2 extends Cell{
+	String hood = "Self";
+	int counter = 0;
 	boolean blinkstate = true;
-	public blinkCell2(int a){}
+	public String getNeighborhood(){ return hood;}
+	public blinkCell2(int a){maturity = a;}
 	public blinkCell2(){}
-	public boolean iterate(boolean neighborhood[][]){ 
+	public boolean iterate(boolean s){
+		counter += 1;
+		if (counter == maturity){ 
+		counter = 0;
 		if (blinkstate == false){ blinkstate = true; return blinkstate;}
-		else{blinkstate = false; return blinkstate;}
+		else{blinkstate = false; return blinkstate;}}
+		else{return s;}
 	}
 }
 
@@ -54,6 +75,8 @@ class Conway extends Cell{
 	int a;
 	int b;
 	boolean active;
+	String hood = "Moore";
+	public String getNeighborhood(){ return hood;}
 	public Conway(){}
 	public Conway(int a){
 		maturity = a;}
@@ -101,6 +124,8 @@ class Seeds extends Cell{
 	int a;
 	int b;
 	boolean active;
+	String hood = "Moore";
+	public String getNeighborhood(){ return hood;}
 	public Seeds(){}
 	public Seeds(int a){ maturity = a;}
 	public boolean iterate(boolean neighborhood[][]){
