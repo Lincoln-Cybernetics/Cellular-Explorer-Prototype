@@ -90,7 +90,7 @@ public void actionPerformed(ActionEvent e){
 	if(e.getSource() == newc){
 		//sets up the window, adds the logic component
 		tray[0] = new CellComponent();
-		JFrame garden = new JFrame("Game of Life");
+		JFrame garden = new JFrame("Cellular Explorer");
 		garden.getContentPane().add( new JScrollPane(tray[0]) );
 		garden.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		tray[0].xsiz = 400; tray[0].ysiz = 150;tray[0].magnify = 5;
@@ -102,10 +102,10 @@ public void actionPerformed(ActionEvent e){
 		if(e.getSource() == demo){
 			tray[1] = new CellComponent();
 		//sets up the window, adds the logic component
-		JFrame carden = new JFrame("Glider Bomb");
+		JFrame carden = new JFrame("Cellular Explorer");
 		carden.getContentPane().add( new JScrollPane(tray[1]) );
 		carden.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		tray[1].xsiz = 500; tray[1].ysiz = 300;tray[1].magnify = 3;
+		tray[1].xsiz = 300; tray[1].ysiz = 100;tray[1].magnify = 5;
 		carden.setSize(tray[1].xsiz*tray[1].magnify, tray[1].ysiz*tray[1].magnify);
 		carden.setVisible( true );
 		cflag = true; tray[1].demoflag =1; tray[1].create();windowflag = 1;firstflag[1] = true;setWC();
@@ -121,7 +121,8 @@ public void actionPerformed(ActionEvent e){
 	else{ if (pflag[windowflag] == false){ pflag[windowflag] = true;tray[windowflag].pauseflag = true;}
 		else{ pflag[windowflag] = false; tray[windowflag].pauseflag = false; if(tray[windowflag].editflag == true){tray[windowflag].editflag = false;
 		tray[windowflag].hiliteflag = false;} if(tray[windowflag].editcellflag == true){tray[windowflag].editcellflag = false; tray[windowflag].hiliteflag = false;}
-		if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}}}}}
+		//if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
+		}}}}
 		
 	if(e.getSource() == rnd){ if (cflag == true){ 
 	tray[windowflag].fillflag = true; tray[windowflag].randflag = true;}}
@@ -130,15 +131,20 @@ public void actionPerformed(ActionEvent e){
 	tray[windowflag].fillflag = true; tray[windowflag].clearflag = true;}}
 	
 	if(e.getSource() == eds){ if(cflag	== true){if (tray[windowflag].editflag == false){ pflag[windowflag] = true;
-	tray[windowflag].pauseflag = true; tray[windowflag].editflag = true;if(tray[windowflag].magnify<=5){magholder[windowflag]= tray[windowflag].magnify;tray[windowflag].magnify = 5;}tray[windowflag].repaint();}
+	tray[windowflag].pauseflag = true; tray[windowflag].editflag = true;
+	//if(tray[windowflag].magnify<=5){magholder[windowflag]= tray[windowflag].magnify;tray[windowflag].magnify = 5;}
+	tray[windowflag].repaint();}
 	else{tray[windowflag].editflag = false;
-	tray[windowflag].hiliteflag = false; if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];} tray[windowflag].pauseflag = false;pflag[windowflag] = false;}}}
+	tray[windowflag].hiliteflag = false;
+	 //if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
+	  tray[windowflag].pauseflag = false;pflag[windowflag] = false;}}}
 		
 	if(e.getSource() == edc){ if (cflag == true){if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
-	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; if(tray[windowflag].magnify<=5){magholder[windowflag] = tray[windowflag].magnify; tray[windowflag].magnify = 5;}
+	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; 
+	//if(tray[windowflag].magnify<=5){magholder[windowflag] = tray[windowflag].magnify; tray[windowflag].magnify = 5;}
 	tray[windowflag].repaint();}
 		else{tray[windowflag].editcellflag = false;tray[windowflag].hiliteflag = false;
-		if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
+		//if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
 		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}	
 	
 	
