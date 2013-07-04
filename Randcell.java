@@ -16,21 +16,29 @@ import java.util.Random;
 */
 
 class Randcell extends Cell{
-	
+	String hood = "Self";
+	int counter = 0;
 	Random wiggler = new Random();
-	public boolean iterate(boolean neighborhood[][]){
+	public String getNeighborhood(){ return hood;}
+	public boolean iterate(boolean s){
+		counter += 1;
+		if (counter == maturity){
+			counter = 0;
 		return wiggler.nextBoolean();}
+		else{return s;}}
 		public Randcell(){}
-		public Randcell(int a){}
+		public Randcell(int a){maturity = a;}
 	}
 	
 	class OddCell extends Cell{
+	String hood = "Moore";	
 	boolean[][] neighborhood = new boolean[3][3];
 	int counter = 0;
 	int cellstate;
 	int a;
 	int b;
 	boolean active;
+	public String getNeighborhood(){ return hood;}
 	public OddCell(){}
 	public OddCell(int a){
 		maturity = a;}
@@ -52,6 +60,7 @@ class Randcell extends Cell{
 }
 
 class EvenCell extends Cell{
+	String hood = "Moore";
 	boolean[][] neighborhood = new boolean[3][3];
 	int counter = 0;
 	int cellstate;
@@ -61,7 +70,7 @@ class EvenCell extends Cell{
 	public EvenCell(){}
 	public EvenCell(int a){
 		maturity = a;}
-		
+		public String getNeighborhood(){ return hood;}
 	public boolean iterate(boolean neighborhood[][]){
 		counter += 1;
 		if (counter == maturity){ counter = 0;
