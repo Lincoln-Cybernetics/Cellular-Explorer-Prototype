@@ -29,7 +29,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	Cell[][] culture = new Cell[xsiz][ysiz];
 	int[][] celltype = new int[xsiz][ysiz];
 	int[][] maturity = new int[xsiz][ysiz];
-	int ztime = 2;
+	int ztime = 20;
 	//general array counters
 	int x;
 	int y;
@@ -81,9 +81,11 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					break;
 					
 					case 1: // glider bomb
-				  if(x==250 && y<195 &&y>5){celltype[x][y] =2;}
-				  else{if (x<100 && x>50){celltype[x][y] = 6;}
-				  else{celltype[x][y] = 5;}} populate(x,y);
+				 celltype[x][y] = 5;
+					if (x==250 && y>20&& y<250){celltype[x][y] =2;}
+					if( y==ysiz-1){celltype[x][y] =7;}
+				  
+				  populate(x,y);
 				  break;
 				  
 					case 2:// assorted
@@ -127,43 +129,10 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						default: culture[a][b] = new Cell(maturity[a][b]);
 						break;}
 					}
-			
-			
-			
-			public void run(){
-				int x=0;
-				int y=0;
-				Random zibzob = new Random();
-				//initialize the cell array for demos
-				if (firstrunflag == true){
-					 for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){
-					}}
-				firstrunflag = false;}
-							
 					
-					
-				while(true){
-					//update display
-						repaint();
-					//pauses the program
-					try{	while (pauseflag ==true){
-			  Thread.sleep(100);} 
-			   }  catch(InterruptedException ie) {}
-			   
-			   // fills the current state array
-			   if (fillflag == true){ 
-				   for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){
-							if (randflag == true){current[x][y] = zibzob.nextBoolean();}
-							if(clearflag == true){current[x][y] = false;}
-						}}fillflag = false;randflag = false;clearflag = false; }
-	
-			   // get neighboring states for the cells
+					public boolean[][] getMoore(int x, int y){
+						// returns the states of a cell's Moore Neighborhood
 					boolean[][] neighbors = new boolean[3][3];
-					for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){
-				
 						//init neighbors WITHOUT resetting x and y
 					neighbors[0][0]=false;neighbors[0][1]=false;neighbors[0][2]=false;
 					neighbors[1][0]=false;neighbors[1][1]=current[x][y];neighbors[1][2]=false;
@@ -194,9 +163,50 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							
 							if(x==xsiz-1 || y==ysiz-1){neighbors[2][2] = false;}
 							else{if(current[x+1][y+1] == true) neighbors[2][2] = true;}
-						
-							//gets new values from the cells
-							newstate[x][y] =culture[x][y].iterate(neighbors);
+						return neighbors;
+		}
+			
+			public void run(){
+				int x=0;
+				int y=0;
+				Random zibzob = new Random();
+				//initialize the cell array for demos
+				if (firstrunflag == true){
+					 for(y=0;y<=ysiz-1;y++){
+						for(x=0;x<=xsiz-1;x++){
+					}}
+				firstrunflag = false;}
+							
+					
+					
+				while(true){
+					//update display
+						repaint();
+					//pauses the program
+					try{	while (pauseflag ==true){
+			  Thread.sleep(100);} 
+			   }  catch(InterruptedException ie) {}
+			   
+			   // fills the current state array
+			   if (fillflag == true){ 
+				   for(y=0;y<=ysiz-1;y++){
+						for(x=0;x<=xsiz-1;x++){
+							if (randflag == true){current[x][y] = zibzob.nextBoolean();}
+							if(clearflag == true){current[x][y] = false;}
+						}}fillflag = false;randflag = false;clearflag = false; }
+	
+		
+						//gets new values from the cells
+					for(y=0;y<=ysiz-1;y++){
+						for(x=0;x<=xsiz-1;x++){
+						if (culture[x][y].getNeighborhood() == "None"){
+							newstate[x][y] = culture[x][y].iterate();}
+					
+						if(culture[x][y].getNeighborhood() == "Moore"){
+							newstate[x][y] =culture[x][y].iterate(getMoore(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "Self"){
+							newstate[x][y] = culture[x][y].iterate(current[x][y]);}
 						
 						
 						
@@ -215,20 +225,26 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 
 				}
 				
-				public void paintComponent( Graphics g){
+			public void paintComponent( Graphics g){
 					int x = 0;
 					int y = 0;
 					int schmagnify;
-					if (editflag == true|| editcellflag == true){schmagnify = magnify-1;}
-					else{schmagnify = magnify;}
+					
 					
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
-							
-							// normal color setting
-							g.setColor(current[x][y] ? Color.green : Color.black);
-							// cell editing colors
+						
+							//state editing
+							if (editflag == true){
+								if(magnify>4){schmagnify = magnify-1;}
+								else{schmagnify = magnify;}
+								g.setColor(current[x][y] ? Color.green : Color.black);
+								g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);}
+								
+							// cell editing
 							if(editcellflag == true){
+								if(magnify>4){schmagnify = magnify-1;}
+								else{schmagnify = magnify;}
 								switch(celltype[x][y]){
 									case 0: g.setColor(Color.black); break;
 									case 1: g.setColor(Color.white); break;
@@ -240,11 +256,13 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 									case 7: g.setColor(Color.pink); break;
 									case 8: g.setColor(Color.yellow); break;
 									default: g.setColor(Color.black); break;
-								}}
-							g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
-							//if (hiliteflag == true && x==xlocal && y == ylocal){
-							//g.setColor(Color.red);	g.drawRect(x*magnify,y*magnify,magnify,magnify);}
-							
+								}g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);}
+								
+								//normal rendering
+								if (editflag == false && editcellflag == false){
+										g.setColor(current[x][y] ? Color.green : Color.black);
+							g.fillRect(x*magnify,y*magnify,magnify,magnify);}
+								
 						}}
 						}
 					public void mouseMoved( MouseEvent e){
