@@ -28,6 +28,9 @@ JButton edc;
 JButton demo;
 JButton clear;
 JButton about;
+String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
+SpinnerListModel modelB = new SpinnerListModel(speed);
+JSpinner scon = new JSpinner(modelB); 
 String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
@@ -66,6 +69,7 @@ public controlComponent(){
 	add(demo);
 	
 	add(ss);
+	add(scon);
 	add(clear);
 	add(rnd);
 	add(eds);
@@ -74,6 +78,7 @@ public controlComponent(){
 	add(about);
 	
 	cellpicker.addChangeListener(this);
+	scon.addChangeListener(this);
 	ss.addActionListener(this);
 	newc.addActionListener(this);
 	eds.addActionListener(this);
@@ -96,7 +101,7 @@ public void actionPerformed(ActionEvent e){
 		tray[0].xsiz = 400; tray[0].ysiz = 150;tray[0].magnify = 5;
 		garden.setSize(tray[0].xsiz*tray[0].magnify, tray[0].ysiz*tray[0].magnify);
 		garden.setVisible( true );
-		cflag = true; tray[0].demoflag =0;tray[0].create(); windowflag = 0;firstflag[0] = true;setWC();
+		cflag = true; tray[0].demoflag =0;tray[0].create(); windowflag = 0;firstflag[0] = true;setWC();setZT();
 	}
 	
 		if(e.getSource() == demo){
@@ -108,7 +113,7 @@ public void actionPerformed(ActionEvent e){
 		tray[1].xsiz = 300; tray[1].ysiz = 100;tray[1].magnify = 5;
 		carden.setSize(tray[1].xsiz*tray[1].magnify, tray[1].ysiz*tray[1].magnify);
 		carden.setVisible( true );
-		cflag = true; tray[1].demoflag =1; tray[1].create();windowflag = 1;firstflag[1] = true;setWC();
+		cflag = true; tray[1].demoflag =1; tray[1].create();windowflag = 1;firstflag[1] = true;setWC();setZT();
 	}
 	
 	
@@ -185,11 +190,21 @@ public void setWC(){
 		if(modelA.getValue()=="EvenCell") {tray[windowflag].workcell = 8;}
 }
 
+public void setZT(){
+	if(modelB.getValue() == "Very Slow") {tray[windowflag].ztime = 2000;}
+	if(modelB.getValue() == "Slow") {tray[windowflag].ztime = 200;}
+	if(modelB.getValue() == "Fast") {tray[windowflag].ztime = 20;}
+	if(modelB.getValue() == "Very Fast") {tray[windowflag].ztime = 2;}
+}
+
 public void stateChanged(ChangeEvent e){
 	if (e.getSource() == cellpicker){
 		setWC();
 		}
-		 }
-
+		 
+	if (e.getSource() == scon){ 
+		setZT();
+	}
+	}
 
 }
