@@ -31,7 +31,7 @@ JButton about;
 String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
 SpinnerListModel modelB = new SpinnerListModel(speed);
 JSpinner scon = new JSpinner(modelB); 
-String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell"};
+String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 
@@ -188,6 +188,7 @@ public void setWC(){
 		if(modelA.getValue()=="Seeds") {tray[windowflag].workcell = 6;}
 		if(modelA.getValue()=="OddCell") {tray[windowflag].workcell = 7;}
 		if(modelA.getValue()=="EvenCell") {tray[windowflag].workcell = 8;}
+		if(modelA.getValue()=="Conveyor") {tray[windowflag].workcell = 9;}
 }
 
 public void setZT(){
