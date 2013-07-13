@@ -19,6 +19,8 @@ Orange: cell changes state randomly
 Green: Conway's Game of Life (B3/S2)
 Pink:   turns on if an odd number of its neighbors are on (otherwise off)
 Yellow: turns on if an even number of its neighbors are on (otherwise off)
+Grey: takes on the value of one of its neighbors (defaults to the neighbor 
+directly beneath the cell, no support for other neighbors, yet)
 To return to normal running after Editing the cells or their states, press "Play/Pause".
 
 
