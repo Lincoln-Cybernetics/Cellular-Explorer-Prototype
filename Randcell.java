@@ -87,3 +87,34 @@ class EvenCell extends Cell{
 	}
 }
 
+class ConveyorCell extends Cell{
+	String hood = "Moore";
+	boolean[][] neighborhood = new boolean[3][3];
+	int counter = 0;
+	int direction = 0;
+	int a;
+	int b;
+	boolean active;
+	public ConveyorCell(){}
+	public ConveyorCell(int a){
+		maturity = a;}
+	public void setDir(int a){ direction = a; return;}
+	public String getNeighborhood(){ return hood;}
+	public boolean iterate(boolean neighborhood[][]){
+		counter += 1;
+		if (counter == maturity){ counter = 0;
+		switch (direction){
+			case 0: active = neighborhood[1][2]; break;
+			case 1: active = neighborhood[0][2]; break;
+			case 2: active = neighborhood[0][1]; break;
+			case 3: active = neighborhood[0][0]; break;
+			case 4: active = neighborhood[1][0]; break;
+			case 5: active = neighborhood[2][0]; break;
+			case 6: active = neighborhood[2][1]; break;
+			case 7: active = neighborhood[2][2]; break;
+			default:  active = neighborhood[1][2]; break;}
+		return active;}
+		else{return neighborhood[1][1];}
+	}
+}
+
