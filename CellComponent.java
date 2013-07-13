@@ -126,6 +126,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						break;
 						case 8: culture[a][b] = new EvenCell(maturity[a][b]);
 						break;
+						case 9: culture[a][b] = new ConveyorCell(maturity[a][b]);
+						break;
 						default: culture[a][b] = new Cell(maturity[a][b]);
 						break;}
 					}
@@ -255,6 +257,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 									case 6: g.setColor(Color.cyan); break;
 									case 7: g.setColor(Color.pink); break;
 									case 8: g.setColor(Color.yellow); break;
+									case 9: g.setColor(Color.gray); break;
 									default: g.setColor(Color.black); break;
 								}g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);}
 								
