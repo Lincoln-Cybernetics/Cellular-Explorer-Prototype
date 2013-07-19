@@ -22,6 +22,7 @@ Yellow: turns on if an even number of its neighbors are on (otherwise off)
 Grey: takes on the value of one of its neighbors (defaults to the neighbor 
 directly beneath the cell, no support for other neighbors, yet)
 To return to normal running after Editing the cells or their states, press "Play/Pause".
+The Cell Fill button can be used in or out of cell editing, and sets all cells in the array to the selected type. 
 
 
 Created by Lincoln Cybernetics Novelty Computing Division
