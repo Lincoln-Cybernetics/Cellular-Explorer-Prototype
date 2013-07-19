@@ -156,10 +156,10 @@ public void actionPerformed(ActionEvent e){
 	tray[windowflag].repaint();}
 		else{tray[windowflag].editcellflag = false;tray[windowflag].hiliteflag = false;
 		//if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
-		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}	
+		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}
 		
-	if(e.getSource() == cf){tray[windowflag].cellFill();}
-	
+	if(e.getSource() == cf){if (cflag == true){tray[windowflag].cellFill();}}		
+		
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
