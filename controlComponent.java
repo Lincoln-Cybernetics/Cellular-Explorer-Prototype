@@ -20,14 +20,17 @@ import javax.swing.event.*;
 
 
 class controlComponent extends JComponent implements ActionListener, ChangeListener{
+	
 JButton newc;
 JButton ss;
-JButton rnd;
 JButton eds;
-JButton edc;
-JButton demo;
 JButton clear;
+JButton rnd;
+JButton edc;
+JButton cf;
+JButton demo;
 JButton about;
+
 String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
 SpinnerListModel modelB = new SpinnerListModel(speed);
 JSpinner scon = new JSpinner(modelB); 
@@ -59,6 +62,7 @@ public controlComponent(){
 	rnd = new JButton("Randomize");
 	eds= new JButton("Edit State");
 	edc = new JButton("Edit Cells");
+	cf = new JButton("Cell Fill");
 	demo = new JButton("Demo");
 	
 	clear = new JButton("Clear");
@@ -75,6 +79,7 @@ public controlComponent(){
 	add(eds);
 	add(edc);
 	add(cellpicker);
+	add(cf);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
@@ -84,6 +89,7 @@ public controlComponent(){
 	eds.addActionListener(this);
 	rnd.addActionListener(this);
 	edc.addActionListener(this);
+	cf.addActionListener(this);
 	demo.addActionListener(this);
 	clear.addActionListener(this);
 	about.addActionListener(this);
@@ -151,6 +157,8 @@ public void actionPerformed(ActionEvent e){
 		else{tray[windowflag].editcellflag = false;tray[windowflag].hiliteflag = false;
 		//if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
 		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}	
+		
+	if(e.getSource() == cf){tray[windowflag].cellFill();}
 	
 	
 	if(e.getSource() == about){
