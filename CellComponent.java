@@ -48,6 +48,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	boolean firstrunflag = true;
 	boolean paintflag = false;
 	
+	
 	int workcell = 0;
 	int magnify = 5;
 	int demoflag = 0;
@@ -80,11 +81,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					populate(x,y);
 					break;
 					
-					case 1: // glider bomb
+					case 1: // demo
 				 celltype[x][y] = 5;
-					if (x==250 && y>20&& y<250){celltype[x][y] =2;}
-					if( y==ysiz-1){celltype[x][y] =7;}
-				  
+					if (x>200 && x<245){if (y>100 && y<200){celltype[x][y] = 9;}}
 				  populate(x,y);
 				  break;
 				  
@@ -130,6 +129,14 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						break;
 						default: culture[a][b] = new Cell(maturity[a][b]);
 						break;}
+					}
+					
+					public void cellFill(){
+					for(y=0;y<=ysiz-1;y++){
+					for(x=0;x<=xsiz-1;x++){	
+						celltype[x][y] = workcell;
+						populate(x,y);}}
+						repaint();
 					}
 					
 					public boolean[][] getMoore(int x, int y){
