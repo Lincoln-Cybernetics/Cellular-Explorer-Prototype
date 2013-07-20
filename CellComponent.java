@@ -30,6 +30,10 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	int[][] celltype = new int[xsiz][ysiz];
 	int[][] maturity = new int[xsiz][ysiz];
 	int ztime = 20;
+	int workcell = 0;
+	int workcellB = 0;
+	int magnify = 5;
+	int demoflag = 0;
 	//general array counters
 	int x;
 	int y;
@@ -49,9 +53,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	boolean paintflag = false;
 	
 	
-	int workcell = 0;
-	int magnify = 5;
-	int demoflag = 0;
+
 	
 	Thread t = new Thread(this);
 	
@@ -135,6 +137,16 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					for(y=0;y<=ysiz-1;y++){
 					for(x=0;x<=xsiz-1;x++){	
 						celltype[x][y] = workcell;
+						populate(x,y);}}
+						repaint();
+					}
+					
+					public void cellCheckFill(){
+						for(y=0;y<=ysiz-1;y++){
+						for(x=0;x<=xsiz-1;x++){	
+							if( y % 2 == 1 ^ x % 2 == 1){
+						celltype[x][y] = workcell;}
+						else{celltype[x][y] = workcellB;}
 						populate(x,y);}}
 						repaint();
 					}
