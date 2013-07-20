@@ -32,6 +32,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	int ztime = 20;
 	int workcell = 0;
 	int workcellB = 0;
+	int workmat = 1;
+	int workmatB = 1;
 	int magnify = 5;
 	int demoflag = 0;
 	//general array counters
@@ -137,6 +139,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					for(y=0;y<=ysiz-1;y++){
 					for(x=0;x<=xsiz-1;x++){	
 						celltype[x][y] = workcell;
+						maturity[x][y] = workmat;
 						populate(x,y);}}
 						repaint();
 					}
@@ -145,8 +148,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){	
 							if( y % 2 == 1 ^ x % 2 == 1){
-						celltype[x][y] = workcell;}
-						else{celltype[x][y] = workcellB;}
+						celltype[x][y] = workcell; maturity[x][y] = workmat;}
+						else{celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
 						populate(x,y);}}
 						repaint();
 					}
@@ -278,7 +281,16 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 									case 8: g.setColor(Color.yellow); break;
 									case 9: g.setColor(Color.gray); break;
 									default: g.setColor(Color.black); break;
-								}g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);}
+								}g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+								//outline each cell according to its maturity setting
+								switch(maturity[x][y]){
+									case 1: g.setColor(Color.white); break;
+									case 2: g.setColor(Color.red); break;
+									case 3: g.setColor(Color.blue); break;
+									case 4: g.setColor(Color.black); break;
+									default: g.setColor(Color.green); break;
+								}
+								g.drawRect(x*magnify,y*magnify,magnify,magnify);}
 								
 								//normal rendering
 								if (editflag == false && editcellflag == false){
@@ -298,7 +310,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						current[xlocal][ylocal] = !current[xlocal][ylocal];paintflag = true; repaint();}
 						//editcell
 						if (editcellflag == true){
-					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify; celltype[xlocal][ylocal] = workcell; 
+					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify; celltype[xlocal][ylocal] = workcell;
+					 maturity[xlocal][ylocal] = workmat;
 					populate(xlocal, ylocal);paintflag = true;repaint();}}
 					public void mouseEntered(MouseEvent e){}
 					public void mouseExited(MouseEvent e){}
@@ -312,7 +325,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						paintflag = true; repaint();}
 						//edit celltype
 						if(editcellflag == true){
-						celltype[xlocal][ylocal] = workcell;
+						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;
 						populate(xlocal,ylocal);paintflag = true; repaint();}
 						}
 					
