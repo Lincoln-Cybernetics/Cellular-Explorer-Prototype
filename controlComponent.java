@@ -20,7 +20,7 @@ import javax.swing.event.*;
 
 
 class controlComponent extends JComponent implements ActionListener, ChangeListener{
-	
+// all the buttons	
 JButton newc;
 JButton ss;
 JButton eds;
@@ -32,14 +32,24 @@ JButton ccf;
 JButton demo;
 JButton about;
 
-String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
-SpinnerListModel modelB = new SpinnerListModel(speed);
-JSpinner scon = new JSpinner(modelB); 
+ // cell type selection
 String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
 JSpinner Bcellpicker = new JSpinner(modelAA);
+
+//cell maturity selection
+String[] mats = new String[]{"1","2","3","4"};
+SpinnerListModel modelC = new SpinnerListModel(mats);
+JSpinner matpicker = new JSpinner(modelC);
+SpinnerListModel modelCC = new SpinnerListModel(mats);
+JSpinner Bmatpicker = new JSpinner(modelCC);
+
+//speed control
+String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
+SpinnerListModel modelB = new SpinnerListModel(speed);
+JSpinner scon = new JSpinner(modelB);
 
 CellComponent[] tray = new CellComponent[3];
 int windowflag = 0;
@@ -83,13 +93,17 @@ public controlComponent(){
 	add(eds);
 	add(edc);
 	add(cellpicker);
+	add(matpicker);
 	add(cf);
 	add(ccf);
 	add(Bcellpicker);
+	add(Bmatpicker);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
 	Bcellpicker.addChangeListener(this);
+	matpicker.addChangeListener(this);
+	Bmatpicker.addChangeListener(this);
 	scon.addChangeListener(this);
 	ss.addActionListener(this);
 	newc.addActionListener(this);
@@ -221,6 +235,20 @@ public void setWCB(){
 		if(modelAA.getValue()=="Conveyor") {tray[windowflag].workcellB = 9;}
 }
 
+public void setMat(){
+	if(modelC.getValue() == "1") {tray[windowflag].workmat = 1;}
+	if(modelC.getValue() == "2") {tray[windowflag].workmat = 2;}
+	if(modelC.getValue() == "3") {tray[windowflag].workmat = 3;}
+	if(modelC.getValue() == "4") {tray[windowflag].workmat = 4;}
+}
+
+public void setMatB(){
+	if(modelCC.getValue() == "1"){tray[windowflag].workmatB = 1;}
+	if(modelCC.getValue() == "2"){tray[windowflag].workmatB = 2;}
+	if(modelCC.getValue() == "3"){tray[windowflag].workmatB = 3;}
+	if(modelCC.getValue() == "4"){tray[windowflag].workmatB = 4;}
+}
+
 public void setZT(){
 	if(modelB.getValue() == "Very Slow") {tray[windowflag].ztime = 2000;}
 	if(modelB.getValue() == "Slow") {tray[windowflag].ztime = 200;}
@@ -235,6 +263,14 @@ public void stateChanged(ChangeEvent e){
 		
 	if(e.getSource() == Bcellpicker){
 		setWCB();
+	}
+	
+	if(e.getSource() == matpicker){
+		setMat();
+	}
+	
+	if(e.getSource() == Bmatpicker){
+		setMatB();
 	}
 		 
 	if (e.getSource() == scon){ 
