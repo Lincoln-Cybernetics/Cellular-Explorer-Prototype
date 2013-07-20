@@ -28,6 +28,7 @@ JButton clear;
 JButton rnd;
 JButton edc;
 JButton cf;
+JButton ccf;
 JButton demo;
 JButton about;
 
@@ -37,6 +38,8 @@ JSpinner scon = new JSpinner(modelB);
 String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
+SpinnerListModel modelAA = new SpinnerListModel(cells);
+JSpinner Bcellpicker = new JSpinner(modelAA);
 
 CellComponent[] tray = new CellComponent[3];
 int windowflag = 0;
@@ -63,6 +66,7 @@ public controlComponent(){
 	eds= new JButton("Edit State");
 	edc = new JButton("Edit Cells");
 	cf = new JButton("Cell Fill");
+	ccf = new JButton("Cell CheckFill");
 	demo = new JButton("Demo");
 	
 	clear = new JButton("Clear");
@@ -80,9 +84,12 @@ public controlComponent(){
 	add(edc);
 	add(cellpicker);
 	add(cf);
+	add(ccf);
+	add(Bcellpicker);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
+	Bcellpicker.addChangeListener(this);
 	scon.addChangeListener(this);
 	ss.addActionListener(this);
 	newc.addActionListener(this);
@@ -90,6 +97,7 @@ public controlComponent(){
 	rnd.addActionListener(this);
 	edc.addActionListener(this);
 	cf.addActionListener(this);
+	ccf.addActionListener(this);
 	demo.addActionListener(this);
 	clear.addActionListener(this);
 	about.addActionListener(this);
@@ -156,10 +164,11 @@ public void actionPerformed(ActionEvent e){
 	tray[windowflag].repaint();}
 		else{tray[windowflag].editcellflag = false;tray[windowflag].hiliteflag = false;
 		//if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
-		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}
+		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}	
 		
-	if(e.getSource() == cf){if (cflag == true){tray[windowflag].cellFill();}}		
-		
+	if(e.getSource() == cf){if (cflag == true){tray[windowflag].cellFill();}}
+	
+	if(e.getSource() == ccf){if(cflag == true){tray[windowflag].cellCheckFill();}}
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
@@ -199,6 +208,19 @@ public void setWC(){
 		if(modelA.getValue()=="Conveyor") {tray[windowflag].workcell = 9;}
 }
 
+public void setWCB(){
+	if(modelAA.getValue()=="Cell") {tray[windowflag].workcellB = 0;}
+		if(modelAA.getValue()=="onCell") {tray[windowflag].workcellB = 1;}
+		if(modelAA.getValue()=="Blinkcell") {tray[windowflag].workcellB = 2;}
+		if(modelAA.getValue()=="Blinkcell2"){ tray[windowflag].workcellB = 3;}
+		if(modelAA.getValue()=="Random cell") {tray[windowflag].workcellB = 4;} 
+		if(modelAA.getValue()=="Life") {tray[windowflag].workcellB = 5;}
+		if(modelAA.getValue()=="Seeds") {tray[windowflag].workcellB = 6;}
+		if(modelAA.getValue()=="OddCell") {tray[windowflag].workcellB = 7;}
+		if(modelAA.getValue()=="EvenCell") {tray[windowflag].workcellB = 8;}
+		if(modelAA.getValue()=="Conveyor") {tray[windowflag].workcellB = 9;}
+}
+
 public void setZT(){
 	if(modelB.getValue() == "Very Slow") {tray[windowflag].ztime = 2000;}
 	if(modelB.getValue() == "Slow") {tray[windowflag].ztime = 200;}
@@ -210,6 +232,10 @@ public void stateChanged(ChangeEvent e){
 	if (e.getSource() == cellpicker){
 		setWC();
 		}
+		
+	if(e.getSource() == Bcellpicker){
+		setWCB();
+	}
 		 
 	if (e.getSource() == scon){ 
 		setZT();
