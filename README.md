@@ -23,6 +23,9 @@ Grey: takes on the value of one of its neighbors (defaults to the neighbor
 directly beneath the cell, no support for other neighbors, yet)
 To return to normal running after Editing the cells or their states, press "Play/Pause".
 The Cell Fill button can be used in or out of cell editing, and sets all cells in the array to the selected type. 
+The Cell CheckFill button is accompanied by a second cell-selection spinner.  Used in conjunction, these allow the user to
+fill the automaton with a checkerboard pattern of cells alternating between the types selected in the two cell-selection spinners.
+
 
 
 Created by Lincoln Cybernetics Novelty Computing Division
