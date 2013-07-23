@@ -154,6 +154,19 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						repaint();
 					}
 					
+					public void cellRandFill(){
+						Random shoe = new Random();
+						for(y=0;y<=ysiz-1;y++){
+						for(x=0;x<=xsiz-1;x++){	
+							celltype[x][y] = shoe.nextInt(10);
+							maturity[x][y] = shoe.nextInt(4);
+							maturity[x][y] += 1;
+							populate(x,y);
+						}}
+						repaint();
+					}
+							
+					
 					public boolean[][] getMoore(int x, int y){
 						// returns the states of a cell's Moore Neighborhood
 					boolean[][] neighbors = new boolean[3][3];
@@ -211,7 +224,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 			  Thread.sleep(100);} 
 			   }  catch(InterruptedException ie) {}
 			   
-			   // fills the current state array
+			   // statefill
 			   if (fillflag == true){ 
 				   for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
