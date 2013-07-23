@@ -29,7 +29,8 @@ JButton rnd;
 JButton edc;
 JButton cf;
 JButton ccf;
-JButton demo;
+JButton crf;
+//JButton demo;
 JButton about;
 
  // cell type selection
@@ -61,14 +62,13 @@ boolean cflag = false;
 
 int xx = 0;
 int yy = 0;
-int[] magholder = new int[3];
 public controlComponent(){
 	
 	for(windowflag=0;windowflag<=2;windowflag++){
 		
 		firstflag[windowflag] = true;
 		pflag[windowflag] = false;
-		magholder[windowflag] = 5;}
+		}
 		windowflag=0;
 	ss = new JButton("Play/Pause");
 	newc = new JButton("New Culture");
@@ -77,14 +77,15 @@ public controlComponent(){
 	edc = new JButton("Edit Cells");
 	cf = new JButton("Cell Fill");
 	ccf = new JButton("Cell CheckFill");
-	demo = new JButton("Demo");
+	crf = new JButton("Create Monster");
+	//demo = new JButton("Demo");
 	
 	clear = new JButton("Clear");
 	about = new JButton("About");
 	setLayout( new FlowLayout() );
 	
 	add( newc );
-	add(demo);
+	//add(demo);
 	
 	add(ss);
 	add(scon);
@@ -98,6 +99,7 @@ public controlComponent(){
 	add(ccf);
 	add(Bcellpicker);
 	add(Bmatpicker);
+	add(crf);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
@@ -112,7 +114,8 @@ public controlComponent(){
 	edc.addActionListener(this);
 	cf.addActionListener(this);
 	ccf.addActionListener(this);
-	demo.addActionListener(this);
+	crf.addActionListener(this);
+	//demo.addActionListener(this);
 	clear.addActionListener(this);
 	about.addActionListener(this);
 	
@@ -121,7 +124,7 @@ public controlComponent(){
 public void actionPerformed(ActionEvent e){
 	
 	if(e.getSource() == newc){
-		//sets up the window, adds the logic component
+		//sets up the window, adds the cell component
 		tray[0] = new CellComponent();
 		JFrame garden = new JFrame("Cellular Explorer");
 		garden.getContentPane().add( new JScrollPane(tray[0]) );
@@ -132,9 +135,9 @@ public void actionPerformed(ActionEvent e){
 		cflag = true; tray[0].demoflag =0;tray[0].create(); windowflag = 0;firstflag[0] = true;setWC();setZT();
 	}
 	
-		if(e.getSource() == demo){
+		/*if(e.getSource() == demo){
 			tray[1] = new CellComponent();
-		//sets up the window, adds the logic component
+		//sets up the window, adds the cell component
 		JFrame carden = new JFrame("Cellular Explorer");
 		carden.getContentPane().add( new JScrollPane(tray[1]) );
 		carden.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -142,7 +145,7 @@ public void actionPerformed(ActionEvent e){
 		carden.setSize(tray[1].xsiz*tray[1].magnify, tray[1].ysiz*tray[1].magnify);
 		carden.setVisible( true );
 		cflag = true; tray[1].demoflag =1; tray[1].create();windowflag = 1;firstflag[1] = true;setWC();setZT();
-	}
+	}*/
 	
 	
 	
@@ -154,7 +157,6 @@ public void actionPerformed(ActionEvent e){
 	else{ if (pflag[windowflag] == false){ pflag[windowflag] = true;tray[windowflag].pauseflag = true;}
 		else{ pflag[windowflag] = false; tray[windowflag].pauseflag = false; if(tray[windowflag].editflag == true){tray[windowflag].editflag = false;
 		tray[windowflag].hiliteflag = false;} if(tray[windowflag].editcellflag == true){tray[windowflag].editcellflag = false; tray[windowflag].hiliteflag = false;}
-		//if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
 		}}}}
 		
 	if(e.getSource() == rnd){ if (cflag == true){ 
@@ -165,24 +167,19 @@ public void actionPerformed(ActionEvent e){
 	
 	if(e.getSource() == eds){ if(cflag	== true){if (tray[windowflag].editflag == false){ pflag[windowflag] = true;
 	tray[windowflag].pauseflag = true; tray[windowflag].editflag = true;
-	//if(tray[windowflag].magnify<=5){magholder[windowflag]= tray[windowflag].magnify;tray[windowflag].magnify = 5;}
 	tray[windowflag].repaint();}
-	else{tray[windowflag].editflag = false;
-	tray[windowflag].hiliteflag = false;
-	 //if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
-	  tray[windowflag].pauseflag = false;pflag[windowflag] = false;}}}
+	else{tray[windowflag].editflag = false;tray[windowflag].repaint();}}}
 		
 	if(e.getSource() == edc){ if (cflag == true){if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
 	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; 
-	//if(tray[windowflag].magnify<=5){magholder[windowflag] = tray[windowflag].magnify; tray[windowflag].magnify = 5;}
 	tray[windowflag].repaint();}
-		else{tray[windowflag].editcellflag = false;tray[windowflag].hiliteflag = false;
-		//if(tray[windowflag].magnify == 5){tray[windowflag].magnify = magholder[windowflag];}
-		pflag[windowflag] = false;tray[windowflag].pauseflag = false;}}}	
+		else{tray[windowflag].editcellflag = false;tray[windowflag].repaint();}}}	
 		
 	if(e.getSource() == cf){if (cflag == true){tray[windowflag].cellFill();}}
 	
 	if(e.getSource() == ccf){if(cflag == true){tray[windowflag].cellCheckFill();}}
+	
+	if(e.getSource() == crf){if(cflag == true){tray[windowflag].cellRandFill();}}
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
