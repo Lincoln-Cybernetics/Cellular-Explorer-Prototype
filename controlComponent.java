@@ -23,13 +23,16 @@ class controlComponent extends JComponent implements ActionListener, ChangeListe
 // all the buttons	
 JButton newc;
 JButton ss;
+// state editing buttons
 JButton eds;
 JButton clear;
 JButton rnd;
+// cell editing buttons
 JButton edc;
 JButton cf;
 JButton ccf;
 JButton crf;
+JButton ccd;
 //JButton demo;
 JButton about;
 
@@ -78,6 +81,7 @@ public controlComponent(){
 	cf = new JButton("Cell Fill");
 	ccf = new JButton("Cell CheckFill");
 	crf = new JButton("Create Monster");
+	ccd = new JButton("Cell Check Edit");
 	//demo = new JButton("Demo");
 	
 	clear = new JButton("Clear");
@@ -100,6 +104,7 @@ public controlComponent(){
 	add(Bcellpicker);
 	add(Bmatpicker);
 	add(crf);
+	add(ccd);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
@@ -115,6 +120,7 @@ public controlComponent(){
 	cf.addActionListener(this);
 	ccf.addActionListener(this);
 	crf.addActionListener(this);
+	ccd.addActionListener(this);
 	//demo.addActionListener(this);
 	clear.addActionListener(this);
 	about.addActionListener(this);
@@ -156,7 +162,7 @@ public void actionPerformed(ActionEvent e){
 	nonsense = tray[windowflag].begin(); firstflag[windowflag] = false;}
 	else{ if (pflag[windowflag] == false){ pflag[windowflag] = true;tray[windowflag].pauseflag = true;}
 		else{ pflag[windowflag] = false; tray[windowflag].pauseflag = false; if(tray[windowflag].editflag == true){tray[windowflag].editflag = false;
-		tray[windowflag].hiliteflag = false;} if(tray[windowflag].editcellflag == true){tray[windowflag].editcellflag = false; tray[windowflag].hiliteflag = false;}
+		} if(tray[windowflag].editcellflag == true){tray[windowflag].editcellflag = false;}
 		}}}}
 		
 	if(e.getSource() == rnd){ if (cflag == true){ 
@@ -170,7 +176,8 @@ public void actionPerformed(ActionEvent e){
 	tray[windowflag].repaint();}
 	else{tray[windowflag].editflag = false;tray[windowflag].repaint();}}}
 		
-	if(e.getSource() == edc){ if (cflag == true){if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
+	if(e.getSource() == edc){ if (cflag == true){tray[windowflag].checkdrawflag = false;
+	if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
 	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; 
 	tray[windowflag].repaint();}
 		else{tray[windowflag].editcellflag = false;tray[windowflag].repaint();}}}	
@@ -180,6 +187,9 @@ public void actionPerformed(ActionEvent e){
 	if(e.getSource() == ccf){if(cflag == true){tray[windowflag].cellCheckFill();}}
 	
 	if(e.getSource() == crf){if(cflag == true){tray[windowflag].cellRandFill();}}
+	
+	if(e.getSource() == ccd){if(cflag == true){if (tray[windowflag].editcellflag == false){tray[windowflag].editcellflag = true;}
+	tray[windowflag].checkdrawflag = true;}}
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
