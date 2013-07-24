@@ -43,16 +43,19 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	int xlocal;
 	int ylocal;
 	//changestate flag
+	boolean firstrunflag = true;
 	boolean csflag = false; 
 	boolean fillflag = false;
+	boolean pauseflag = false;
+	//state editing flags
+	boolean editflag = false;
 	boolean randflag = false;
 	boolean clearflag = false;
-	boolean pauseflag = false;
-	boolean editflag = false;
-	boolean hiliteflag = false;
+	//cell editing flags
 	boolean editcellflag = false;
-	boolean firstrunflag = true;
-	boolean paintflag = false;
+	boolean checkdrawflag = false;
+	
+	
 	
 	
 
@@ -313,19 +316,21 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						}}
 						}
 					public void mouseMoved( MouseEvent e){
-					//if(editflag == true || editcellflag == true){hiliteflag = true;
-					//xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;repaint();}
-					//else{hiliteflag = false;repaint();}}
+					
 				}
 					public void mouseDragged(MouseEvent e) {
 						//edit state
 						if(editflag == true){xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
-						current[xlocal][ylocal] = !current[xlocal][ylocal];paintflag = true; repaint();}
+						current[xlocal][ylocal] = !current[xlocal][ylocal]; repaint();}
 						//editcell
 						if (editcellflag == true){
 					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify; celltype[xlocal][ylocal] = workcell;
 					 maturity[xlocal][ylocal] = workmat;
-					populate(xlocal, ylocal);paintflag = true;repaint();}}
+					if(checkdrawflag == true){
+					if( ylocal % 2 == 1 ^ xlocal % 2 == 1){
+						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;}
+						else{celltype[xlocal][ylocal] = workcellB; maturity[xlocal][ylocal] = workmatB;}}
+					populate(xlocal, ylocal);repaint();}}
 					public void mouseEntered(MouseEvent e){}
 					public void mouseExited(MouseEvent e){}
 					public void mousePressed(MouseEvent e){}
@@ -335,11 +340,15 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						//edit state
 						if(editflag == true){
 						current[xlocal][ylocal] = !current[xlocal][ylocal];
-						paintflag = true; repaint();}
+						 repaint();}
 						//edit celltype
 						if(editcellflag == true){
 						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;
-						populate(xlocal,ylocal);paintflag = true; repaint();}
+						if(checkdrawflag == true){
+						if( ylocal % 2 == 1 ^ xlocal % 2 == 1){
+						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;}
+						else{celltype[xlocal][ylocal] = workcellB; maturity[xlocal][ylocal] = workmatB;}}
+						populate(xlocal,ylocal); repaint();}
 						}
 					
 				
