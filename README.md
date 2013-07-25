@@ -39,6 +39,8 @@ The "Create Monster" button fills the automaton with randomly selected cells, (g
 The "Cell Check Edit" allows drawing cells in a checker-board pattern.  It works like the Check Fill button, but
 without filling the entire array.
 
+The "3x3" checkbox enables a 3x3 brush size in the Cell Editing function, for laying down large areas conveniently.
+
 
 
 Created by Lincoln Cybernetics Novelty Computing Division
