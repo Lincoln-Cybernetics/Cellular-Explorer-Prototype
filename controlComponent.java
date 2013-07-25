@@ -2,6 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.event.*;
+import java.awt.Checkbox.*;
 /*Cellular Explorer Prototype proof of concept
  * Copyright(C) 02013 Matt Ahlschwede
  *  This program is free software: you can redistribute it and/or modify
@@ -19,7 +20,7 @@ import javax.swing.event.*;
 */
 
 
-class controlComponent extends JComponent implements ActionListener, ChangeListener{
+class controlComponent extends JComponent implements ActionListener, ChangeListener, ItemListener{
 // all the buttons	
 JButton newc;
 JButton ss;
@@ -35,6 +36,10 @@ JButton crf;
 JButton ccd;
 //JButton demo;
 JButton about;
+
+//cell editing
+Checkbox tbt = new Checkbox("3x3");
+
 
  // cell type selection
 String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor"};
@@ -105,6 +110,7 @@ public controlComponent(){
 	add(Bmatpicker);
 	add(crf);
 	add(ccd);
+	add(tbt);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
@@ -123,6 +129,7 @@ public controlComponent(){
 	ccd.addActionListener(this);
 	//demo.addActionListener(this);
 	clear.addActionListener(this);
+	tbt.addItemListener(this);
 	about.addActionListener(this);
 	
 	}
@@ -215,6 +222,14 @@ public void actionPerformed(ActionEvent e){
 		cpanel.setVisible(true);
 	}
 }
+
+public void itemStateChanged(ItemEvent e){
+	
+	if(e.getItemSelectable() == tbt){if (tbt.getState()){tray[windowflag].tbtflag = true;}
+	else{tray[windowflag].tbtflag = false;}}
+	
+}
+	
 
 public void setWC(){
 	if(modelA.getValue()=="Cell") {tray[windowflag].workcell = 0;}
