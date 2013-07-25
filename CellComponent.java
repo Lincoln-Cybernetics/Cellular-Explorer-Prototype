@@ -29,6 +29,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	Cell[][] culture = new Cell[xsiz][ysiz];
 	int[][] celltype = new int[xsiz][ysiz];
 	int[][] maturity = new int[xsiz][ysiz];
+	// settings (speed, primary cell selection, secondary cell selection, maturity, secondary maturity, cell size, and array initialization)
 	int ztime = 20;
 	int workcell = 0;
 	int workcellB = 0;
@@ -36,9 +37,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	int workmatB = 1;
 	int magnify = 5;
 	int demoflag = 0;
-	//general array counters
-	int x;
-	int y;
+	//general array counters Int x, and Int y are instantiated locally for each use
 	//keep track of mouse position in edit mode
 	int xlocal;
 	int ylocal;
@@ -54,7 +53,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	//cell editing flags
 	boolean editcellflag = false;
 	boolean checkdrawflag = false;
-	
+	boolean tbtflag = false;
 	
 	
 	
@@ -66,8 +65,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		//initialize the board
-	for(y=0;y<=ysiz-1;y++){
-		for(x=0;x<=xsiz-1;x++){	
+	for(int y=0;y<=ysiz-1;y++){
+		for(int x=0;x<=xsiz-1;x++){	
 				 current[x][y] = false;
 				 newstate[x][y] = false;
 				 celltype[x][y] = 5;
@@ -80,8 +79,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 			repaint();
 			}
 			public void create(){
-				for(y=0;y<=ysiz-1;y++){
-					for(x=0;x<=xsiz-1;x++){
+				for(int y=0;y<=ysiz-1;y++){
+					for(int x=0;x<=xsiz-1;x++){
 					switch(demoflag){
 					 case 0://normal
 					celltype[x][y] =5;
@@ -103,7 +102,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				  populate(x,y); break;
 				 
 				default:
-				celltype[x][y] = 1;
+				celltype[x][y] = 0;
 				populate(x,y); break;}		
 						
 				}}}
@@ -138,9 +137,11 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						break;}
 					}
 					
+					// cell editing methods
+					
 					public void cellFill(){
-					for(y=0;y<=ysiz-1;y++){
-					for(x=0;x<=xsiz-1;x++){	
+					for(int y=0;y<=ysiz-1;y++){
+					for(int x=0;x<=xsiz-1;x++){	
 						celltype[x][y] = workcell;
 						maturity[x][y] = workmat;
 						populate(x,y);}}
@@ -148,8 +149,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					}
 					
 					public void cellCheckFill(){
-						for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){	
+						for(int y=0;y<=ysiz-1;y++){
+						for(int x=0;x<=xsiz-1;x++){	
 							if( y % 2 == 1 ^ x % 2 == 1){
 						celltype[x][y] = workcell; maturity[x][y] = workmat;}
 						else{celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
@@ -159,8 +160,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					
 					public void cellRandFill(){
 						Random shoe = new Random();
-						for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){	
+						for(int y=0;y<=ysiz-1;y++){
+						for(int x=0;x<=xsiz-1;x++){	
 							celltype[x][y] = shoe.nextInt(10);
 							maturity[x][y] = shoe.nextInt(4);
 							maturity[x][y] += 1;
@@ -168,7 +169,38 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						}}
 						repaint();
 					}
+					
+					public void tbtPop(int x,int y){
+						celltype[x][y] = workcell; maturity[x][y] = workmat; populate(x,y);
+						
+						// if the cell is on the border ignore the outside, otherwise populate 
+							if(x==0 || y==0){}
+							else{ celltype[x-1][y-1] = workcell; maturity[x-1][y-1] = workmat; populate(x-1, y-1);}
 							
+							if(x==0){}
+							else{celltype[x-1][y] = workcell; maturity[x-1][y] = workmat; populate(x-1,y);}
+							
+							if(x==0 || y==ysiz-1){}
+							else{celltype[x-1][y+1] = workcell; maturity[x-1][y+1] = workmat; populate(x-1,y+1);}
+							
+							if(y==0){}
+							else{celltype[x][y-1] = workcell; maturity[x][y-1] = workmat; populate(x,y-1);}
+							
+							if(y==ysiz-1){}
+							else{celltype[x][y+1] = workcell; maturity[x][y+1] = workmat; populate(x,y+1);}
+							
+							if(x==xsiz-1 || y==0){}
+							else{celltype[x+1][y-1] = workcell; maturity[x+1][y-1] = workmat; populate(x+1,y-1);}
+							
+							if(x==xsiz-1){}
+							else{celltype[x+1][y] = workcell; maturity[x+1][y] = workmat; populate(x+1,y);}
+							
+							if(x==xsiz-1 || y==ysiz-1){}
+							else{celltype[x+1][y+1] = workcell; maturity[x+1][y+1] = workmat; populate(x+1,y+1);}
+							repaint();
+				}
+						
+					//neighborhood methods
 					
 					public boolean[][] getMoore(int x, int y){
 						// returns the states of a cell's Moore Neighborhood
@@ -326,6 +358,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						if (editcellflag == true){
 					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify; celltype[xlocal][ylocal] = workcell;
 					 maturity[xlocal][ylocal] = workmat;
+					if(tbtflag == true){tbtPop(xlocal, ylocal);}
 					if(checkdrawflag == true){
 					if( ylocal % 2 == 1 ^ xlocal % 2 == 1){
 						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;}
@@ -344,6 +377,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						//edit celltype
 						if(editcellflag == true){
 						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;
+						if( tbtflag == true){tbtPop(xlocal, ylocal);}
 						if(checkdrawflag == true){
 						if( ylocal % 2 == 1 ^ xlocal % 2 == 1){
 						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;}
