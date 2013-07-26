@@ -32,11 +32,14 @@ The Cell Fill button can be used in or out of cell editing, and sets all cells i
 
 The Cell CheckFill button is accompanied by a second cell-selection spinner.  Used in conjunction, these allow the user to
 fill the automaton with a checkerboard pattern of cells alternating between the types selected in the two cell-selection spinners.
+
+The secondary cell selection can also be used in cell editing by right-clicking. 
+
 Next is the second maturity selector, which determines the number of turns between state updates for the second selected cell-type.
 
 The "Create Monster" button fills the automaton with randomly selected cells, (generally resulting in pseudorandom noise).
 
-The "Cell Check Edit" allows drawing cells in a checker-board pattern.  It works like the Check Fill button, but
+The "Checkerboard" checkbox allows drawing cells in a checker-board pattern.  It works like the Check Fill button, but
 without filling the entire array.
 
 The "3x3" checkbox enables a 3x3 brush size in the Cell Editing function, for laying down large areas conveniently.
