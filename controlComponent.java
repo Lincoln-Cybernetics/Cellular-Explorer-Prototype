@@ -33,13 +33,12 @@ JButton edc;
 JButton cf;
 JButton ccf;
 JButton crf;
-JButton ccd;
 //JButton demo;
 JButton about;
 
 //cell editing
 Checkbox tbt = new Checkbox("3x3");
-
+Checkbox ccd = new Checkbox("Checkerboard");
 
  // cell type selection
 String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor"};
@@ -86,7 +85,7 @@ public controlComponent(){
 	cf = new JButton("Cell Fill");
 	ccf = new JButton("Cell CheckFill");
 	crf = new JButton("Create Monster");
-	ccd = new JButton("Cell Check Edit");
+	
 	//demo = new JButton("Demo");
 	
 	clear = new JButton("Clear");
@@ -126,9 +125,9 @@ public controlComponent(){
 	cf.addActionListener(this);
 	ccf.addActionListener(this);
 	crf.addActionListener(this);
-	ccd.addActionListener(this);
 	//demo.addActionListener(this);
 	clear.addActionListener(this);
+	ccd.addItemListener(this);
 	tbt.addItemListener(this);
 	about.addActionListener(this);
 	
@@ -183,7 +182,7 @@ public void actionPerformed(ActionEvent e){
 	tray[windowflag].repaint();}
 	else{tray[windowflag].editflag = false;tray[windowflag].repaint();}}}
 		
-	if(e.getSource() == edc){ if (cflag == true){tray[windowflag].checkdrawflag = false;
+	if(e.getSource() == edc){ if (cflag == true){
 	if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
 	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; 
 	tray[windowflag].repaint();}
@@ -194,9 +193,6 @@ public void actionPerformed(ActionEvent e){
 	if(e.getSource() == ccf){if(cflag == true){tray[windowflag].cellCheckFill();}}
 	
 	if(e.getSource() == crf){if(cflag == true){tray[windowflag].cellRandFill();}}
-	
-	if(e.getSource() == ccd){if(cflag == true){if (tray[windowflag].editcellflag == false){tray[windowflag].editcellflag = true;}
-	tray[windowflag].checkdrawflag = true;}}
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
@@ -227,6 +223,9 @@ public void itemStateChanged(ItemEvent e){
 	
 	if(e.getItemSelectable() == tbt){if (tbt.getState()){tray[windowflag].tbtflag = true;}
 	else{tray[windowflag].tbtflag = false;}}
+	
+	if(e.getItemSelectable() == ccd){if (ccd.getState()){tray[windowflag].checkdrawflag = true;}
+	else{tray[windowflag].checkdrawflag = false;}}
 	
 }
 	
