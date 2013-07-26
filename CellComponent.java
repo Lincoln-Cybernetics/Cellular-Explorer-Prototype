@@ -37,7 +37,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	int workmatB = 1;
 	int magnify = 5;
 	int demoflag = 0;
+	
 	//general array counters Int x, and Int y are instantiated locally for each use
+	
 	//keep track of mouse position in edit mode
 	int xlocal;
 	int ylocal;
@@ -53,6 +55,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	//cell editing flags
 	boolean editcellflag = false;
 	boolean checkdrawflag = false;
+	boolean oboflag = false;
 	boolean tbtflag = false;
 	
 	
@@ -138,6 +141,20 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					}
 					
 					// cell editing methods
+					public void cellDraw(int x, int y){
+						celltype[x][y] = workcell; maturity[x][y] = workmat;
+						populate(x,y);}
+						
+					public void cellAltDraw(int x, int y){
+						celltype[x][y] = workcellB; maturity[x][y] = workmatB;
+						populate(x,y);} 
+					
+					public void cellCheckDraw(int x, int y){
+						if( y % 2 == 1 ^ x % 2 == 1){
+						celltype[x][y] = workcell; maturity[x][y] = workmat;}
+						else{celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
+						populate(x,y);}
+						
 					
 					public void cellFill(){
 					for(int y=0;y<=ysiz-1;y++){
@@ -170,33 +187,77 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						repaint();
 					}
 					
-					public void tbtPop(int x,int y){
-						celltype[x][y] = workcell; maturity[x][y] = workmat; populate(x,y);
+					public void tbtPop(int x,int y, int opt){
+						switch (opt){
+							case 1: cellDraw(x,y); break;
+							case 2: cellAltDraw(x,y); break;
+							case 3: cellCheckDraw(x,y); break;
+							default: cellDraw(x,y);break;}
 						
 						// if the cell is on the border ignore the outside, otherwise populate 
+							//x-1,y-1
 							if(x==0 || y==0){}
-							else{ celltype[x-1][y-1] = workcell; maturity[x-1][y-1] = workmat; populate(x-1, y-1);}
+							else{ switch (opt){
+							case 1: cellDraw(x-1,y-1); break;
+							case 2: cellAltDraw(x-1,y-1); break;
+							case 3: cellCheckDraw(x-1,y-1); break;
+							default: cellDraw(x-1,y-1);break;}}
 							
+							//x-1,y
 							if(x==0){}
-							else{celltype[x-1][y] = workcell; maturity[x-1][y] = workmat; populate(x-1,y);}
+							else{switch (opt){
+							case 1: cellDraw(x-1,y); break;
+							case 2: cellAltDraw(x-1,y); break;
+							case 3: cellCheckDraw(x-1,y); break;
+							default: cellDraw(x-1,y);break;}}
 							
+							//x-1,y+1
 							if(x==0 || y==ysiz-1){}
-							else{celltype[x-1][y+1] = workcell; maturity[x-1][y+1] = workmat; populate(x-1,y+1);}
+							else{switch (opt){
+							case 1: cellDraw(x-1,y+1); break;
+							case 2: cellAltDraw(x-1,y+1); break;
+							case 3: cellCheckDraw(x-1,y+1); break;
+							default: cellDraw(x-1,y+1);break;}}
 							
+							//x,y-1
 							if(y==0){}
-							else{celltype[x][y-1] = workcell; maturity[x][y-1] = workmat; populate(x,y-1);}
+							else{switch (opt){
+							case 1: cellDraw(x,y-1); break;
+							case 2: cellAltDraw(x,y-1); break;
+							case 3: cellCheckDraw(x,y-1); break;
+							default: cellDraw(x,y-1);break;}}
 							
+							//x,y+1
 							if(y==ysiz-1){}
-							else{celltype[x][y+1] = workcell; maturity[x][y+1] = workmat; populate(x,y+1);}
+							else{switch (opt){
+							case 1: cellDraw(x,y+1); break;
+							case 2: cellAltDraw(x,y+1); break;
+							case 3: cellCheckDraw(x,y+1); break;
+							default: cellDraw(x,y+1);break;}}
 							
+							//x+1,y-1
 							if(x==xsiz-1 || y==0){}
-							else{celltype[x+1][y-1] = workcell; maturity[x+1][y-1] = workmat; populate(x+1,y-1);}
+							else{switch (opt){
+							case 1: cellDraw(x+1,y-1); break;
+							case 2: cellAltDraw(x+1,y-1); break;
+							case 3: cellCheckDraw(x+1,y-1); break;
+							default: cellDraw(x+1,y-1);break;}}
 							
+							//x+1,y
 							if(x==xsiz-1){}
-							else{celltype[x+1][y] = workcell; maturity[x+1][y] = workmat; populate(x+1,y);}
+							else{switch (opt){
+							case 1: cellDraw(x+1,y); break;
+							case 2: cellAltDraw(x+1,y); break;
+							case 3: cellCheckDraw(x+1,y); break;
+							default: cellDraw(x+1,y);break;}}
 							
+							//x+1,y+1
 							if(x==xsiz-1 || y==ysiz-1){}
-							else{celltype[x+1][y+1] = workcell; maturity[x+1][y+1] = workmat; populate(x+1,y+1);}
+							else{switch (opt){
+							case 1: cellDraw(x+1,y+1); break;
+							case 2: cellAltDraw(x+1,y+1); break;
+							case 3: cellCheckDraw(x+1,y+1); break;
+							default: cellDraw(x+1,y+1);break;}}
 							repaint();
 				}
 						
@@ -356,14 +417,17 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						current[xlocal][ylocal] = !current[xlocal][ylocal]; repaint();}
 						//editcell
 						if (editcellflag == true){
-					xlocal = e.getX()/magnify; ylocal = e.getY()/magnify; celltype[xlocal][ylocal] = workcell;
-					 maturity[xlocal][ylocal] = workmat;
-					if(tbtflag == true){tbtPop(xlocal, ylocal);}
-					if(checkdrawflag == true){
-					if( ylocal % 2 == 1 ^ xlocal % 2 == 1){
-						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;}
-						else{celltype[xlocal][ylocal] = workcellB; maturity[xlocal][ylocal] = workmatB;}}
-					populate(xlocal, ylocal);repaint();}}
+							xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
+							if (tbtflag){int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} 
+								tbtPop(xlocal,ylocal,option);}
+							else{int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;}
+							switch(option){
+							case 1: cellDraw(xlocal,ylocal); break;
+							case 2: cellAltDraw(xlocal,ylocal); break;
+							case 3: cellCheckDraw(xlocal,ylocal); break;
+							default: cellDraw(xlocal, ylocal); break;
+							} 
+							repaint();}}}
 					public void mouseEntered(MouseEvent e){}
 					public void mouseExited(MouseEvent e){}
 					public void mousePressed(MouseEvent e){}
@@ -375,14 +439,18 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						current[xlocal][ylocal] = !current[xlocal][ylocal];
 						 repaint();}
 						//edit celltype
-						if(editcellflag == true){
-						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;
-						if( tbtflag == true){tbtPop(xlocal, ylocal);}
-						if(checkdrawflag == true){
-						if( ylocal % 2 == 1 ^ xlocal % 2 == 1){
-						celltype[xlocal][ylocal] = workcell; maturity[xlocal][ylocal] = workmat;}
-						else{celltype[xlocal][ylocal] = workcellB; maturity[xlocal][ylocal] = workmatB;}}
-						populate(xlocal,ylocal); repaint();}
+						if (editcellflag == true){
+							xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
+							if (tbtflag){int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} 
+								tbtPop(xlocal,ylocal,option);}
+							else{int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;}
+							switch(option){
+							case 1: cellDraw(xlocal,ylocal); break;
+							case 2: cellAltDraw(xlocal,ylocal); break;
+							case 3: cellCheckDraw(xlocal,ylocal); break;
+							default: cellDraw(xlocal, ylocal); break;
+							} 
+							repaint();}}
 						}
 					
 				
