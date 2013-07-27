@@ -43,21 +43,18 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	//keep track of mouse position in edit mode
 	int xlocal;
 	int ylocal;
-	//changestate flag
-	boolean firstrunflag = true;
-	boolean csflag = false; 
-	boolean fillflag = false;
+	//changestate flag 
 	boolean pauseflag = false;
 	//state editing flags
 	boolean editflag = false;
-	boolean randflag = false;
-	boolean clearflag = false;
+	boolean sfflag = false;
+	int sfopt = 0;
 	//cell editing flags
 	boolean editcellflag = false;
 	boolean checkdrawflag = false;
 	boolean oboflag = false;
 	boolean tbtflag = false;
-	
+	boolean randoflag = false;
 	
 	
 
@@ -155,6 +152,14 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						else{celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
 						populate(x,y);}
 						
+					public void cellRandDraw(int x, int y){
+						Random Iguana = new Random();
+						celltype[x][y] = Iguana.nextInt(10);
+						maturity[x][y] = Iguana.nextInt(4);
+						maturity[x][y] +=1;
+						populate(x,y);
+					}
+						
 					
 					public void cellFill(){
 					for(int y=0;y<=ysiz-1;y++){
@@ -192,6 +197,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x,y); break;
 							case 2: cellAltDraw(x,y); break;
 							case 3: cellCheckDraw(x,y); break;
+							case 4: cellRandDraw(x,y); break;
 							default: cellDraw(x,y);break;}
 						
 						// if the cell is on the border ignore the outside, otherwise populate 
@@ -201,6 +207,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x-1,y-1); break;
 							case 2: cellAltDraw(x-1,y-1); break;
 							case 3: cellCheckDraw(x-1,y-1); break;
+							case 4: cellRandDraw(x-1,y-1); break;
 							default: cellDraw(x-1,y-1);break;}}
 							
 							//x-1,y
@@ -209,6 +216,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x-1,y); break;
 							case 2: cellAltDraw(x-1,y); break;
 							case 3: cellCheckDraw(x-1,y); break;
+							case 4: cellRandDraw(x-1,y); break;
 							default: cellDraw(x-1,y);break;}}
 							
 							//x-1,y+1
@@ -217,6 +225,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x-1,y+1); break;
 							case 2: cellAltDraw(x-1,y+1); break;
 							case 3: cellCheckDraw(x-1,y+1); break;
+							case 4: cellRandDraw(x-1,y+1); break;
 							default: cellDraw(x-1,y+1);break;}}
 							
 							//x,y-1
@@ -225,6 +234,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x,y-1); break;
 							case 2: cellAltDraw(x,y-1); break;
 							case 3: cellCheckDraw(x,y-1); break;
+							case 4: cellRandDraw(x,y-1); break;
 							default: cellDraw(x,y-1);break;}}
 							
 							//x,y+1
@@ -233,6 +243,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x,y+1); break;
 							case 2: cellAltDraw(x,y+1); break;
 							case 3: cellCheckDraw(x,y+1); break;
+							case 4: cellRandDraw(x,y+1); break;
 							default: cellDraw(x,y+1);break;}}
 							
 							//x+1,y-1
@@ -241,6 +252,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x+1,y-1); break;
 							case 2: cellAltDraw(x+1,y-1); break;
 							case 3: cellCheckDraw(x+1,y-1); break;
+							case 4: cellRandDraw(x+1,y-1); break;
 							default: cellDraw(x+1,y-1);break;}}
 							
 							//x+1,y
@@ -249,6 +261,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x+1,y); break;
 							case 2: cellAltDraw(x+1,y); break;
 							case 3: cellCheckDraw(x+1,y); break;
+							case 4: cellRandDraw(x+1,y); break;
 							default: cellDraw(x+1,y);break;}}
 							
 							//x+1,y+1
@@ -257,9 +270,51 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 1: cellDraw(x+1,y+1); break;
 							case 2: cellAltDraw(x+1,y+1); break;
 							case 3: cellCheckDraw(x+1,y+1); break;
+							case 4: cellRandDraw(x+1,y+1); break;
 							default: cellDraw(x+1,y+1);break;}}
 							repaint();
 				}
+				
+				// State editing methods
+				
+				public void stateFill(){
+					for(int y=0;y<=ysiz-1;y++){
+					for(int x=0;x<=xsiz-1;x++){
+						current[x][y] = true;}}
+						repaint();} 
+						
+				public void stateRandFill(){
+					Random igloo = new Random();
+					for(int y=0;y<=ysiz-1;y++){
+					for(int x=0;x<=xsiz-1;x++){
+						current[x][y] = igloo.nextBoolean();
+					}} repaint();}
+					
+				public void stateClearFill(){
+					for(int y=0;y<=ysiz-1;y++){
+					for(int x=0;x<=xsiz-1;x++){
+						current[x][y] = false;}}
+						repaint();}
+						
+				public void stateCheckFill(){
+					for(int y=0;y<=ysiz-1;y++){
+					for(int x=0;x<=xsiz-1;x++){
+						if( y % 2 == 1 ^ x % 2 == 1){ current[x][y] = true;}
+						else{current[x][y] = false;}
+					}} repaint();}
+					
+				public void stateDraw(int x,int y){
+					current[x][y] = true;}
+					
+				public void stateAltDraw(int x,int y){
+					current[x][y] = false;}
+					
+				public void stateCheckDraw(int x,int y){
+					if( y % 2 == 1 ^ x % 2 == 1){ current[x][y] = true;}
+						else{current[x][y] = false;}}
+					
+						
+						
 						
 					//neighborhood methods
 					
@@ -302,14 +357,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 			public void run(){
 				int x=0;
 				int y=0;
-				Random zibzob = new Random();
-				//initialize the cell array for demos
-				if (firstrunflag == true){
-					 for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){
-					}}
-				firstrunflag = false;}
-							
+				
+			
 					
 					
 				while(true){
@@ -320,14 +369,14 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 			  Thread.sleep(100);} 
 			   }  catch(InterruptedException ie) {}
 			   
-			   // statefill
-			   if (fillflag == true){ 
-				   for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){
-							if (randflag == true){current[x][y] = zibzob.nextBoolean();}
-							if(clearflag == true){current[x][y] = false;}
-						}}fillflag = false;randflag = false;clearflag = false; }
-	
+			   if (sfflag){ switch(sfopt){
+				   case 1: stateFill(); break;
+				   case 2: stateClearFill(); break;
+				   case 3: stateCheckFill(); break;
+				   case 4: stateRandFill(); break;
+				   default: stateCheckFill(); break;}
+				   sfflag = false;}
+			 
 		
 						//gets new values from the cells
 					for(y=0;y<=ysiz-1;y++){
@@ -418,13 +467,14 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						//editcell
 						if (editcellflag == true){
 							xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
-							if (tbtflag){int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} 
-								tbtPop(xlocal,ylocal,option);}
-							else{int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;}
+							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
+							if (tbtflag){tbtPop(xlocal,ylocal,option);}
+							else{
 							switch(option){
 							case 1: cellDraw(xlocal,ylocal); break;
 							case 2: cellAltDraw(xlocal,ylocal); break;
 							case 3: cellCheckDraw(xlocal,ylocal); break;
+							case 4: cellRandDraw(xlocal,ylocal); break;
 							default: cellDraw(xlocal, ylocal); break;
 							} 
 							repaint();}}}
@@ -441,13 +491,14 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						//edit celltype
 						if (editcellflag == true){
 							xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
-							if (tbtflag){int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} 
-								tbtPop(xlocal,ylocal,option);}
-							else{int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;}
+							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
+							if (tbtflag){tbtPop(xlocal,ylocal,option);}
+							else{
 							switch(option){
 							case 1: cellDraw(xlocal,ylocal); break;
 							case 2: cellAltDraw(xlocal,ylocal); break;
 							case 3: cellCheckDraw(xlocal,ylocal); break;
+							case 4: cellRandDraw(xlocal,ylocal); break;
 							default: cellDraw(xlocal, ylocal); break;
 							} 
 							repaint();}}
