@@ -26,20 +26,19 @@ JButton newc;
 JButton ss;
 // state editing buttons
 JButton eds;
+JButton stf;
 JButton clear;
-JButton rnd;
 // cell editing buttons
 JButton edc;
 JButton cf;
-JButton ccf;
-JButton crf;
+int celleditoption =1;
 //JButton demo;
 JButton about;
 
 //cell editing
 Checkbox tbt = new Checkbox("3x3");
 Checkbox ccd = new Checkbox("Checkerboard");
-
+Checkbox rnd = new Checkbox("Random");
  // cell type selection
 String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
@@ -79,12 +78,11 @@ public controlComponent(){
 		windowflag=0;
 	ss = new JButton("Play/Pause");
 	newc = new JButton("New Culture");
-	rnd = new JButton("Randomize");
 	eds= new JButton("Edit State");
+	stf = new JButton ("State Fill");
 	edc = new JButton("Edit Cells");
 	cf = new JButton("Cell Fill");
-	ccf = new JButton("Cell CheckFill");
-	crf = new JButton("Create Monster");
+
 	
 	//demo = new JButton("Demo");
 	
@@ -98,16 +96,15 @@ public controlComponent(){
 	add(ss);
 	add(scon);
 	add(clear);
-	add(rnd);
 	add(eds);
+	add(stf);
 	add(edc);
 	add(cellpicker);
 	add(matpicker);
 	add(cf);
-	add(ccf);
 	add(Bcellpicker);
 	add(Bmatpicker);
-	add(crf);
+	add(rnd);
 	add(ccd);
 	add(tbt);
 	add(about);
@@ -120,13 +117,12 @@ public controlComponent(){
 	ss.addActionListener(this);
 	newc.addActionListener(this);
 	eds.addActionListener(this);
-	rnd.addActionListener(this);
+	stf.addActionListener(this);
 	edc.addActionListener(this);
 	cf.addActionListener(this);
-	ccf.addActionListener(this);
-	crf.addActionListener(this);
 	//demo.addActionListener(this);
 	clear.addActionListener(this);
+	rnd.addItemListener(this);
 	ccd.addItemListener(this);
 	tbt.addItemListener(this);
 	about.addActionListener(this);
@@ -160,39 +156,51 @@ public void actionPerformed(ActionEvent e){
 	}*/
 	
 	
+	if(cflag){
 	
 	
 	
-	
-	if(e.getSource() == ss){if (cflag == true){ if(firstflag[windowflag] == true){ boolean nonsense;
+	if(e.getSource() == ss){ if(firstflag[windowflag] == true){ boolean nonsense;
 	nonsense = tray[windowflag].begin(); firstflag[windowflag] = false;}
 	else{ if (pflag[windowflag] == false){ pflag[windowflag] = true;tray[windowflag].pauseflag = true;}
 		else{ pflag[windowflag] = false; tray[windowflag].pauseflag = false; if(tray[windowflag].editflag == true){tray[windowflag].editflag = false;
 		} if(tray[windowflag].editcellflag == true){tray[windowflag].editcellflag = false;}
-		}}}}
+		}}}
 		
-	if(e.getSource() == rnd){ if (cflag == true){ 
-	tray[windowflag].fillflag = true; tray[windowflag].randflag = true;}}
 	
-	if(e.getSource() == clear){ if (cflag == true){ 
-	tray[windowflag].fillflag = true; tray[windowflag].clearflag = true;}}
 	
-	if(e.getSource() == eds){ if(cflag	== true){if (tray[windowflag].editflag == false){ pflag[windowflag] = true;
+	if(e.getSource() == clear){ 
+	tray[windowflag].sfflag = true; tray[windowflag].sfopt = 2;}
+	
+	if(e.getSource() == eds){ if (tray[windowflag].editflag == false){ pflag[windowflag] = true;
 	tray[windowflag].pauseflag = true; tray[windowflag].editflag = true;
 	tray[windowflag].repaint();}
-	else{tray[windowflag].editflag = false;tray[windowflag].repaint();}}}
+	else{tray[windowflag].editflag = false;tray[windowflag].repaint();}}
+	
+	if(e.getSource() == stf){int option = 1; if(ccd.getState()){option = 2;} if(rnd.getState()){option = 3;}
+			switch(option){
+				case 1: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 1; break;
+				case 2: tray[windowflag].sfflag =true; tray[windowflag].sfopt =3; break;
+				case 3: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 4; break;
+				default: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 3; break;}}
 		
-	if(e.getSource() == edc){ if (cflag == true){
+	if(e.getSource() == edc){ 
 	if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
 	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; 
 	tray[windowflag].repaint();}
-		else{tray[windowflag].editcellflag = false;tray[windowflag].repaint();}}}	
+		else{tray[windowflag].editcellflag = false;tray[windowflag].repaint();}}	
 		
-	if(e.getSource() == cf){if (cflag == true){tray[windowflag].cellFill();}}
+	if(e.getSource() == cf){celleditoption = 1; if(ccd.getState()){celleditoption = 2;} 
+		if (rnd.getState()){ celleditoption = 3;}
+			switch (celleditoption){
+				case 1: tray[windowflag].cellFill(); break;
+				case 2: tray[windowflag].cellCheckFill(); break;
+				case 3: tray[windowflag].cellRandFill(); break;
+				default: tray[windowflag].cellFill(); break; }}
 	
-	if(e.getSource() == ccf){if(cflag == true){tray[windowflag].cellCheckFill();}}
 	
-	if(e.getSource() == crf){if(cflag == true){tray[windowflag].cellRandFill();}}
+}
+	
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
@@ -221,12 +229,17 @@ public void actionPerformed(ActionEvent e){
 
 public void itemStateChanged(ItemEvent e){
 	
+	if (cflag){
+	
 	if(e.getItemSelectable() == tbt){if (tbt.getState()){tray[windowflag].tbtflag = true;}
 	else{tray[windowflag].tbtflag = false;}}
 	
 	if(e.getItemSelectable() == ccd){if (ccd.getState()){tray[windowflag].checkdrawflag = true;}
 	else{tray[windowflag].checkdrawflag = false;}}
 	
+	if(e.getItemSelectable() == rnd){if (rnd.getState()){tray[windowflag].randoflag = true;}
+	else{tray[windowflag].randoflag = false;}}
+}
 }
 	
 
@@ -278,24 +291,33 @@ public void setZT(){
 }
 
 public void stateChanged(ChangeEvent e){
+	if (cflag){
+	
 	if (e.getSource() == cellpicker){
+		
 		setWC();
 		}
 		
 	if(e.getSource() == Bcellpicker){
+		
 		setWCB();
 	}
 	
 	if(e.getSource() == matpicker){
+		
 		setMat();
 	}
 	
 	if(e.getSource() == Bmatpicker){
+		
 		setMatB();
 	}
 		 
-	if (e.getSource() == scon){ 
+	if (e.getSource() == scon){
+		
 		setZT();
+	}
+	
 	}
 	}
 
