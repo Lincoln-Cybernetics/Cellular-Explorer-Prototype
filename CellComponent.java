@@ -272,8 +272,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x+1,y+1); break;
 							case 4: cellRandDraw(x+1,y+1); break;
 							default: cellDraw(x+1,y+1);break;}}
-							repaint();
-				}
+							
+						}
 				
 				// State editing methods
 				
@@ -313,7 +313,92 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					if( y % 2 == 1 ^ x % 2 == 1){ current[x][y] = true;}
 						else{current[x][y] = false;}}
 					
+				public void stateRandDraw(int x, int y){
+					Random foghorn = new Random();
+					current[x][y] = foghorn.nextBoolean();}	
+					
+				public void tbtState(int x,int y, int opt){
+						switch (opt){
+							case 1: stateDraw(x,y); break;
+							case 2: stateAltDraw(x,y); break;
+							case 3: stateCheckDraw(x,y); break;
+							case 4: stateRandDraw(x,y); break;
+							default: stateDraw(x,y);break;}
 						
+						// if the cell is on the border ignore the outside, otherwise populate 
+							//x-1,y-1
+							if(x==0 || y==0){}
+							else{ switch (opt){
+							case 1: stateDraw(x-1,y-1); break;
+							case 2: stateAltDraw(x-1,y-1); break;
+							case 3: stateCheckDraw(x-1,y-1); break;
+							case 4: stateRandDraw(x-1,y-1); break;
+							default: stateDraw(x-1,y-1);break;}}
+							
+							//x-1,y
+							if(x==0){}
+							else{switch (opt){
+							case 1: stateDraw(x-1,y); break;
+							case 2: stateAltDraw(x-1,y); break;
+							case 3: stateCheckDraw(x-1,y); break;
+							case 4: stateRandDraw(x-1,y); break;
+							default: stateDraw(x-1,y);break;}}
+							
+							//x-1,y+1
+							if(x==0 || y==ysiz-1){}
+							else{switch (opt){
+							case 1: stateDraw(x-1,y+1); break;
+							case 2: stateAltDraw(x-1,y+1); break;
+							case 3: stateCheckDraw(x-1,y+1); break;
+							case 4: stateRandDraw(x-1,y+1); break;
+							default: stateDraw(x-1,y+1);break;}}
+							
+							//x,y-1
+							if(y==0){}
+							else{switch (opt){
+							case 1: stateDraw(x,y-1); break;
+							case 2: stateAltDraw(x,y-1); break;
+							case 3: stateCheckDraw(x,y-1); break;
+							case 4: stateRandDraw(x,y-1); break;
+							default: stateDraw(x,y-1);break;}}
+							
+							//x,y+1
+							if(y==ysiz-1){}
+							else{switch (opt){
+							case 1: stateDraw(x,y+1); break;
+							case 2: stateAltDraw(x,y+1); break;
+							case 3: stateCheckDraw(x,y+1); break;
+							case 4: stateRandDraw(x,y+1); break;
+							default: stateDraw(x,y+1);break;}}
+							
+							//x+1,y-1
+							if(x==xsiz-1 || y==0){}
+							else{switch (opt){
+							case 1: stateDraw(x+1,y-1); break;
+							case 2: stateAltDraw(x+1,y-1); break;
+							case 3: stateCheckDraw(x+1,y-1); break;
+							case 4: stateRandDraw(x+1,y-1); break;
+							default: stateDraw(x+1,y-1);break;}}
+							
+							//x+1,y
+							if(x==xsiz-1){}
+							else{switch (opt){
+							case 1: stateDraw(x+1,y); break;
+							case 2: stateAltDraw(x+1,y); break;
+							case 3: stateCheckDraw(x+1,y); break;
+							case 4: stateRandDraw(x+1,y); break;
+							default: stateDraw(x+1,y);break;}}
+							
+							//x+1,y+1
+							if(x==xsiz-1 || y==ysiz-1){}
+							else{switch (opt){
+							case 1: stateDraw(x+1,y+1); break;
+							case 2: stateAltDraw(x+1,y+1); break;
+							case 3: stateCheckDraw(x+1,y+1); break;
+							case 4: stateRandDraw(x+1,y+1); break;
+							default: stateDraw(x+1,y+1);break;}}
+							}
+				
 						
 						
 					//neighborhood methods
@@ -461,12 +546,23 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					
 				}
 					public void mouseDragged(MouseEvent e) {
+						xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
+						
 						//edit state
-						if(editflag == true){xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
-						current[xlocal][ylocal] = !current[xlocal][ylocal]; repaint();}
+						if(editflag == true){
+							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
+							if(tbtflag){tbtState(xlocal, ylocal, option);}
+							else{
+							switch(option){
+								case 1: stateDraw(xlocal,ylocal); break;
+								case 2: stateAltDraw(xlocal,ylocal); break;
+								case 3: stateCheckDraw(xlocal, ylocal); break;
+								case 4: stateRandDraw(xlocal, ylocal); break;
+								default: stateDraw(xlocal, ylocal); break;}}
+							repaint();}
+						
 						//editcell
 						if (editcellflag == true){
-							xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
 							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
 							if (tbtflag){tbtPop(xlocal,ylocal,option);}
 							else{
@@ -476,8 +572,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(xlocal,ylocal); break;
 							case 4: cellRandDraw(xlocal,ylocal); break;
 							default: cellDraw(xlocal, ylocal); break;
-							} 
-							repaint();}}}
+							}}
+							repaint();}}
 					public void mouseEntered(MouseEvent e){}
 					public void mouseExited(MouseEvent e){}
 					public void mousePressed(MouseEvent e){}
@@ -486,7 +582,15 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
 						//edit state
 						if(editflag == true){
-						current[xlocal][ylocal] = !current[xlocal][ylocal];
+							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
+							if(tbtflag){tbtState(xlocal, ylocal, option);}
+							else{
+							switch(option){
+								case 1: stateDraw(xlocal,ylocal); break;
+								case 2: stateAltDraw(xlocal,ylocal); break;
+								case 3: stateCheckDraw(xlocal, ylocal); break;
+								case 4: stateRandDraw(xlocal, ylocal); break;
+								default: stateDraw(xlocal, ylocal); break;}}
 						 repaint();}
 						//edit celltype
 						if (editcellflag == true){
@@ -500,8 +604,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(xlocal,ylocal); break;
 							case 4: cellRandDraw(xlocal,ylocal); break;
 							default: cellDraw(xlocal, ylocal); break;
-							} 
-							repaint();}}
+							}} 
+							repaint();}
 						}
 					
 				
