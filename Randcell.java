@@ -98,6 +98,8 @@ class ConveyorCell extends Cell{
 	public ConveyorCell(){}
 	public ConveyorCell(int a){
 		maturity = a;}
+	public ConveyorCell(int a, int b){
+		maturity = a; direction = b;}
 	public void setDir(int a){ direction = a; return;}
 	public String getNeighborhood(){ return hood;}
 	public boolean iterate(boolean neighborhood[][]){
@@ -118,3 +120,38 @@ class ConveyorCell extends Cell{
 	}
 }
 
+
+class Wolfram extends Cell{
+	String hood = "Moore";
+	boolean[][] neighborhood = new boolean[3][3];
+	int counter = 0;
+	int direction = 0;
+	boolean active;
+	public Wolfram(){}
+	public Wolfram(int a){
+		maturity = a;}
+	public Wolfram(int a, int b){
+		maturity = a; direction = b;}
+		public String getNeighborhood(){ return hood;}
+	public boolean iterate(boolean neighborhood[][]){
+		counter+=1; if(counter == maturity){counter = 0;
+		 cellstate = 0;
+		if(neighborhood[1][1]){cellstate += 2;}
+	if (direction == 0 || direction == 4){if(neighborhood[1][0]){cellstate += 4;} if (neighborhood[1][2]){cellstate += 1;}}
+	if (direction == 1 || direction == 5){if(neighborhood[0][2]){cellstate += 4;} if (neighborhood[2][0]){cellstate += 1;}}
+	if (direction == 2 || direction == 6){if(neighborhood[0][1]){cellstate += 4;} if (neighborhood[2][1]){cellstate += 1;}}
+	if (direction == 3 || direction == 7){if(neighborhood[0][0]){cellstate += 4;} if (neighborhood[2][2]){cellstate += 1;}}
+	switch(cellstate){
+		case 0: active = false; break;
+		case 1: active = true; break;
+		case 2: active = true; break;
+		case 3: active = true; break;
+		case 4: active = false; break;
+		case 5: active = true; break;
+		case 6: active = true; break;
+		case 7: active = false; break;
+	}
+	return active; }
+	else{return neighborhood[1][1];}
+}
+}
