@@ -24,6 +24,7 @@ class controlComponent extends JComponent implements ActionListener, ChangeListe
 // all the buttons	
 JButton newc;
 JButton ss;
+JButton step;
 // state editing buttons
 JButton eds;
 JButton stf;
@@ -32,15 +33,18 @@ JButton clear;
 JButton edc;
 JButton cf;
 int celleditoption =1;
-//JButton demo;
 JButton about;
 
-//cell editing
+//cell/state editing
 Checkbox tbt = new Checkbox("3x3");
 Checkbox ccd = new Checkbox("Checkerboard");
 Checkbox rnd = new Checkbox("Random");
+
+// state editing
+Checkbox interact = new Checkbox("Interactive");
+
  // cell type selection
-String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor"};
+String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor", "Wolfram"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
@@ -53,6 +57,13 @@ JSpinner matpicker = new JSpinner(modelC);
 SpinnerListModel modelCC = new SpinnerListModel(mats);
 JSpinner Bmatpicker = new JSpinner(modelCC);
 
+// direction selection
+String[] dirs = new String[] {"DN", "LL","L","UL","UP","UR","R","LR"};
+SpinnerListModel dirselA = new SpinnerListModel(dirs);
+JSpinner condirA = new JSpinner(dirselA);
+SpinnerListModel dirselB = new SpinnerListModel(dirs);
+JSpinner condirB = new JSpinner(dirselB);
+
 //speed control
 String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
 SpinnerListModel modelB = new SpinnerListModel(speed);
@@ -64,10 +75,11 @@ int windowflag = 0;
 boolean[] firstflag = new boolean[3];
 boolean[] pflag = new boolean[3];
 boolean cflag = false;
-
-
 int xx = 0;
 int yy = 0;
+
+
+
 public controlComponent(){
 	
 	for(windowflag=0;windowflag<=2;windowflag++){
@@ -78,53 +90,56 @@ public controlComponent(){
 		windowflag=0;
 	ss = new JButton("Play/Pause");
 	newc = new JButton("New Culture");
+	step = new JButton("Step");
 	eds= new JButton("Edit State");
 	stf = new JButton ("State Fill");
 	edc = new JButton("Edit Cells");
 	cf = new JButton("Cell Fill");
-
-	
-	//demo = new JButton("Demo");
-	
 	clear = new JButton("Clear");
 	about = new JButton("About");
 	setLayout( new FlowLayout() );
 	
 	add( newc );
-	//add(demo);
 	
 	add(ss);
 	add(scon);
-	add(clear);
+	add(step);
 	add(eds);
 	add(stf);
 	add(edc);
 	add(cellpicker);
 	add(matpicker);
+	add(condirA);
 	add(cf);
 	add(Bcellpicker);
 	add(Bmatpicker);
+	add(condirB);
+	add(clear);
 	add(rnd);
 	add(ccd);
 	add(tbt);
+	add(interact);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
 	Bcellpicker.addChangeListener(this);
 	matpicker.addChangeListener(this);
 	Bmatpicker.addChangeListener(this);
+	condirA.addChangeListener(this);
+	condirB.addChangeListener(this);
 	scon.addChangeListener(this);
 	ss.addActionListener(this);
+	step.addActionListener(this);
 	newc.addActionListener(this);
 	eds.addActionListener(this);
 	stf.addActionListener(this);
 	edc.addActionListener(this);
 	cf.addActionListener(this);
-	//demo.addActionListener(this);
 	clear.addActionListener(this);
 	rnd.addItemListener(this);
 	ccd.addItemListener(this);
 	tbt.addItemListener(this);
+	interact.addItemListener(this);
 	about.addActionListener(this);
 	
 	}
@@ -143,18 +158,6 @@ public void actionPerformed(ActionEvent e){
 		cflag = true; tray[0].demoflag =0;tray[0].create(); windowflag = 0;firstflag[0] = true;setWC();setZT();
 	}
 	
-		/*if(e.getSource() == demo){
-			tray[1] = new CellComponent();
-		//sets up the window, adds the cell component
-		JFrame carden = new JFrame("Cellular Explorer");
-		carden.getContentPane().add( new JScrollPane(tray[1]) );
-		carden.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		tray[1].xsiz = 300; tray[1].ysiz = 100;tray[1].magnify = 5;
-		carden.setSize(tray[1].xsiz*tray[1].magnify, tray[1].ysiz*tray[1].magnify);
-		carden.setVisible( true );
-		cflag = true; tray[1].demoflag =1; tray[1].create();windowflag = 1;firstflag[1] = true;setWC();setZT();
-	}*/
-	
 	
 	if(cflag){
 	
@@ -167,7 +170,7 @@ public void actionPerformed(ActionEvent e){
 		} if(tray[windowflag].editcellflag == true){tray[windowflag].editcellflag = false;}
 		}}}
 		
-	
+	if(e.getSource() == step){ if(tray[windowflag].paused){tray[windowflag].iterate();}}
 	
 	if(e.getSource() == clear){ 
 	tray[windowflag].sfflag = true; tray[windowflag].sfopt = 2;}
@@ -177,11 +180,13 @@ public void actionPerformed(ActionEvent e){
 	tray[windowflag].repaint();}
 	else{tray[windowflag].editflag = false;tray[windowflag].repaint();}}
 	
-	if(e.getSource() == stf){int option = 1; if(ccd.getState()){option = 2;} if(rnd.getState()){option = 3;}
+	if(e.getSource() == stf){int option = 1; if(ccd.getState()){option = 2;} if(rnd.getState()){option = 3;} 
+	if(ccd.getState() && tbt.getState()){option = 4;}
 			switch(option){
 				case 1: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 1; break;
 				case 2: tray[windowflag].sfflag =true; tray[windowflag].sfopt =3; break;
 				case 3: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 4; break;
+				case 4: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 5; break;
 				default: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 3; break;}}
 		
 	if(e.getSource() == edc){ 
@@ -191,11 +196,12 @@ public void actionPerformed(ActionEvent e){
 		else{tray[windowflag].editcellflag = false;tray[windowflag].repaint();}}	
 		
 	if(e.getSource() == cf){celleditoption = 1; if(ccd.getState()){celleditoption = 2;} 
-		if (rnd.getState()){ celleditoption = 3;}
+		if (rnd.getState()){ celleditoption = 3;} if(ccd.getState() && tbt.getState()){celleditoption = 4;}
 			switch (celleditoption){
 				case 1: tray[windowflag].cellFill(); break;
 				case 2: tray[windowflag].cellCheckFill(); break;
 				case 3: tray[windowflag].cellRandFill(); break;
+				case 4: tray[windowflag].cellCheckFilltbt(); break;
 				default: tray[windowflag].cellFill(); break; }}
 	
 	
@@ -239,6 +245,9 @@ public void itemStateChanged(ItemEvent e){
 	
 	if(e.getItemSelectable() == rnd){if (rnd.getState()){tray[windowflag].randoflag = true;}
 	else{tray[windowflag].randoflag = false;}}
+	
+	if(e.getItemSelectable() == interact){if(interact.getState()){tray[windowflag].interactive = true;}
+	else{tray[windowflag].interactive = false;}}
 }
 }
 	
@@ -254,6 +263,7 @@ public void setWC(){
 		if(modelA.getValue()=="OddCell") {tray[windowflag].workcell = 7;}
 		if(modelA.getValue()=="EvenCell") {tray[windowflag].workcell = 8;}
 		if(modelA.getValue()=="Conveyor") {tray[windowflag].workcell = 9;}
+		if(modelA.getValue()=="Wolfram"){tray[windowflag].workcell = 10;}
 }
 
 public void setWCB(){
@@ -267,6 +277,7 @@ public void setWCB(){
 		if(modelAA.getValue()=="OddCell") {tray[windowflag].workcellB = 7;}
 		if(modelAA.getValue()=="EvenCell") {tray[windowflag].workcellB = 8;}
 		if(modelAA.getValue()=="Conveyor") {tray[windowflag].workcellB = 9;}
+		if(modelAA.getValue()=="Wolfram"){tray[windowflag].workcellB = 10;}
 }
 
 public void setMat(){
@@ -281,6 +292,29 @@ public void setMatB(){
 	if(modelCC.getValue() == "2"){tray[windowflag].workmatB = 2;}
 	if(modelCC.getValue() == "3"){tray[windowflag].workmatB = 3;}
 	if(modelCC.getValue() == "4"){tray[windowflag].workmatB = 4;}
+}
+
+public void setDirA(){
+		if (dirselA.getValue() == "DN"){tray[windowflag].workdirA = 4;}
+		if (dirselA.getValue() == "LL"){tray[windowflag].workdirA = 5;}
+		if (dirselA.getValue() == "L") {tray[windowflag].workdirA = 6;}
+		if (dirselA.getValue() == "UL"){tray[windowflag].workdirA = 7;}
+		if (dirselA.getValue() == "UP"){tray[windowflag].workdirA = 0;}
+		if (dirselA.getValue() == "UR"){tray[windowflag].workdirA = 1;}
+		if (dirselA.getValue() == "R") {tray[windowflag].workdirA = 2;}
+		if (dirselA.getValue() == "LR"){tray[windowflag].workdirA = 3;}
+}
+	
+public void setDirB(){
+		if (dirselB.getValue() == "DN"){tray[windowflag].workdirB = 4;}
+		if (dirselB.getValue() == "LL"){tray[windowflag].workdirB = 5;}
+		if (dirselB.getValue() == "L") {tray[windowflag].workdirB = 6;}
+		if (dirselB.getValue() == "UL"){tray[windowflag].workdirB = 7;}
+		if (dirselB.getValue() == "UP"){tray[windowflag].workdirB = 0;}
+		if (dirselB.getValue() == "UR"){tray[windowflag].workdirB = 1;}
+		if (dirselB.getValue() == "R") {tray[windowflag].workdirB = 2;}
+		if (dirselB.getValue() == "LR"){tray[windowflag].workdirB = 3;}
+	
 }
 
 public void setZT(){
@@ -312,6 +346,14 @@ public void stateChanged(ChangeEvent e){
 		
 		setMatB();
 	}
+	
+	if(e.getSource() == condirA){ 
+		setDirA();
+	}
+		
+	if(e.getSource() == condirB){ 
+		setDirB();
+	}	
 		 
 	if (e.getSource() == scon){
 		
