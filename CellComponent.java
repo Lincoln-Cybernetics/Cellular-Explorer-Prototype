@@ -35,8 +35,12 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	int workcellB = 0;
 	int workmat = 1;
 	int workmatB = 1;
+	int setdir = 0;
+	int workdirA = 0;
+	int workdirB = 0;
 	int magnify = 5;
 	int demoflag = 0;
+	
 	
 	//general array counters Int x, and Int y are instantiated locally for each use
 	
@@ -45,6 +49,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	int ylocal;
 	//changestate flag 
 	boolean pauseflag = false;
+	boolean paused = true;
+	boolean interactive = false;
 	//state editing flags
 	boolean editflag = false;
 	boolean sfflag = false;
@@ -131,7 +137,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						break;
 						case 8: culture[a][b] = new EvenCell(maturity[a][b]);
 						break;
-						case 9: culture[a][b] = new ConveyorCell(maturity[a][b]);
+						case 9: culture[a][b] = new ConveyorCell(maturity[a][b], setdir);
+						break;
+						case 10: culture[a][b] = new Wolfram(maturity[a][b], setdir);
 						break;
 						default: culture[a][b] = new Cell(maturity[a][b]);
 						break;}
@@ -139,22 +147,26 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					
 					// cell editing methods
 					public void cellDraw(int x, int y){
+						if (workcell == 9){setdir = workdirA;}
 						celltype[x][y] = workcell; maturity[x][y] = workmat;
 						populate(x,y);}
 						
 					public void cellAltDraw(int x, int y){
+						if (workcellB == 9){setdir = workdirB;}
 						celltype[x][y] = workcellB; maturity[x][y] = workmatB;
 						populate(x,y);} 
 					
 					public void cellCheckDraw(int x, int y){
 						if( y % 2 == 1 ^ x % 2 == 1){
+							if(workcell == 9){setdir = workdirA;}	
 						celltype[x][y] = workcell; maturity[x][y] = workmat;}
-						else{celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
+						else{if (workcellB == 9){setdir = workdirB;} celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
 						populate(x,y);}
 						
 					public void cellRandDraw(int x, int y){
 						Random Iguana = new Random();
 						celltype[x][y] = Iguana.nextInt(10);
+						setdir = Iguana.nextInt(8);
 						maturity[x][y] = Iguana.nextInt(4);
 						maturity[x][y] +=1;
 						populate(x,y);
@@ -163,7 +175,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					
 					public void cellFill(){
 					for(int y=0;y<=ysiz-1;y++){
-					for(int x=0;x<=xsiz-1;x++){	
+					for(int x=0;x<=xsiz-1;x++){
+						if (workcell == 9){setdir = workdirA;}	
 						celltype[x][y] = workcell;
 						maturity[x][y] = workmat;
 						populate(x,y);}}
@@ -174,17 +187,28 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						for(int y=0;y<=ysiz-1;y++){
 						for(int x=0;x<=xsiz-1;x++){	
 							if( y % 2 == 1 ^ x % 2 == 1){
+								if(workcell == 9){setdir = workdirA;}
 						celltype[x][y] = workcell; maturity[x][y] = workmat;}
-						else{celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
+						else{if(workcellB == 9){setdir = workdirB;}
+						celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
 						populate(x,y);}}
 						repaint();
 					}
+					
+					public void cellCheckFilltbt(){
+						for(int y=1; y<= ysiz-1; y+=3){
+						for(int x=1; x<= xsiz-1; x+=3){
+							if(y % 2 == 1 ^ x % 2 == 1){
+							tbtPop(x,y,1);}
+							else{tbtPop(x,y,2);}}}
+							repaint();}
 					
 					public void cellRandFill(){
 						Random shoe = new Random();
 						for(int y=0;y<=ysiz-1;y++){
 						for(int x=0;x<=xsiz-1;x++){	
 							celltype[x][y] = shoe.nextInt(10);
+							setdir = shoe.nextInt(8);
 							maturity[x][y] = shoe.nextInt(4);
 							maturity[x][y] += 1;
 							populate(x,y);
@@ -295,6 +319,14 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					for(int x=0;x<=xsiz-1;x++){
 						current[x][y] = false;}}
 						repaint();}
+						
+				public void stateCheckFilltbt(){
+						for(int y=1; y<= ysiz-1; y+=3){
+						for(int x=1; x<= xsiz-1; x+=3){
+							if(y % 2 == 1 ^ x % 2 == 1){
+							tbtState(x,y,1);}
+							else{tbtState(x,y,2);}}}
+							repaint();}
 						
 				public void stateCheckFill(){
 					for(int y=0;y<=ysiz-1;y++){
@@ -438,11 +470,43 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{if(current[x+1][y+1] == true) neighbors[2][2] = true;}
 						return neighbors;
 		}
+		
+		public void iterate(){
+			editcellflag = false; editflag = false;
+			int x; int y;
+			 if (sfflag){ switch(sfopt){
+				   case 1: stateFill(); break;
+				   case 2: stateClearFill(); break;
+				   case 3: stateCheckFill(); break;
+				   case 4: stateRandFill(); break;
+				   case 5: stateCheckFilltbt(); break;
+				   default: stateCheckFill(); break;}
+				   sfflag = false;}
+				   
+					//gets new values from the cells
+					for(y=0;y<=ysiz-1;y++){
+						for(x=0;x<=xsiz-1;x++){
+						if (culture[x][y].getNeighborhood() == "None"){
+							newstate[x][y] = culture[x][y].iterate();}
+					
+						if(culture[x][y].getNeighborhood() == "Moore"){
+							newstate[x][y] =culture[x][y].iterate(getMoore(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "Self"){
+							newstate[x][y] = culture[x][y].iterate(current[x][y]);}
+					}}
+					
+					// cycles new values into current state
+					for(y=0;y<=ysiz-1;y++){
+						for(x=0;x<=xsiz-1;x++){
+						current[x][y] = newstate[x][y];}}
+				repaint();}
+			
 			
 			public void run(){
 				int x=0;
 				int y=0;
-				
+				paused = false;
 			
 					
 					
@@ -451,14 +515,16 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						repaint();
 					//pauses the program
 					try{	while (pauseflag ==true){
-			  Thread.sleep(100);} 
+				paused = true;
+			  Thread.sleep(1);} 
 			   }  catch(InterruptedException ie) {}
-			   
+			   paused = false;
 			   if (sfflag){ switch(sfopt){
 				   case 1: stateFill(); break;
 				   case 2: stateClearFill(); break;
 				   case 3: stateCheckFill(); break;
 				   case 4: stateRandFill(); break;
+				   case 5: stateCheckFilltbt(); break;
 				   default: stateCheckFill(); break;}
 				   sfflag = false;}
 			 
@@ -474,10 +540,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							
 						if(culture[x][y].getNeighborhood() == "Self"){
 							newstate[x][y] = culture[x][y].iterate(current[x][y]);}
-						
-						
-						
-				}}
+					}}
+					
+					
 				// cycles new values into current state
 				for(y=0;y<=ysiz-1;y++){
 					for(x=0;x<=xsiz-1;x++){
@@ -513,18 +578,20 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 								if(magnify>4){schmagnify = magnify-1;}
 								else{schmagnify = magnify;}
 								switch(celltype[x][y]){
-									case 0: g.setColor(Color.black); break;
-									case 1: g.setColor(Color.white); break;
-									case 2: g.setColor(Color.red); break;
-									case 3: g.setColor(Color.blue); break;
-									case 4: g.setColor(Color.orange); break;
-									case 5: g.setColor(Color.green); break;
-									case 6: g.setColor(Color.cyan); break;
-									case 7: g.setColor(Color.pink); break;
-									case 8: g.setColor(Color.yellow); break;
-									case 9: g.setColor(Color.gray); break;
-									default: g.setColor(Color.black); break;
-								}g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+									case 0: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 1: g.setColor(Color.white);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 2: g.setColor(Color.red);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);break;
+									case 3: g.setColor(Color.blue);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 4: g.setColor(Color.orange);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 5: g.setColor(Color.green);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 6: g.setColor(Color.cyan);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 7: g.setColor(Color.pink);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 8: g.setColor(Color.yellow);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 9: g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+									case 10: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.white);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									default: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
+								}
 								//outline each cell according to its maturity setting
 								switch(maturity[x][y]){
 									case 1: g.setColor(Color.white); break;
@@ -546,10 +613,11 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					
 				}
 					public void mouseDragged(MouseEvent e) {
-						xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
+						if(e.getX() < 1){xlocal =0;} else{xlocal = e.getX()/magnify;}
+						if (e.getY() < 1){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
 						
 						//edit state
-						if(editflag == true){
+						if(editflag == true || interactive == true){
 							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
 							if(tbtflag){tbtState(xlocal, ylocal, option);}
 							else{
@@ -579,9 +647,10 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					public void mousePressed(MouseEvent e){}
 					public void mouseReleased(MouseEvent e){}
 					public void mouseClicked(MouseEvent e){
-						xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
+						if(e.getX() < 1){xlocal = 0;} else{xlocal = e.getX()/magnify;}
+						if(e.getY() < 1 ){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
 						//edit state
-						if(editflag == true){
+						if(editflag == true || interactive == true){
 							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
 							if(tbtflag){tbtState(xlocal, ylocal, option);}
 							else{
@@ -594,7 +663,6 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						 repaint();}
 						//edit celltype
 						if (editcellflag == true){
-							xlocal = e.getX()/magnify; ylocal = e.getY()/magnify;
 							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
 							if (tbtflag){tbtPop(xlocal,ylocal,option);}
 							else{
