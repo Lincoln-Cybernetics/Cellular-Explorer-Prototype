@@ -147,20 +147,20 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					
 					// cell editing methods
 					public void cellDraw(int x, int y){
-						if (workcell == 9){setdir = workdirA;}
+						setdir = workdirA;
 						celltype[x][y] = workcell; maturity[x][y] = workmat;
 						populate(x,y);}
 						
 					public void cellAltDraw(int x, int y){
-						if (workcellB == 9){setdir = workdirB;}
+						setdir = workdirB;
 						celltype[x][y] = workcellB; maturity[x][y] = workmatB;
 						populate(x,y);} 
 					
 					public void cellCheckDraw(int x, int y){
 						if( y % 2 == 1 ^ x % 2 == 1){
-							if(workcell == 9){setdir = workdirA;}	
+							setdir = workdirA;	
 						celltype[x][y] = workcell; maturity[x][y] = workmat;}
-						else{if (workcellB == 9){setdir = workdirB;} celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
+						else{setdir = workdirB; celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
 						populate(x,y);}
 						
 					public void cellRandDraw(int x, int y){
@@ -176,10 +176,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					public void cellFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-						if (workcell == 9){setdir = workdirA;}	
-						celltype[x][y] = workcell;
-						maturity[x][y] = workmat;
-						populate(x,y);}}
+						cellDraw(x,y);}}
 						repaint();
 					}
 					
@@ -187,9 +184,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						for(int y=0;y<=ysiz-1;y++){
 						for(int x=0;x<=xsiz-1;x++){	
 							if( y % 2 == 1 ^ x % 2 == 1){
-								if(workcell == 9){setdir = workdirA;}
+								setdir = workdirA;
 						celltype[x][y] = workcell; maturity[x][y] = workmat;}
-						else{if(workcellB == 9){setdir = workdirB;}
+						else{setdir = workdirB;
 						celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
 						populate(x,y);}}
 						repaint();
@@ -471,6 +468,38 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						return neighbors;
 		}
 		
+		// neighborhood for one dimensional, horizontal cells
+		public boolean[] getWolfram(int x, int y){
+			boolean[] wolfhood = new boolean[3];
+			if (x == 0){wolfhood[0] = false;} else{wolfhood[0] = current[x-1][y];}
+			wolfhood[1] = current[x][y];
+			if(x == xsiz-1){wolfhood[2] = false;} else{wolfhood[2] = current[x=1][y];}
+			return wolfhood;}
+		
+		// neighborhood for one dimensional, vertical cells	
+		public boolean[] getWolframV(int x, int y){
+			boolean[] wolfhood = new boolean[3];
+			if(y == 0){wolfhood[0] = false;} else{wolfhood[0] = current[x][y-1];}
+			wolfhood[1] = current[x][y];
+			if(y == ysiz-1){wolfhood[2] = false;} else{wolfhood[2] = current[x][y+1];}
+			return wolfhood;}
+			
+		// neighborhood for one dimensional cells starting with upper left
+		public boolean[] getWolframUL(int x, int y){
+			boolean[] wolfhood = new boolean[3];
+			if (x == 0 || y == 0){ wolfhood[0] = false;} else{ wolfhood[0] = current[x-1][y-1];}
+			wolfhood[1] = current[x][y];
+			if (x == xsiz-1 || y == ysiz-1){ wolfhood[2] = false;} else{wolfhood[2] = current[x+1][y+1];}
+			return wolfhood;}
+			
+		// neighborhood for one dimensional cells starting in lower left
+		public boolean[] getWolframLL(int x, int y){
+			boolean[] wolfhood = new boolean[3];
+			if(x==0 || y== ysiz-1){wolfhood[0] = false;} else{wolfhood[0] = current[x-1][y+1];}
+			wolfhood[1] = current[x][y];
+			if(x == xsiz-1 || y == 0){wolfhood[2] = false;} else{wolfhood[2] = current[x+1][y-1];}
+			return wolfhood;}
+		
 		public void iterate(){
 			editcellflag = false; editflag = false;
 			int x; int y;
@@ -494,6 +523,18 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							
 						if(culture[x][y].getNeighborhood() == "Self"){
 							newstate[x][y] = culture[x][y].iterate(current[x][y]);}
+							
+						if(culture[x][y].getNeighborhood() == "Wolfram"){
+							newstate[x][y] = culture[x][y].iterate(getWolfram(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "WolframV"){
+							newstate[x][y] = culture[x][y].iterate(getWolframV(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "WolframUL"){
+							newstate[x][y] = culture[x][y].iterate(getWolframUL(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "WolframLL"){
+							newstate[x][y] = culture[x][y].iterate(getWolframLL(x,y));}
 					}}
 					
 					// cycles new values into current state
@@ -540,6 +581,18 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							
 						if(culture[x][y].getNeighborhood() == "Self"){
 							newstate[x][y] = culture[x][y].iterate(current[x][y]);}
+						
+						if(culture[x][y].getNeighborhood() == "Wolfram"){
+							newstate[x][y] = culture[x][y].iterate(getWolfram(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "WolframV"){
+							newstate[x][y] = culture[x][y].iterate(getWolframV(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "WolframUL"){
+							newstate[x][y] = culture[x][y].iterate(getWolframUL(x,y));}
+							
+						if(culture[x][y].getNeighborhood() == "WolframLL"){
+							newstate[x][y] = culture[x][y].iterate(getWolframLL(x,y));}
 					}}
 					
 					
