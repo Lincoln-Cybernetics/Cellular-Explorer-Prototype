@@ -16,12 +16,15 @@
 class Cell{
 		boolean[][] neighborhood = new boolean[3][3];
 		int maturity = 1;
+		int cellstate;
+		boolean active;
 		String hood = "None";
 		public Cell(int a){}
 		public Cell(){}
 		public String getNeighborhood(){ return hood;}
 		public boolean iterate(){return false;}
 		public boolean iterate(boolean s){return false;}
+		public boolean iterate( boolean wolfhood[]){return false;}
 		public boolean iterate(boolean neighborhood[][]){
 			return false;}
 	}	
