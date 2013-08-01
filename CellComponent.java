@@ -28,7 +28,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	boolean[][] newstate = new boolean[xsiz][ysiz];
 	Cell[][] culture = new Cell[xsiz][ysiz];
 	int[][] celltype = new int[xsiz][ysiz];
-	int[][] maturity = new int[xsiz][ysiz];
+	int maturity = 1;
 	// settings (speed, primary cell selection, secondary cell selection, maturity, secondary maturity, cell size, and array initialization)
 	int ztime = 20;
 	int workcell = 0;
@@ -76,7 +76,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				 current[x][y] = false;
 				 newstate[x][y] = false;
 				 celltype[x][y] = 5;
-				 maturity[x][y] = 1;
+				 maturity = 1;
 				 populate(x,y);
 			
 			 }}
@@ -119,56 +119,56 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				
 				public void populate(int a, int b){
 					switch (celltype[a][b]){
-						case 0: culture[a][b] = new Cell(maturity[a][b]);
+						case 0: culture[a][b] = new Cell();
 						break;
-						case 1: culture[a][b] = new onCell(maturity[a][b]);
+						case 1: culture[a][b] = new onCell();
 						break;
-						case 2: culture[a][b] = new blinkCell(maturity[a][b]);
+						case 2: culture[a][b] = new blinkCell(maturity);
 						break;
-						case 3: culture[a][b] = new blinkCell2(maturity[a][b]);
+						case 3: culture[a][b] = new blinkCell2(maturity);
 						break;
-						case 4: culture[a][b] = new Randcell(maturity[a][b]);
+						case 4: culture[a][b] = new Randcell(maturity);
 						break;
-						case 5: culture[a][b] = new Conway(maturity[a][b]);
+						case 5: culture[a][b] = new Conway(maturity);
 						break;
-						case 6: culture[a][b] = new Seeds(maturity[a][b]);
+						case 6: culture[a][b] = new Seeds(maturity);
 						break;
-						case 7: culture[a][b] = new OddCell(maturity[a][b]);
+						case 7: culture[a][b] = new OddCell(maturity);
 						break;
-						case 8: culture[a][b] = new EvenCell(maturity[a][b]);
+						case 8: culture[a][b] = new EvenCell(maturity);
 						break;
-						case 9: culture[a][b] = new ConveyorCell(maturity[a][b], setdir);
+						case 9: culture[a][b] = new ConveyorCell(maturity, setdir);
 						break;
-						case 10: culture[a][b] = new Wolfram(maturity[a][b], setdir);
+						case 10: culture[a][b] = new Wolfram(maturity, setdir);
 						break;
-						default: culture[a][b] = new Cell(maturity[a][b]);
+						default: culture[a][b] = new Cell();
 						break;}
 					}
 					
 					// cell editing methods
 					public void cellDraw(int x, int y){
 						setdir = workdirA;
-						celltype[x][y] = workcell; maturity[x][y] = workmat;
+						celltype[x][y] = workcell; maturity = workmat;
 						populate(x,y);}
 						
 					public void cellAltDraw(int x, int y){
 						setdir = workdirB;
-						celltype[x][y] = workcellB; maturity[x][y] = workmatB;
+						celltype[x][y] = workcellB; maturity = workmatB;
 						populate(x,y);} 
 					
 					public void cellCheckDraw(int x, int y){
 						if( y % 2 == 1 ^ x % 2 == 1){
 							setdir = workdirA;	
-						celltype[x][y] = workcell; maturity[x][y] = workmat;}
-						else{setdir = workdirB; celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
+						celltype[x][y] = workcell; maturity = workmat;}
+						else{setdir = workdirB; celltype[x][y] = workcellB; maturity = workmatB;}
 						populate(x,y);}
 						
 					public void cellRandDraw(int x, int y){
 						Random Iguana = new Random();
 						celltype[x][y] = Iguana.nextInt(10);
 						setdir = Iguana.nextInt(8);
-						maturity[x][y] = Iguana.nextInt(4);
-						maturity[x][y] +=1;
+						maturity = Iguana.nextInt(4);
+						maturity +=1;
 						populate(x,y);
 					}
 						
@@ -183,12 +183,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 					public void cellCheckFill(){
 						for(int y=0;y<=ysiz-1;y++){
 						for(int x=0;x<=xsiz-1;x++){	
-							if( y % 2 == 1 ^ x % 2 == 1){
-								setdir = workdirA;
-						celltype[x][y] = workcell; maturity[x][y] = workmat;}
-						else{setdir = workdirB;
-						celltype[x][y] = workcellB; maturity[x][y] = workmatB;}
-						populate(x,y);}}
+							cellCheckDraw(x,y);
+							}}
 						repaint();
 					}
 					
@@ -201,14 +197,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							repaint();}
 					
 					public void cellRandFill(){
-						Random shoe = new Random();
 						for(int y=0;y<=ysiz-1;y++){
 						for(int x=0;x<=xsiz-1;x++){	
-							celltype[x][y] = shoe.nextInt(10);
-							setdir = shoe.nextInt(8);
-							maturity[x][y] = shoe.nextInt(4);
-							maturity[x][y] += 1;
-							populate(x,y);
+							cellRandDraw(x,y);
 						}}
 						repaint();
 					}
@@ -301,20 +292,19 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				public void stateFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-						current[x][y] = true;}}
+						stateDraw(x,y);}}
 						repaint();} 
 						
 				public void stateRandFill(){
-					Random igloo = new Random();
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-						current[x][y] = igloo.nextBoolean();
+						stateRandDraw(x,y);
 					}} repaint();}
 					
 				public void stateClearFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-						current[x][y] = false;}}
+						stateAltDraw(x,y);}}
 						repaint();}
 						
 				public void stateCheckFilltbt(){
@@ -328,8 +318,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				public void stateCheckFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-						if( y % 2 == 1 ^ x % 2 == 1){ current[x][y] = true;}
-						else{current[x][y] = false;}
+					stateCheckDraw(x,y);
 					}} repaint();}
 					
 				public void stateDraw(int x,int y){
@@ -432,7 +421,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						
 					//neighborhood methods
 					
-					public boolean[][] getMoore(int x, int y){
+						public boolean[][] getMoore(int x, int y){
 						// returns the states of a cell's Moore Neighborhood
 					boolean[][] neighbors = new boolean[3][3];
 						//init neighbors WITHOUT resetting x and y
@@ -468,12 +457,13 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						return neighbors;
 		}
 		
+		
 		// neighborhood for one dimensional, horizontal cells
 		public boolean[] getWolfram(int x, int y){
 			boolean[] wolfhood = new boolean[3];
 			if (x == 0){wolfhood[0] = false;} else{wolfhood[0] = current[x-1][y];}
 			wolfhood[1] = current[x][y];
-			if(x == xsiz-1){wolfhood[2] = false;} else{wolfhood[2] = current[x=1][y];}
+			if(x == xsiz-1){wolfhood[2] = false;} else{wolfhood[2] = current[x+1][y];}
 			return wolfhood;}
 		
 		// neighborhood for one dimensional, vertical cells	
@@ -646,7 +636,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 									default: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
 								}
 								//outline each cell according to its maturity setting
-								switch(maturity[x][y]){
+								switch(culture[x][y].maturity){
 									case 1: g.setColor(Color.white); break;
 									case 2: g.setColor(Color.red); break;
 									case 3: g.setColor(Color.blue); break;
