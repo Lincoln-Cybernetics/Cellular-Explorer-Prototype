@@ -319,7 +319,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				public void stateCheckFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-					stateCheckDraw(x,y);
+					stateCheckDraw(x,y, true);
 					}} repaint();}
 					
 				public void stateDraw(int x,int y){
@@ -328,9 +328,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				public void stateAltDraw(int x,int y){
 					current[x][y] = false;}
 					
-				public void stateCheckDraw(int x,int y){
-					if( y % 2 == 1 ^ x % 2 == 1){ current[x][y] = true;}
-						else{current[x][y] = false;}}
+				public void stateCheckDraw(int x,int y, boolean fill){
+					if( y % 2 == 1 ^ x % 2 == 1){ current[x][y] = fill;}
+						else{if(fill){current[x][y] = false;}}}
 					
 				public void stateRandDraw(int x, int y){
 					Random foghorn = new Random();
@@ -340,8 +340,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						switch (opt){
 							case 1: stateDraw(x,y); break;
 							case 2: stateAltDraw(x,y); break;
-							case 3: stateCheckDraw(x,y); break;
+							case 3: stateCheckDraw(x,y, true); break;
 							case 4: stateRandDraw(x,y); break;
+							case 5: stateCheckDraw(x,y, false); break;
 							default: stateDraw(x,y);break;}
 						
 						// if the cell is on the border ignore the outside, otherwise populate 
@@ -350,8 +351,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{ switch (opt){
 							case 1: stateDraw(x-1,y-1); break;
 							case 2: stateAltDraw(x-1,y-1); break;
-							case 3: stateCheckDraw(x-1,y-1); break;
+							case 3: stateCheckDraw(x-1,y-1, true); break;
 							case 4: stateRandDraw(x-1,y-1); break;
+							case 5: stateCheckDraw(x-1,y-1, false); break;
 							default: stateDraw(x-1,y-1);break;}}
 							
 							//x-1,y
@@ -359,8 +361,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{switch (opt){
 							case 1: stateDraw(x-1,y); break;
 							case 2: stateAltDraw(x-1,y); break;
-							case 3: stateCheckDraw(x-1,y); break;
+							case 3: stateCheckDraw(x-1,y, true); break;
 							case 4: stateRandDraw(x-1,y); break;
+							case 5: stateCheckDraw(x-1,y, false); break;
 							default: stateDraw(x-1,y);break;}}
 							
 							//x-1,y+1
@@ -368,8 +371,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{switch (opt){
 							case 1: stateDraw(x-1,y+1); break;
 							case 2: stateAltDraw(x-1,y+1); break;
-							case 3: stateCheckDraw(x-1,y+1); break;
+							case 3: stateCheckDraw(x-1,y+1, true); break;
 							case 4: stateRandDraw(x-1,y+1); break;
+							case 5: stateCheckDraw(x-1,y+1, false); break;
 							default: stateDraw(x-1,y+1);break;}}
 							
 							//x,y-1
@@ -377,8 +381,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{switch (opt){
 							case 1: stateDraw(x,y-1); break;
 							case 2: stateAltDraw(x,y-1); break;
-							case 3: stateCheckDraw(x,y-1); break;
+							case 3: stateCheckDraw(x,y-1, true); break;
 							case 4: stateRandDraw(x,y-1); break;
+							case 5: stateCheckDraw(x,y-1, false); break;
 							default: stateDraw(x,y-1);break;}}
 							
 							//x,y+1
@@ -386,8 +391,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{switch (opt){
 							case 1: stateDraw(x,y+1); break;
 							case 2: stateAltDraw(x,y+1); break;
-							case 3: stateCheckDraw(x,y+1); break;
+							case 3: stateCheckDraw(x,y+1, true); break;
 							case 4: stateRandDraw(x,y+1); break;
+							case 5: stateCheckDraw(x,y+1, false); break;
 							default: stateDraw(x,y+1);break;}}
 							
 							//x+1,y-1
@@ -395,8 +401,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{switch (opt){
 							case 1: stateDraw(x+1,y-1); break;
 							case 2: stateAltDraw(x+1,y-1); break;
-							case 3: stateCheckDraw(x+1,y-1); break;
+							case 3: stateCheckDraw(x+1,y-1, true); break;
 							case 4: stateRandDraw(x+1,y-1); break;
+							case 5: stateCheckDraw(x+1,y-1, false); break;
 							default: stateDraw(x+1,y-1);break;}}
 							
 							//x+1,y
@@ -404,8 +411,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{switch (opt){
 							case 1: stateDraw(x+1,y); break;
 							case 2: stateAltDraw(x+1,y); break;
-							case 3: stateCheckDraw(x+1,y); break;
+							case 3: stateCheckDraw(x+1,y, true); break;
 							case 4: stateRandDraw(x+1,y); break;
+							case 5: stateCheckDraw(x+1,y, false); break;
 							default: stateDraw(x+1,y);break;}}
 							
 							//x+1,y+1
@@ -413,8 +421,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							else{switch (opt){
 							case 1: stateDraw(x+1,y+1); break;
 							case 2: stateAltDraw(x+1,y+1); break;
-							case 3: stateCheckDraw(x+1,y+1); break;
+							case 3: stateCheckDraw(x+1,y+1, true); break;
 							case 4: stateRandDraw(x+1,y+1); break;
+							case 5: stateCheckDraw(x+1, y+1, false); break;
 							default: stateDraw(x+1,y+1);break;}}
 							}
 				
@@ -522,17 +531,20 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				//wraparound border
 				if(hwrapflag){if(x == 0 && y != 0){wolfhood[0] = current[xsiz-1][y-1];}else{wolfhood[0] = false;}}
 			if (vwrapflag){if(y == 0 && x != 0){wolfhood[0] = current[x-1][ysiz-1];} else{wolfhood[0] = false;}}
-			if(vwrapflag && hwrapflag){if(x == 0 && y == 0){wolfhood[0] = current[xsiz-1][ysiz-1];}}}
+			if(vwrapflag && hwrapflag){if(x == 0 && y != 0){wolfhood[0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){wolfhood[0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){wolfhood[0] = current[xsiz-1][ysiz-1];}}}
 			//non-border
 			 else{ wolfhood[0] = current[x-1][y-1];}
+			 
+			 // center cell
 			wolfhood[1] = current[x][y];
+			
 			if (x == xsiz-1 || y == ysiz-1){ 
 				// normal border
 				wolfhood[2] = false;
 				//wraparound border
 				if(hwrapflag){if (x == xsiz-1 && y != ysiz-1){wolfhood[2] = current[0][y+1];} else {wolfhood[2] = false;}}
 				if(vwrapflag){if(y == ysiz-1 && x != xsiz-1){wolfhood[2] = current[x+1][0];}else{wolfhood[2] = false;}}
-				if(hwrapflag && vwrapflag){if(x == xsiz-1 && y == ysiz-1){wolfhood[2] = current[0][0];}}} 
+				if(hwrapflag && vwrapflag){if (x == xsiz-1 && y != ysiz-1){wolfhood[2] = current[0][y+1];}if(y == ysiz-1 && x != xsiz-1){wolfhood[2] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){wolfhood[2] = current[0][0];}}} 
 				//non-border
 				else{wolfhood[2] = current[x+1][y+1];}
 			return wolfhood;}
@@ -546,17 +558,20 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				//wraparound borders 
 				if(hwrapflag){if(x == 0 && y != ysiz-1){wolfhood[0] = current[xsiz-1][y+1];} else{wolfhood[0] = false;}}
 				if(vwrapflag){if(y == ysiz-1 && x!= 0){wolfhood[0] = current[x-1][0];}else{wolfhood[0] = false;}}
-				if(hwrapflag && vwrapflag){if(x == 0 && y == ysiz-1){wolfhood[0] = current[xsiz-1][0];}}}
+				if(hwrapflag && vwrapflag){if(x == 0 && y != ysiz-1){wolfhood[0] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){wolfhood[0] = current[x-1][0];}if(x == 0 && y == ysiz-1){wolfhood[0] = current[xsiz-1][0];}}}
 			//non-border
 			else{wolfhood[0] = current[x-1][y+1];}
+			
+			// center cell
 			wolfhood[1] = current[x][y];
+			
 			if(x == xsiz-1 || y == 0){
 				// normal border
 				wolfhood[2] = false;
 				//wraparound border
 				if(hwrapflag){if (x == xsiz-1 && y != 0){wolfhood[2] = current[0][y-1];}else{wolfhood[2] = false;}}
 				if(vwrapflag){if(y == 0 && x != xsiz-1){wolfhood[2] = current[x+1][ysiz-1];}else{wolfhood[2] = false;}}
-				if(hwrapflag && vwrapflag){if(x == xsiz-1 && y == 0){wolfhood[2] = current[0][ysiz-1];}}} 
+				if(hwrapflag && vwrapflag){if (x == xsiz-1 && y != 0){wolfhood[2] = current[0][y-1];}if(y == 0 && x != xsiz-1){wolfhood[2] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){wolfhood[2] = current[0][ysiz-1];}}} 
 				//non-border
 				else{wolfhood[2] = current[x+1][y-1];}
 			return wolfhood;}
@@ -733,13 +748,15 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						//edit state
 						if(editflag == true || interactive == true){
 							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
+							if (checkdrawflag && e.isMetaDown()){option = 5;}
 							if(tbtflag){tbtState(xlocal, ylocal, option);}
 							else{
 							switch(option){
 								case 1: stateDraw(xlocal,ylocal); break;
 								case 2: stateAltDraw(xlocal,ylocal); break;
-								case 3: stateCheckDraw(xlocal, ylocal); break;
+								case 3: stateCheckDraw(xlocal, ylocal, true); break;
 								case 4: stateRandDraw(xlocal, ylocal); break;
+								case 5: stateCheckDraw(xlocal, ylocal, false); break;
 								default: stateDraw(xlocal, ylocal); break;}}
 							repaint();}
 						
@@ -766,13 +783,15 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						//edit state
 						if(editflag == true || interactive == true){
 							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
+							if (checkdrawflag && e.isMetaDown()){option = 5;}
 							if(tbtflag){tbtState(xlocal, ylocal, option);}
 							else{
 							switch(option){
 								case 1: stateDraw(xlocal,ylocal); break;
 								case 2: stateAltDraw(xlocal,ylocal); break;
-								case 3: stateCheckDraw(xlocal, ylocal); break;
+								case 3: stateCheckDraw(xlocal, ylocal, true); break;
 								case 4: stateRandDraw(xlocal, ylocal); break;
+								case 5: stateCheckDraw(xlocal, ylocal, false); break;
 								default: stateDraw(xlocal, ylocal); break;}}
 						 repaint();}
 						//edit celltype
