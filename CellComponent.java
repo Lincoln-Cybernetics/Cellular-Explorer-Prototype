@@ -62,8 +62,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	boolean tbtflag = false;
 	boolean randoflag = false;
 	
-	
-
+	//automaton flags
+	boolean hwrapflag = false;
+	boolean vwrapflag = false;
 	
 	Thread t = new Thread(this);
 	
@@ -84,7 +85,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				
 			repaint();
 			}
-			public void create(){
+			/*public void create(){
 				for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
 					switch(demoflag){
@@ -111,7 +112,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				celltype[x][y] = 0;
 				populate(x,y); break;}		
 						
-				}}}
+				}}}*/
 			
 			
 			 public boolean begin(){
@@ -431,29 +432,67 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						
 						
 						// if the cell is on the border ignore outside, otherwise test neighbors
-							if(x==0 || y==0){neighbors[0][0] = false;}
-							else{ if(current[x-1][y-1]== true) neighbors[0][0]=true;}
+							//upper-left neighbor
+							if(x==0 || y==0){
+							// normal borders	
+							neighbors[0][0] = false;
+							//wraparound borders
+							if(hwrapflag){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}
+							else{neighbors[0][0] = false;}}
+							if(vwrapflag){if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];} else{neighbors[0][0] = false;}}
+							if(vwrapflag == true && hwrapflag == true){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){neighbors[0][0] = current[xsiz-1][ysiz-1];}}}
+							//non-border
+							else{ if(current[x-1][y-1]== true){neighbors[0][0]=true;}}
 							
-							if(x==0){neighbors[0][1] = false;}
-							else{if(current[x-1][y] == true) neighbors[0][1] = true;}
+							//Left-center neighbor
+							if(x==0){neighbors[0][1] = false; if(hwrapflag){neighbors[0][1] = current[xsiz-1][y];}}
+							else{if(current[x-1][y] == true){neighbors[0][1] = true;}}
 							
-							if(x==0 || y==ysiz-1){neighbors[0][2] = false;}
-							else{if(current[x-1][y+1] == true) neighbors[0][2] = true;}
+							//Lower-Left neighbor
+							if(x==0 || y==ysiz-1){
+							// normal border
+							neighbors[0][2] = false;
+							//wraparound borders 
+							if(hwrapflag){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];} else{neighbors[0][2] = false;}}
+							if(vwrapflag){if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}else{neighbors[0][2] = false;}}
+							if(hwrapflag == true && vwrapflag == true){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}if(x == 0 && y == ysiz-1){neighbors[0][2] = current[xsiz-1][0];}}}
+							//non-border
+							else{if(current[x-1][y+1] == true) {neighbors[0][2] = true;}}
 							
-							if(y==0){neighbors[1][0] = false;}
-							else{if(current[x][y-1]==true) neighbors[1][0] = true;}
+							//upper-center neighbor
+							if(y==0){neighbors[1][0] = false;if(vwrapflag){neighbors[1][0] = current[x][ysiz-1];}}
+							else{if(current[x][y-1]==true){ neighbors[1][0] = true;}}
 							
-							if(y==ysiz-1){neighbors[1][2] = false;}
-							else{if(current[x][y+1]==true) neighbors[1][2] = true;}
+							//lower-center neighbor
+							if(y==ysiz-1){neighbors[1][2] = false;if(vwrapflag){neighbors[1][2] = current[x][0];}}
+							else{if(current[x][y+1]==true){ neighbors[1][2] = true;}}
 							
-							if(x==xsiz-1 || y==0){neighbors[2][0] = false;}
-							else{if(current[x+1][y-1]== true) neighbors[2][0] = true;}
+							//upper-right neighbor
+							if(x==xsiz-1 || y==0){
+							//normal border	
+							neighbors[2][0] = false;
+							//wraparound border
+							if(hwrapflag){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}else{neighbors[2][0] = false;}}
+							if(vwrapflag){if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}else{neighbors[2][0] = false;}}
+							if(hwrapflag == true && vwrapflag == true){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){neighbors[2][0] = current[0][ysiz-1];}}}
+							//non-border
+							else{if(current[x+1][y-1]== true){neighbors[2][0] = true;}}
 							
-							if(x==xsiz-1){neighbors[2][1] = false;}
-							else{if(current[x+1][y]==true) neighbors[2][1] = true;}
+							//center-right neighbor
+							if(x==xsiz-1){neighbors[2][1] = false; if(hwrapflag){neighbors[2][1] = current[0][y];}if (hwrapflag && vwrapflag){neighbors[2][1] = current[0][y];}}
+							else{if(current[x+1][y]==true){neighbors[2][1] = true;}}
 							
-							if(x==xsiz-1 || y==ysiz-1){neighbors[2][2] = false;}
-							else{if(current[x+1][y+1] == true) neighbors[2][2] = true;}
+							//lower-right neighbor
+							if(x==xsiz-1 || y==ysiz-1){
+							// normal border	
+							neighbors[2][2] = false;
+							//wraparound border
+							if(hwrapflag){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} else {neighbors[2][2] = false;}}
+							if(vwrapflag){if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}else{neighbors[2][2] = false;}}
+							if(hwrapflag == true && vwrapflag == true){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){neighbors[2][2] = current[0][0];}}
+							}
+							//non-border
+							else{if(current[x+1][y+1] == true){neighbors[2][2] = true;}}
 						return neighbors;
 		}
 		
@@ -461,33 +500,65 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 		// neighborhood for one dimensional, horizontal cells
 		public boolean[] getWolfram(int x, int y){
 			boolean[] wolfhood = new boolean[3];
-			if (x == 0){wolfhood[0] = false;} else{wolfhood[0] = current[x-1][y];}
+			if (x == 0){wolfhood[0] = false; if(hwrapflag){wolfhood[0] = current[xsiz-1][y];}} else{wolfhood[0] = current[x-1][y];}
 			wolfhood[1] = current[x][y];
-			if(x == xsiz-1){wolfhood[2] = false;} else{wolfhood[2] = current[x+1][y];}
+			if(x == xsiz-1){wolfhood[2] = false;if(hwrapflag){wolfhood[2] = current[0][y];}} else{wolfhood[2] = current[x+1][y];}
 			return wolfhood;}
 		
 		// neighborhood for one dimensional, vertical cells	
 		public boolean[] getWolframV(int x, int y){
 			boolean[] wolfhood = new boolean[3];
-			if(y == 0){wolfhood[0] = false;} else{wolfhood[0] = current[x][y-1];}
+			if(y == 0){wolfhood[0] = false;if(vwrapflag){wolfhood[0] = current[x][ysiz-1];}} else{wolfhood[0] = current[x][y-1];}
 			wolfhood[1] = current[x][y];
-			if(y == ysiz-1){wolfhood[2] = false;} else{wolfhood[2] = current[x][y+1];}
+			if(y == ysiz-1){wolfhood[2] = false;if(vwrapflag){wolfhood[2] = current[x][0];}} else{wolfhood[2] = current[x][y+1];}
 			return wolfhood;}
 			
 		// neighborhood for one dimensional cells starting with upper left
 		public boolean[] getWolframUL(int x, int y){
 			boolean[] wolfhood = new boolean[3];
-			if (x == 0 || y == 0){ wolfhood[0] = false;} else{ wolfhood[0] = current[x-1][y-1];}
+			if (x == 0 || y == 0){ 
+				//normal border
+				wolfhood[0] = false;
+				//wraparound border
+				if(hwrapflag){if(x == 0 && y != 0){wolfhood[0] = current[xsiz-1][y-1];}else{wolfhood[0] = false;}}
+			if (vwrapflag){if(y == 0 && x != 0){wolfhood[0] = current[x-1][ysiz-1];} else{wolfhood[0] = false;}}
+			if(vwrapflag && hwrapflag){if(x == 0 && y == 0){wolfhood[0] = current[xsiz-1][ysiz-1];}}}
+			//non-border
+			 else{ wolfhood[0] = current[x-1][y-1];}
 			wolfhood[1] = current[x][y];
-			if (x == xsiz-1 || y == ysiz-1){ wolfhood[2] = false;} else{wolfhood[2] = current[x+1][y+1];}
+			if (x == xsiz-1 || y == ysiz-1){ 
+				// normal border
+				wolfhood[2] = false;
+				//wraparound border
+				if(hwrapflag){if (x == xsiz-1 && y != ysiz-1){wolfhood[2] = current[0][y+1];} else {wolfhood[2] = false;}}
+				if(vwrapflag){if(y == ysiz-1 && x != xsiz-1){wolfhood[2] = current[x+1][0];}else{wolfhood[2] = false;}}
+				if(hwrapflag && vwrapflag){if(x == xsiz-1 && y == ysiz-1){wolfhood[2] = current[0][0];}}} 
+				//non-border
+				else{wolfhood[2] = current[x+1][y+1];}
 			return wolfhood;}
 			
 		// neighborhood for one dimensional cells starting in lower left
 		public boolean[] getWolframLL(int x, int y){
 			boolean[] wolfhood = new boolean[3];
-			if(x==0 || y== ysiz-1){wolfhood[0] = false;} else{wolfhood[0] = current[x-1][y+1];}
+			if(x==0 || y== ysiz-1){
+				// normal border
+				wolfhood[0] = false;
+				//wraparound borders 
+				if(hwrapflag){if(x == 0 && y != ysiz-1){wolfhood[0] = current[xsiz-1][y+1];} else{wolfhood[0] = false;}}
+				if(vwrapflag){if(y == ysiz-1 && x!= 0){wolfhood[0] = current[x-1][0];}else{wolfhood[0] = false;}}
+				if(hwrapflag && vwrapflag){if(x == 0 && y == ysiz-1){wolfhood[0] = current[xsiz-1][0];}}}
+			//non-border
+			else{wolfhood[0] = current[x-1][y+1];}
 			wolfhood[1] = current[x][y];
-			if(x == xsiz-1 || y == 0){wolfhood[2] = false;} else{wolfhood[2] = current[x+1][y-1];}
+			if(x == xsiz-1 || y == 0){
+				// normal border
+				wolfhood[2] = false;
+				//wraparound border
+				if(hwrapflag){if (x == xsiz-1 && y != 0){wolfhood[2] = current[0][y-1];}else{wolfhood[2] = false;}}
+				if(vwrapflag){if(y == 0 && x != xsiz-1){wolfhood[2] = current[x+1][ysiz-1];}else{wolfhood[2] = false;}}
+				if(hwrapflag && vwrapflag){if(x == xsiz-1 && y == 0){wolfhood[2] = current[0][ysiz-1];}}} 
+				//non-border
+				else{wolfhood[2] = current[x+1][y-1];}
 			return wolfhood;}
 		
 		public void iterate(){
