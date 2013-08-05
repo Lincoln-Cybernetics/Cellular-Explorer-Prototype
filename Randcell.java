@@ -151,9 +151,9 @@ class Wolfram extends Cell{
 		 if(counter == maturity){counter = 0;
 		 cellstate = 0;
 		 //assign a value to cellstate based on the cell's neighbors
-		if(wolfhood[0]){cellstate += 4;} 
+		if(wolfhood[0]){if(direction > 4 || direction == 0){cellstate += 4;} else{cellstate += 1;}} 
 		if(wolfhood[1]){cellstate += 2;}
-		if(wolfhood[2]){cellstate += 1;}
+		if(wolfhood[2]){if(direction > 4 || direction == 0){cellstate += 1;} else{cellstate += 4;}}
 	
 	// determine the on/off state of the cell
 	active = rule[cellstate];
