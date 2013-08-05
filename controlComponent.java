@@ -69,6 +69,10 @@ String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
 SpinnerListModel modelB = new SpinnerListModel(speed);
 JSpinner scon = new JSpinner(modelB);
 
+//wrap around
+Checkbox hwrap = new Checkbox("Wrap-X");
+Checkbox vwrap = new Checkbox("Wrap-Y");
+
 CellComponent[] tray = new CellComponent[3];
 int windowflag = 0;
 
@@ -119,6 +123,8 @@ public controlComponent(){
 	add(ccd);
 	add(tbt);
 	add(interact);
+	add(hwrap);
+	add(vwrap);
 	add(about);
 	
 	cellpicker.addChangeListener(this);
@@ -140,6 +146,8 @@ public controlComponent(){
 	ccd.addItemListener(this);
 	tbt.addItemListener(this);
 	interact.addItemListener(this);
+	hwrap.addItemListener(this);
+	vwrap.addItemListener(this);
 	about.addActionListener(this);
 	
 	}
@@ -155,7 +163,8 @@ public void actionPerformed(ActionEvent e){
 		tray[0].xsiz = 400; tray[0].ysiz = 150;tray[0].magnify = 5;
 		garden.setSize(tray[0].xsiz*tray[0].magnify, tray[0].ysiz*tray[0].magnify);
 		garden.setVisible( true );
-		cflag = true; tray[0].demoflag =0;tray[0].create(); windowflag = 0;firstflag[0] = true;setWC();setZT();
+		cflag = true; tray[0].demoflag =0;//tray[0].create();
+		 windowflag = 0;firstflag[0] = true;setWC();setZT();
 	}
 	
 	
@@ -248,6 +257,12 @@ public void itemStateChanged(ItemEvent e){
 	
 	if(e.getItemSelectable() == interact){if(interact.getState()){tray[windowflag].interactive = true;}
 	else{tray[windowflag].interactive = false;}}
+	
+	if(e.getItemSelectable() == hwrap){if(hwrap.getState()){tray[windowflag].hwrapflag = true;}
+	else{tray[windowflag].hwrapflag = false;}}
+	
+	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray[windowflag].vwrapflag = true;}
+	else{tray[windowflag].vwrapflag = false;}}
 }
 }
 	
