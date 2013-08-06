@@ -166,7 +166,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						
 					public void cellRandDraw(int x, int y){
 						Random Iguana = new Random();
-						celltype[x][y] = Iguana.nextInt(10);
+						celltype[x][y] = Iguana.nextInt(11);
 						setdir = Iguana.nextInt(8);
 						maturity = Iguana.nextInt(4);
 						maturity +=1;
@@ -287,6 +287,24 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 							default: cellDraw(x+1,y+1);break;}}
 							
 						}
+						
+						public void setBorder(int option){
+						for(int x = 0; x <= xsiz-1; x++){
+							switch(option){
+								case 1: cellDraw(x,0); cellDraw(x, ysiz-1); break;
+								case 2: cellAltDraw(x,0); cellAltDraw(x, ysiz-1); break;
+								case 3: cellCheckDraw(x,0); cellCheckDraw(x,ysiz-1); break;
+								case 4: cellRandDraw(x,0); cellRandDraw(x, ysiz-1); break;
+								default: cellDraw(x,0); cellDraw(x, ysiz-1); break;}}
+						for(int y = 0; y<= ysiz-1; y++){
+							switch(option){
+								case 1: cellDraw(0,y); cellDraw(xsiz-1, y); break;
+								case 2: cellAltDraw(0,y); cellAltDraw(xsiz-1, y); break;
+								case 3: cellCheckDraw(0,y); cellCheckDraw(xsiz-1,y); break;
+								case 4: cellRandDraw(0,y); cellRandDraw(xsiz-1, y); break;
+								default: cellDraw(0,y); cellDraw(xsiz-1, y); break;}}
+								repaint();
+					}
 				
 				// State editing methods
 				
