@@ -32,7 +32,10 @@ JButton clear;
 // cell editing buttons
 JButton edc;
 JButton cf;
+JButton cellborder;
 int celleditoption =1;
+
+// other buttons
 JButton about;
 
 //cell/state editing
@@ -99,6 +102,7 @@ public controlComponent(){
 	stf = new JButton ("State Fill");
 	edc = new JButton("Edit Cells");
 	cf = new JButton("Cell Fill");
+	cellborder = new JButton("Set Border");
 	clear = new JButton("Clear");
 	about = new JButton("About");
 	setLayout( new FlowLayout() );
@@ -118,6 +122,7 @@ public controlComponent(){
 	add(Bcellpicker);
 	add(Bmatpicker);
 	add(condirB);
+	add(cellborder);
 	add(clear);
 	add(rnd);
 	add(ccd);
@@ -141,6 +146,7 @@ public controlComponent(){
 	stf.addActionListener(this);
 	edc.addActionListener(this);
 	cf.addActionListener(this);
+	cellborder.addActionListener(this);
 	clear.addActionListener(this);
 	rnd.addItemListener(this);
 	ccd.addItemListener(this);
@@ -213,6 +219,9 @@ public void actionPerformed(ActionEvent e){
 				case 4: tray[windowflag].cellCheckFilltbt(); break;
 				default: tray[windowflag].cellFill(); break; }}
 	
+	if(e.getSource() == cellborder){celleditoption = 1; if(ccd.getState()){celleditoption = 3;} 
+		if (rnd.getState()){ celleditoption = 4;}
+		tray[windowflag].setBorder(celleditoption);}
 	
 }
 	
