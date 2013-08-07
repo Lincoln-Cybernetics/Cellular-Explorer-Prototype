@@ -47,7 +47,7 @@ Checkbox rnd = new Checkbox("Random");
 Checkbox interact = new Checkbox("Interactive");
 
  // cell type selection
-String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor", "Wolfram"};
+String[] cells = new String[]{"Cell", "onCell", "Blinkcell", "Blinkcell2", "Random cell", "Life", "Seeds", "OddCell", "EvenCell", "Conveyor", "Wolfram","Passive"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
@@ -288,6 +288,7 @@ public void setWC(){
 		if(modelA.getValue()=="EvenCell") {tray[windowflag].workcell = 8;}
 		if(modelA.getValue()=="Conveyor") {tray[windowflag].workcell = 9;}
 		if(modelA.getValue()=="Wolfram"){tray[windowflag].workcell = 10;}
+		if(modelA.getValue()=="Passive"){tray[windowflag].workcell = 11;}
 }
 
 public void setWCB(){
@@ -302,6 +303,7 @@ public void setWCB(){
 		if(modelAA.getValue()=="EvenCell") {tray[windowflag].workcellB = 8;}
 		if(modelAA.getValue()=="Conveyor") {tray[windowflag].workcellB = 9;}
 		if(modelAA.getValue()=="Wolfram"){tray[windowflag].workcellB = 10;}
+		if(modelAA.getValue()=="Passive"){tray[windowflag].workcellB = 11;}
 }
 
 public void setMat(){
