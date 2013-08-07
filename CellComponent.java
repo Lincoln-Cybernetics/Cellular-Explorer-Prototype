@@ -142,6 +142,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						break;
 						case 10: culture[a][b] = new Wolfram(maturity, setdir);
 						break;
+						case 11: culture[a][b] = new PassiveCell();
+						break;
 						default: culture[a][b] = new Cell();
 						break;}
 					}
@@ -166,7 +168,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						
 					public void cellRandDraw(int x, int y){
 						Random Iguana = new Random();
-						celltype[x][y] = Iguana.nextInt(11);
+						celltype[x][y] = Iguana.nextInt(12);
 						setdir = Iguana.nextInt(8);
 						maturity = Iguana.nextInt(4);
 						maturity +=1;
@@ -194,7 +196,17 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						for(int x=1; x<= xsiz-1; x+=3){
 							if(y % 2 == 1 ^ x % 2 == 1){
 							tbtPop(x,y,1);}
-							else{tbtPop(x,y,2);}}}
+							else{tbtPop(x,y,2);}} 
+							if(xsiz-1 % 3 != 1){if(y % 2 == 1 ^ xsiz-1 % 2 == 1){
+							tbtPop(xsiz-1,y,1);}
+							else{tbtPop(xsiz-1,y,2);}  }}
+							if(ysiz-1 % 3 != 1){ for(int x = 1; x<= xsiz-1; x+= 3){int y = ysiz-1;
+							if(y % 2 == 1 ^ x % 2 == 1){
+							tbtPop(x,y,1);}
+							else{tbtPop(x,y,2);}} 
+							if(xsiz-1 % 3 != 1){if(ysiz-1 % 2 == 1 ^ xsiz-1 % 2 == 1){
+							tbtPop(xsiz-1,ysiz-1,1);}
+							else{tbtPop(xsiz-1,ysiz-1,2);}  }}
 							repaint();}
 					
 					public void cellRandFill(){
@@ -737,6 +749,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 									case 9: g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
 									case 10: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
 											 g.setColor(Color.white);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									case 11: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.red);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									default: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
 								}
 								//outline each cell according to its maturity setting
