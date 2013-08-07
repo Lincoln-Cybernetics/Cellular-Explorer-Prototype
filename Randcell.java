@@ -162,3 +162,12 @@ class Wolfram extends Cell{
 	else{return neighborhood[1][1];}
 }
 }
+
+class PassiveCell extends Cell{
+	boolean active = false;
+	String hood = "Self";
+	public PassiveCell(){}
+		public String getNeighborhood(){ return hood;}
+	public boolean iterate(boolean s){
+		return s;}
+}
