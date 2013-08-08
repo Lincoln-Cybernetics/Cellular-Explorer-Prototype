@@ -85,34 +85,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 				
 			repaint();
 			}
-			/*public void create(){
-				for(int y=0;y<=ysiz-1;y++){
-					for(int x=0;x<=xsiz-1;x++){
-					switch(demoflag){
-					 case 0://normal
-					celltype[x][y] =5;
-					populate(x,y);
-					break;
-					
-					case 1: // demo
-				 celltype[x][y] = 5;
-					if (x>200 && x<245){if (y>100 && y<200){celltype[x][y] = 9;}}
-				  populate(x,y);
-				  break;
-				  
-					case 2:// assorted
-					if (x<100 && y>100){celltype[x][y] = 6;}
-					else{celltype[x][y] = 5;}
-					if(x==xsiz-1){celltype[x][y] = 1;}
-					if (y==0){celltype[x][y] = 2;}
-					if (y==ysiz-1){celltype[x][y] = 4;}
-				  populate(x,y); break;
-				 
-				default:
-				celltype[x][y] = 0;
-				populate(x,y); break;}		
-						
-				}}}*/
+			
 			
 			
 			 public boolean begin(){
@@ -666,47 +639,9 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 			  Thread.sleep(1);} 
 			   }  catch(InterruptedException ie) {}
 			   paused = false;
-			   if (sfflag){ switch(sfopt){
-				   case 1: stateFill(); break;
-				   case 2: stateClearFill(); break;
-				   case 3: stateCheckFill(); break;
-				   case 4: stateRandFill(); break;
-				   case 5: stateCheckFilltbt(); break;
-				   default: stateCheckFill(); break;}
-				   sfflag = false;}
 			 
-		
-						//gets new values from the cells
-					for(y=0;y<=ysiz-1;y++){
-						for(x=0;x<=xsiz-1;x++){
-						if (culture[x][y].getNeighborhood() == "None"){
-							newstate[x][y] = culture[x][y].iterate();}
-					
-						if(culture[x][y].getNeighborhood() == "Moore"){
-							newstate[x][y] =culture[x][y].iterate(getMoore(x,y));}
-							
-						if(culture[x][y].getNeighborhood() == "Self"){
-							newstate[x][y] = culture[x][y].iterate(current[x][y]);}
-						
-						if(culture[x][y].getNeighborhood() == "Wolfram"){
-							newstate[x][y] = culture[x][y].iterate(getWolfram(x,y));}
-							
-						if(culture[x][y].getNeighborhood() == "WolframV"){
-							newstate[x][y] = culture[x][y].iterate(getWolframV(x,y));}
-							
-						if(culture[x][y].getNeighborhood() == "WolframUL"){
-							newstate[x][y] = culture[x][y].iterate(getWolframUL(x,y));}
-							
-						if(culture[x][y].getNeighborhood() == "WolframLL"){
-							newstate[x][y] = culture[x][y].iterate(getWolframLL(x,y));}
-					}}
-					
-					
-				// cycles new values into current state
-				for(y=0;y<=ysiz-1;y++){
-					for(x=0;x<=xsiz-1;x++){
-						current[x][y] = newstate[x][y];}}
-						
+			 iterate();
+			 
 						//timeout between grid-wide iterations
 						try{
 				Thread.sleep(ztime);
