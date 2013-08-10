@@ -27,6 +27,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 	boolean[][] current = new boolean[xsiz][ysiz] ;
 	boolean[][] newstate = new boolean[xsiz][ysiz];
 	Cell[][] culture = new Cell[xsiz][ysiz];
+	
 	int[][] celltype = new int[xsiz][ysiz];
 	int maturity = 1;
 	// settings (speed, primary cell selection, secondary cell selection, maturity, secondary maturity, cell size, and array initialization)
@@ -117,6 +118,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						break;
 						case 11: culture[a][b] = new PassiveCell();
 						break;
+						case 12: culture[a][b] = new SymmetriCell(maturity, setdir);
+						break;
 						default: culture[a][b] = new Cell();
 						break;}
 					}
@@ -141,7 +144,7 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 						
 					public void cellRandDraw(int x, int y){
 						Random Iguana = new Random();
-						celltype[x][y] = Iguana.nextInt(12);
+						celltype[x][y] = Iguana.nextInt(13);
 						setdir = Iguana.nextInt(8);
 						maturity = Iguana.nextInt(4);
 						maturity +=1;
@@ -686,6 +689,8 @@ class CellComponent extends JComponent implements Runnable, MouseInputListener
 											 g.setColor(Color.white);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									case 11: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
 											 g.setColor(Color.red);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									case 12: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.blue);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									default: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
 								}
 								//outline each cell according to its maturity setting
