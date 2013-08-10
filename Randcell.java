@@ -171,3 +171,50 @@ class PassiveCell extends Cell{
 	public boolean iterate(boolean s){
 		return s;}
 }
+
+class SymmetriCell extends Cell{
+	String hood = "Moore";
+	int counter = 0;
+	int direction = 0;
+	boolean omni = false;
+	public void setOmni(boolean a){omni = a;}
+	public String getNeighborhood(){ return hood;}
+	public SymmetriCell(int mat, int dir){
+		maturity = mat;
+		direction = dir;}
+	public boolean iterate(boolean neighborhood[][]){
+		int astate = 0; int bstate = 0; boolean active = false;
+		counter += 1;
+		if (counter == maturity){
+			counter = 0;
+			// check for horizontal symmetry
+			if (direction == 4 || direction == 0 || omni){
+				if (neighborhood[0][0]){astate += 1;} if (neighborhood[2][0]){bstate += 1;}
+				if (neighborhood[0][1]){astate += 2;} if (neighborhood[2][1]){bstate += 2;}
+				if (neighborhood[0][2]){astate += 4;} if (neighborhood[2][2]){bstate += 4;}
+				if (astate == bstate){ active = true; return active;}}
+				astate = 0; bstate = 0;
+			// check for Upper Left- Lower Right symmetry	
+			if (direction == 5 || direction == 1 || omni){
+				if (neighborhood[1][0]){astate += 1;} if (neighborhood[2][1]){bstate += 1;}
+				if (neighborhood[0][0]){astate += 2;} if (neighborhood[2][2]){bstate += 2;}
+				if (neighborhood[0][1]){astate += 4;} if (neighborhood[1][2]){bstate += 4;}
+				if (astate == bstate){ active = true; return active;}}
+				astate = 0; bstate = 0;
+			// check for vertical symmetry	
+			if (direction == 6 || direction == 2 || omni){
+				if (neighborhood[0][0]){astate += 1;} if (neighborhood[0][2]){bstate += 1;}
+				if (neighborhood[1][0]){astate += 2;} if (neighborhood[1][2]){bstate += 2;}
+				if (neighborhood[2][0]){astate += 4;} if (neighborhood[2][2]){bstate += 4;}
+				if (astate == bstate){ active = true; return active;}}
+				astate = 0; bstate = 0;
+			// check for Lower Left- Upper Right symmetry
+			if (direction == 3 || direction == 7 || omni){
+				if (neighborhood[0][1]){astate += 1;} if (neighborhood[1][0]){bstate += 1;}
+				if (neighborhood[0][2]){astate += 2;} if (neighborhood[2][0]){bstate += 2;}
+				if (neighborhood[1][2]){astate += 4;} if (neighborhood[2][1]){bstate += 4;}
+				if (astate == bstate){ active = true; return active;}}
+				return active;}
+				else {return neighborhood[1][1];}}
+			}
+				
