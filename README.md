@@ -13,6 +13,7 @@ Draging the mouse will invert the state of cells that are draged over while in t
 
 The "Edit Cells" button will allow you to change the ruleset of each cell by clicking or dragging the mouse.  The 
 spinner next to the "Edit Cells" button selects the type of cell that is created in the grid.
+
 The rule sets are as follows:
 Black: always off
 White: always on
@@ -20,10 +21,14 @@ Red:  blinks on and off (starts on)
 Blue:  blinks on and off(starts off)
 Orange: cell changes state randomly
 Green: Conway's Game of Life (B3/S2)
+Cyan: Seeds (B2/-)
 Pink:   turns on if an odd number of its neighbors are on (otherwise off)
 Yellow: turns on if an even number of its neighbors are on (otherwise off)
-Grey: takes on the value of one of its neighbors (defaults to the neighbor 
-directly beneath the cell, no support for other neighbors, yet)
+Grey: takes on the value of one of its neighbors (direction set by the direction selector)
+White outlined with Black: Wolfram cell (defaults to rule 110, no interface support yet for other rules) the direction selector sets the direction.
+Red outlined with Black: the Passive cell retains it's current state until changed by the user.
+Blue outlined with Black:  symmetry sensing cell activates int the presence of symmetry (axis set by the direction selector)
+
 Next to the  cell-type selector, is the maturity selector, which is used to select how many turns each cell goes between
 state updates.
 To return to normal running after Editing the cells or their states, press "Play/Pause".
@@ -37,12 +42,20 @@ The secondary cell selection can also be used in cell editing by right-clicking.
 
 Next is the second maturity selector, which determines the number of turns between state updates for the second selected cell-type.
 
-The "Create Monster" button fills the automaton with randomly selected cells, (generally resulting in pseudorandom noise).
+The "Clear" button empties the state of the automaton.
+
+The "Random" checkbox randomizesthe cells/ state filled using cell or state editing tools
 
 The "Checkerboard" checkbox allows drawing cells in a checker-board pattern.  It works like the Check Fill button, but
 without filling the entire array.
 
 The "3x3" checkbox enables a 3x3 brush size in the Cell Editing function, for laying down large areas conveniently.
+
+The "Interactive" checkbox enables you to draw into the state of the automaton while it is running.
+
+The "x-wrap" checkbox allows cellular activity to wrap around the left and right sides of the automaton.
+
+The "y-wrap" checkbox allows cellular activity to wrap around the top and the bottom of the automaton.
 
 
 
