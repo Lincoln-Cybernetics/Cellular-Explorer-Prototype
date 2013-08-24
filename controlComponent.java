@@ -77,11 +77,11 @@ JSpinner scon = new JSpinner(modelB);
 Checkbox hwrap = new Checkbox("Wrap-X");
 Checkbox vwrap = new Checkbox("Wrap-Y");
 
-CellComponent[] tray = new CellComponent[3];
-int windowflag = 0;
+cellBrain tray;
+//int windowflag = 0;
 
-boolean[] firstflag = new boolean[3];
-boolean[] pflag = new boolean[3];
+boolean firstflag;
+boolean pflag;
 boolean cflag = false;
 int xx = 0;
 int yy = 0;
@@ -89,13 +89,11 @@ int yy = 0;
 
 
 public controlComponent(){
-	
-	for(windowflag=0;windowflag<=2;windowflag++){
 		
-		firstflag[windowflag] = true;
-		pflag[windowflag] = false;
-		}
-		windowflag=0;
+		firstflag = true;
+		pflag = false;
+		
+		
 	ss = new JButton("Play/Pause");
 	newc = new JButton("New Culture");
 	step = new JButton("Step");
@@ -161,68 +159,69 @@ public controlComponent(){
 
 public void actionPerformed(ActionEvent e){
 	
+	// "New Culture button makes a new automaton
 	if(e.getSource() == newc){
-		//sets up the window, adds the cell component
-		tray[0] = new CellComponent();
-		JFrame garden = new JFrame("Cellular Explorer");
-		garden.getContentPane().add( new JScrollPane(tray[0]) );
-		garden.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		tray[0].xsiz = 400; tray[0].ysiz = 150;tray[0].magnify = 5;
-		garden.setSize(tray[0].xsiz*tray[0].magnify, tray[0].ysiz*tray[0].magnify);
-		garden.setVisible( true );
-		cflag = true; tray[0].demoflag =0;//tray[0].create();
-		 windowflag = 0;firstflag[0] = true;setWC();setZT();
+		//creates a new automaton
+		if(!cflag){
+		tray = new cellBrain();
+		cflag = true; 
+		firstflag = true;setWC();setWCB();setMat();setMatB();setZT();}
 	}
 	
 	
 	if(cflag){
 	
 	
-	
-	if(e.getSource() == ss){ if(firstflag[windowflag] == true){ boolean nonsense;
-	nonsense = tray[windowflag].begin(); firstflag[windowflag] = false;}
-	else{ if (pflag[windowflag] == false){ pflag[windowflag] = true;tray[windowflag].pauseflag = true;}
-		else{ pflag[windowflag] = false; tray[windowflag].pauseflag = false; if(tray[windowflag].editflag == true){tray[windowflag].editflag = false;
-		} if(tray[windowflag].editcellflag == true){tray[windowflag].editcellflag = false;}
+	//Play/Pause button starts/ stops the main thread
+	if(e.getSource() == ss){ if(firstflag == true){ boolean nonsense;
+	nonsense = tray.begin(); firstflag = false;}
+	else{ if (pflag == false){ pflag = true;tray.setPause(true);}
+		else{ pflag = false; tray.setPause(false); if(tray.editflag == true){tray.setEdit(false);
+		} if(tray.editcellflag == true){tray.setEdit(false);}
 		}}}
 		
-	if(e.getSource() == step){ if(tray[windowflag].paused){tray[windowflag].iterate();}}
+	//step button	iterates the automaton once
+	if(e.getSource() == step){ if(tray.paused){tray.iterate();}}
 	
+	//Clear button clears the state
 	if(e.getSource() == clear){ 
-	tray[windowflag].sfflag = true; tray[windowflag].sfopt = 2;}
+	tray.sfflag = true; tray.sfopt = 2;}
 	
-	if(e.getSource() == eds){ if (tray[windowflag].editflag == false){ pflag[windowflag] = true;
-	tray[windowflag].pauseflag = true; tray[windowflag].editflag = true;
-	tray[windowflag].repaint();}
-	else{tray[windowflag].editflag = false;tray[windowflag].repaint();}}
+	// Edit State button goes to/from state editing mode
+	if(e.getSource() == eds){ if (tray.editflag == false){ pflag = true; tray.setPause(true);
+	tray.setEdit(true);}
+	else{tray.setEdit(false);}}
 	
+	// State Fill button set the on/off state of all cells
 	if(e.getSource() == stf){int option = 1; if(ccd.getState()){option = 2;} if(rnd.getState()){option = 3;} 
 	if(ccd.getState() && tbt.getState()){option = 4;}
 			switch(option){
-				case 1: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 1; break;
-				case 2: tray[windowflag].sfflag =true; tray[windowflag].sfopt =3; break;
-				case 3: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 4; break;
-				case 4: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 5; break;
-				default: tray[windowflag].sfflag = true; tray[windowflag].sfopt = 3; break;}}
+				case 1: tray.sfflag = true; tray.sfopt = 1; break;
+				case 2: tray.sfflag =true; tray.sfopt =3; break;
+				case 3: tray.sfflag = true; tray.sfopt = 4; break;
+				case 4: tray.sfflag = true; tray.sfopt = 5; break;
+				default: tray.sfflag = true; tray.sfopt = 3; break;}}
 		
+	// Edit Cell button goes to/from cell editing mode	
 	if(e.getSource() == edc){ 
-	if(tray[windowflag].editcellflag == false){pflag[windowflag] = true;
-	tray[windowflag].pauseflag = true; tray[windowflag].editcellflag = true; 
-	tray[windowflag].repaint();}
-		else{tray[windowflag].editcellflag = false;tray[windowflag].repaint();}}	
+	if(tray.editcellflag == false){pflag = true;
+	tray.setPause(true); tray.setCellEdit(true);}
+		else{tray.setCellEdit(false);}}	
 		
+	//Cell Fill button sets all cells
 	if(e.getSource() == cf){celleditoption = 1; if(ccd.getState()){celleditoption = 2;} 
 		if (rnd.getState()){ celleditoption = 3;} if(ccd.getState() && tbt.getState()){celleditoption = 4;}
 			switch (celleditoption){
-				case 1: tray[windowflag].cellFill(); break;
-				case 2: tray[windowflag].cellCheckFill(); break;
-				case 3: tray[windowflag].cellRandFill(); break;
-				case 4: tray[windowflag].cellCheckFilltbt(); break;
-				default: tray[windowflag].cellFill(); break; }}
+				case 1: tray.cellFill(); break;
+				case 2: tray.cellCheckFill(); break;
+				case 3: tray.cellRandFill(); break;
+				case 4: tray.cellCheckFilltbt(); break;
+				default: tray.cellFill(); break; }}
 	
+	// the Set Border button sets the cells at the edge of the automaton
 	if(e.getSource() == cellborder){celleditoption = 1; if(ccd.getState()){celleditoption = 3;} 
 		if (rnd.getState()){ celleditoption = 4;}
-		tray[windowflag].setBorder(celleditoption);}
+		tray.setBorder(celleditoption);}
 	
 }
 	
@@ -256,101 +255,101 @@ public void itemStateChanged(ItemEvent e){
 	
 	if (cflag){
 	
-	if(e.getItemSelectable() == tbt){if (tbt.getState()){tray[windowflag].tbtflag = true;}
-	else{tray[windowflag].tbtflag = false;}}
+	if(e.getItemSelectable() == tbt){if (tbt.getState()){tray.tbtflag = true;}
+	else{tray.tbtflag = false;}}
 	
-	if(e.getItemSelectable() == ccd){if (ccd.getState()){tray[windowflag].checkdrawflag = true;}
-	else{tray[windowflag].checkdrawflag = false;}}
+	if(e.getItemSelectable() == ccd){if (ccd.getState()){tray.checkdrawflag = true;}
+	else{tray.checkdrawflag = false;}}
 	
-	if(e.getItemSelectable() == rnd){if (rnd.getState()){tray[windowflag].randoflag = true;}
-	else{tray[windowflag].randoflag = false;}}
+	if(e.getItemSelectable() == rnd){if (rnd.getState()){tray.randoflag = true;}
+	else{tray.randoflag = false;}}
 	
-	if(e.getItemSelectable() == interact){if(interact.getState()){tray[windowflag].interactive = true;}
-	else{tray[windowflag].interactive = false;}}
+	if(e.getItemSelectable() == interact){if(interact.getState()){tray.interactive = true;}
+	else{tray.interactive = false;}}
 	
-	if(e.getItemSelectable() == hwrap){if(hwrap.getState()){tray[windowflag].hwrapflag = true;}
-	else{tray[windowflag].hwrapflag = false;}}
+	if(e.getItemSelectable() == hwrap){if(hwrap.getState()){tray.hwrapflag = true;}
+	else{tray.hwrapflag = false;}}
 	
-	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray[windowflag].vwrapflag = true;}
-	else{tray[windowflag].vwrapflag = false;}}
+	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray.vwrapflag = true;}
+	else{tray.vwrapflag = false;}}
 }
 }
 	
 
 public void setWC(){
-	if(modelA.getValue()=="Cell") {tray[windowflag].workcell = 0;}
-		if(modelA.getValue()=="onCell") {tray[windowflag].workcell = 1;}
-		if(modelA.getValue()=="Blinkcell") {tray[windowflag].workcell = 2;}
-		if(modelA.getValue()=="Blinkcell2"){ tray[windowflag].workcell = 3;}
-		if(modelA.getValue()=="Random cell") {tray[windowflag].workcell = 4;} 
-		if(modelA.getValue()=="Life") {tray[windowflag].workcell = 5;}
-		if(modelA.getValue()=="Seeds") {tray[windowflag].workcell = 6;}
-		if(modelA.getValue()=="OddCell") {tray[windowflag].workcell = 7;}
-		if(modelA.getValue()=="EvenCell") {tray[windowflag].workcell = 8;}
-		if(modelA.getValue()=="Conveyor") {tray[windowflag].workcell = 9;}
-		if(modelA.getValue()=="Wolfram"){tray[windowflag].workcell = 10;}
-		if(modelA.getValue()=="Passive"){tray[windowflag].workcell = 11;}
-		if(modelA.getValue()=="Symmetrical"){tray[windowflag].workcell = 12;}
+	if(modelA.getValue()=="Cell") {tray.workcell = 0;}
+		if(modelA.getValue()=="onCell") {tray.workcell = 1;}
+		if(modelA.getValue()=="Blinkcell") {tray.workcell = 2;}
+		if(modelA.getValue()=="Blinkcell2"){ tray.workcell = 3;}
+		if(modelA.getValue()=="Random cell") {tray.workcell = 4;} 
+		if(modelA.getValue()=="Life") {tray.workcell = 5;}
+		if(modelA.getValue()=="Seeds") {tray.workcell = 6;}
+		if(modelA.getValue()=="OddCell") {tray.workcell = 7;}
+		if(modelA.getValue()=="EvenCell") {tray.workcell = 8;}
+		if(modelA.getValue()=="Conveyor") {tray.workcell = 9;}
+		if(modelA.getValue()=="Wolfram"){tray.workcell = 10;}
+		if(modelA.getValue()=="Passive"){tray.workcell = 11;}
+		if(modelA.getValue()=="Symmetrical"){tray.workcell = 12;}
 }
 
 public void setWCB(){
-	if(modelAA.getValue()=="Cell") {tray[windowflag].workcellB = 0;}
-		if(modelAA.getValue()=="onCell") {tray[windowflag].workcellB = 1;}
-		if(modelAA.getValue()=="Blinkcell") {tray[windowflag].workcellB = 2;}
-		if(modelAA.getValue()=="Blinkcell2"){ tray[windowflag].workcellB = 3;}
-		if(modelAA.getValue()=="Random cell") {tray[windowflag].workcellB = 4;} 
-		if(modelAA.getValue()=="Life") {tray[windowflag].workcellB = 5;}
-		if(modelAA.getValue()=="Seeds") {tray[windowflag].workcellB = 6;}
-		if(modelAA.getValue()=="OddCell") {tray[windowflag].workcellB = 7;}
-		if(modelAA.getValue()=="EvenCell") {tray[windowflag].workcellB = 8;}
-		if(modelAA.getValue()=="Conveyor") {tray[windowflag].workcellB = 9;}
-		if(modelAA.getValue()=="Wolfram"){tray[windowflag].workcellB = 10;}
-		if(modelAA.getValue()=="Passive"){tray[windowflag].workcellB = 11;}
-		if(modelAA.getValue()=="Symmetrical"){tray[windowflag].workcellB = 12;}
+	if(modelAA.getValue()=="Cell") {tray.workcellB = 0;}
+		if(modelAA.getValue()=="onCell") {tray.workcellB = 1;}
+		if(modelAA.getValue()=="Blinkcell") {tray.workcellB = 2;}
+		if(modelAA.getValue()=="Blinkcell2"){ tray.workcellB = 3;}
+		if(modelAA.getValue()=="Random cell") {tray.workcellB = 4;} 
+		if(modelAA.getValue()=="Life") {tray.workcellB = 5;}
+		if(modelAA.getValue()=="Seeds") {tray.workcellB = 6;}
+		if(modelAA.getValue()=="OddCell") {tray.workcellB = 7;}
+		if(modelAA.getValue()=="EvenCell") {tray.workcellB = 8;}
+		if(modelAA.getValue()=="Conveyor") {tray.workcellB = 9;}
+		if(modelAA.getValue()=="Wolfram"){tray.workcellB = 10;}
+		if(modelAA.getValue()=="Passive"){tray.workcellB = 11;}
+		if(modelAA.getValue()=="Symmetrical"){tray.workcellB = 12;}
 }
 
 public void setMat(){
-	if(modelC.getValue() == "1") {tray[windowflag].workmat = 1;}
-	if(modelC.getValue() == "2") {tray[windowflag].workmat = 2;}
-	if(modelC.getValue() == "3") {tray[windowflag].workmat = 3;}
-	if(modelC.getValue() == "4") {tray[windowflag].workmat = 4;}
+	if(modelC.getValue() == "1") {tray.workmat = 1;}
+	if(modelC.getValue() == "2") {tray.workmat = 2;}
+	if(modelC.getValue() == "3") {tray.workmat = 3;}
+	if(modelC.getValue() == "4") {tray.workmat = 4;}
 }
 
 public void setMatB(){
-	if(modelCC.getValue() == "1"){tray[windowflag].workmatB = 1;}
-	if(modelCC.getValue() == "2"){tray[windowflag].workmatB = 2;}
-	if(modelCC.getValue() == "3"){tray[windowflag].workmatB = 3;}
-	if(modelCC.getValue() == "4"){tray[windowflag].workmatB = 4;}
+	if(modelCC.getValue() == "1"){tray.workmatB = 1;}
+	if(modelCC.getValue() == "2"){tray.workmatB = 2;}
+	if(modelCC.getValue() == "3"){tray.workmatB = 3;}
+	if(modelCC.getValue() == "4"){tray.workmatB = 4;}
 }
 
 public void setDirA(){
-		if (dirselA.getValue() == "DN"){tray[windowflag].workdirA = 4;}
-		if (dirselA.getValue() == "LL"){tray[windowflag].workdirA = 5;}
-		if (dirselA.getValue() == "L") {tray[windowflag].workdirA = 6;}
-		if (dirselA.getValue() == "UL"){tray[windowflag].workdirA = 7;}
-		if (dirselA.getValue() == "UP"){tray[windowflag].workdirA = 0;}
-		if (dirselA.getValue() == "UR"){tray[windowflag].workdirA = 1;}
-		if (dirselA.getValue() == "R") {tray[windowflag].workdirA = 2;}
-		if (dirselA.getValue() == "LR"){tray[windowflag].workdirA = 3;}
+		if (dirselA.getValue() == "DN"){tray.workdirA = 4;}
+		if (dirselA.getValue() == "LL"){tray.workdirA = 5;}
+		if (dirselA.getValue() == "L") {tray.workdirA = 6;}
+		if (dirselA.getValue() == "UL"){tray.workdirA = 7;}
+		if (dirselA.getValue() == "UP"){tray.workdirA = 0;}
+		if (dirselA.getValue() == "UR"){tray.workdirA = 1;}
+		if (dirselA.getValue() == "R") {tray.workdirA = 2;}
+		if (dirselA.getValue() == "LR"){tray.workdirA = 3;}
 }
 	
 public void setDirB(){
-		if (dirselB.getValue() == "DN"){tray[windowflag].workdirB = 4;}
-		if (dirselB.getValue() == "LL"){tray[windowflag].workdirB = 5;}
-		if (dirselB.getValue() == "L") {tray[windowflag].workdirB = 6;}
-		if (dirselB.getValue() == "UL"){tray[windowflag].workdirB = 7;}
-		if (dirselB.getValue() == "UP"){tray[windowflag].workdirB = 0;}
-		if (dirselB.getValue() == "UR"){tray[windowflag].workdirB = 1;}
-		if (dirselB.getValue() == "R") {tray[windowflag].workdirB = 2;}
-		if (dirselB.getValue() == "LR"){tray[windowflag].workdirB = 3;}
+		if (dirselB.getValue() == "DN"){tray.workdirB = 4;}
+		if (dirselB.getValue() == "LL"){tray.workdirB = 5;}
+		if (dirselB.getValue() == "L") {tray.workdirB = 6;}
+		if (dirselB.getValue() == "UL"){tray.workdirB = 7;}
+		if (dirselB.getValue() == "UP"){tray.workdirB = 0;}
+		if (dirselB.getValue() == "UR"){tray.workdirB = 1;}
+		if (dirselB.getValue() == "R") {tray.workdirB = 2;}
+		if (dirselB.getValue() == "LR"){tray.workdirB = 3;}
 	
 }
 
 public void setZT(){
-	if(modelB.getValue() == "Very Slow") {tray[windowflag].ztime = 2000;}
-	if(modelB.getValue() == "Slow") {tray[windowflag].ztime = 200;}
-	if(modelB.getValue() == "Fast") {tray[windowflag].ztime = 20;}
-	if(modelB.getValue() == "Very Fast") {tray[windowflag].ztime = 2;}
+	if(modelB.getValue() == "Very Slow") {tray.ztime = 2000;}
+	if(modelB.getValue() == "Slow") {tray.ztime = 200;}
+	if(modelB.getValue() == "Fast") {tray.ztime = 20;}
+	if(modelB.getValue() == "Very Fast") {tray.ztime = 2;}
 }
 
 public void stateChanged(ChangeEvent e){
