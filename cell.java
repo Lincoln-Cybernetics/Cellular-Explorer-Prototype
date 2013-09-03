@@ -7,6 +7,7 @@ public class cell{
 	boolean[][] neighbors;
 	boolean self;
 	boolean recursive;
+	boolean invert;
 	// parameter variables
 	int maturity;
 	int direction;
@@ -16,18 +17,21 @@ public class cell{
 	public cell(){
 		hood = "Self";
 		maturity = 1;
+		invert = false;
 		neighbors = new boolean[1][1];
 	}
 	
 	public cell(int a){
 		hood = "Self";
 		maturity = 1;
+		invert = false;
 		neighbors = new boolean[1][1];
 	}
 	
 	public cell(int a, int b){
 		hood = "Self";
 		maturity = 1;
+		invert = false;
 		neighbors = new boolean[1][1];
 	}
 	
@@ -72,7 +76,7 @@ public class cell{
 	//iterate
 	public boolean iterate(){
 		counter+= 1;
-		if(counter == maturity){counter = 0; active = calculate();}
+		if(counter == maturity){counter = 0;if(invert){active = !calculate();}else{active = calculate();}}
 		else{active = self;}
 		return active;}
 		
@@ -153,6 +157,10 @@ class seqCell extends cell{
 	public void setInt( String a, int b){
 		if(a == "Mat"){ maturity = b;}
 	}
+	// set invert
+	public void setBool(String a, boolean b){
+		if(a == "Inv"){invert = b;}
+	}	
 		
 	protected boolean calculate(){
 		boolean temp = seq[seqcounter];
