@@ -27,6 +27,11 @@ class conway extends cell{
 		if (a == "Mat"){maturity = b;}
 	}
 	
+	public void setBool( String a, boolean b){
+		if(a == "Inv"){ invert = b;}
+		if(a == "Rec"){ recursive = b;}
+	}
+	
 	protected boolean calculate(){
 		cellstate = 0;
 		for(int y = 0; y<=2; y++){
@@ -51,6 +56,10 @@ class seeds extends cell{
 		public void setInt( String a, int b){
 		if (a == "Mat"){maturity = b;}
 	}
+		public void setBool( String a, boolean b){
+			if(a == "Inv"){ invert = b;}
+			if(a == "Rec"){ recursive = b;}
+		}
 		
 		protected boolean calculate(){
 			cellstate = 0;
@@ -81,6 +90,7 @@ class parityCell extends cell{
 	public void setBool( String a, boolean b){
 		if(a == "Parity"){parity = b;}
 		if(a == "Rec"){recursive = b;}
+		if(a == "Inv"){invert = b;}
 	}
 	
 	public void setInt( String a, int b){
@@ -112,6 +122,10 @@ class conveyorCell extends cell{
 	public void setInt( String a, int b){
 		if(a == "Mat"){ maturity = b;}
 		if(a == "Dir"){ direction = b;}
+	}
+	
+	public void setBool( String a, boolean b){
+		if(a == "Inv"){invert = b;}
 	}
 	
 	protected boolean calculate(){
