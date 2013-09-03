@@ -26,21 +26,25 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	JFrame garden;
 	int xsiz; //= 500;
 	int ysiz; // = 300;
-	boolean[][] current; //= new boolean[xsiz][ysiz] ;
-	boolean[][] newstate; //= new boolean[xsiz][ysiz];
-	public cell[][] culture; //= new Cell[xsiz][ysiz];
+	boolean[][] current; 	
+	boolean[][] newstate; 	
+	public cell[][] culture; 	
 	
-	int[][] celltype; //= new int[xsiz][ysiz];
+	int celltype;	
 	int maturity = 1;
 	// settings (speed, primary cell selection, secondary cell selection, maturity, secondary maturity, cell size, and array initialization)
-	int ztime = 20;
+	public automatonOptionHandler merlin;
+	public cellOptionHandler castor;
+	public cellOptionHandler pollux;
+	public cellOptionHandler eris;
+	//int ztime = 20;
 	int workcell = 0;
-	int workcellB = 0;
+	//int workcellB = 0;
 	int workmat = 1;
-	int workmatB = 1;
+	//int workmatB = 1;
 	int setdir = 0;
-	int workdirA = 0;
-	int workdirB = 0;
+	//int workdirA = 0;
+	//int workdirB = 0;
 	int magnify = 5;
 	
 	
@@ -53,21 +57,17 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	//changestate flag 
 	boolean pauseflag = false;
 	boolean paused = true;
-	boolean interactive = false;
 	//state editing flags
 	boolean editflag = false;
 	boolean sfflag = false;
 	int sfopt = 0;
 	//cell editing flags
 	boolean editcellflag = false;
-	boolean checkdrawflag = false;
-	boolean oboflag = false;
 	boolean tbtflag = false;
-	boolean randoflag = false;
+	
 	
 	//automaton flags
-	boolean hwrapflag = false;
-	boolean vwrapflag = false;
+	//none
 	
 	Thread t = new Thread(this);
 	
@@ -78,24 +78,26 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	public cellBrain(){
 		xsiz = 400;
 		ysiz = 150;
+		merlin = new automatonOptionHandler();
+		castor = new cellOptionHandler();
+		pollux = new cellOptionHandler();
+		eris = new randcellOptionHandler();
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
-		celltype = new int[xsiz][ysiz];
 		bigboard = new cellComponent(xsiz, ysiz);
 		bigboard.addMouseMotionListener(this);
 		bigboard.addMouseListener(this);
 		makeWindow();
 		//initialize the board
-	for(int y=0;y<=ysiz-1;y++){
-		for(int x=0;x<=xsiz-1;x++){	
-				 current[x][y] = false;
-				 newstate[x][y] = false;
-				 celltype[x][y] = 6;
-				 maturity = 1;
-				 populate(x,y);
-			
-			 }}
+		int cs = castor.getCT();
+		int ms = castor.getMaturity();
+		castor.setCT(6);
+		castor.setMaturity(1);
+		cellFill();
+		castor.setCT(cs);	
+		castor.setMaturity(ms);
+			 
 				
 				
 			bigboard.setState(current);
@@ -105,24 +107,25 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	public cellBrain(int a, int b){
 		xsiz = a;
 		ysiz = b;
+		merlin = new automatonOptionHandler();
+		castor = new cellOptionHandler();
+		pollux = new cellOptionHandler();
+		eris = new randcellOptionHandler();
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
-		celltype = new int[xsiz][ysiz];
 		bigboard = new cellComponent(xsiz, ysiz);
 		bigboard.addMouseMotionListener(this);
 		bigboard.addMouseListener(this);
 		makeWindow();
 		//initialize the board
-	for(int y=0;y<=ysiz-1;y++){
-		for(int x=0;x<=xsiz-1;x++){	
-				 current[x][y] = false;
-				 newstate[x][y] = false;
-				 celltype[x][y] = 6;
-				 maturity = 1;
-				 populate(x,y);
-			
-			 }}
+		int cs = castor.getCT();
+		int ms = castor.getMaturity();
+		castor.setCT(6);
+		castor.setMaturity(1);
+		cellFill();
+		castor.setCT(cs);	
+		castor.setMaturity(ms);
 				
 				
 			bigboard.setState(current);
@@ -162,8 +165,14 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				
 				
 				//makes the cells
-				public void populate(int a, int b){
-					switch (celltype[a][b]){
+				public void populate(int a, int b, int c){
+					cellOptionHandler decider;
+					switch(c){
+						case 1: decider = castor;break;
+						case 2: decider = pollux;break;
+						case 3: decider = eris; break;
+						default: decider = castor;break;}
+					switch (decider.getCT()){
 						case 0: culture[a][b] = new cell();
 								break;
 						case 1: culture[a][b] = new offCell();
@@ -171,69 +180,73 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						case 2: culture[a][b] = new onCell();
 								break;
 						case 3: culture[a][b] = new blinkCell();
-								culture[a][b].setInt("Mat", maturity);
+								culture[a][b].setInt("Mat", decider.getMaturity());
 								break;
 						case 4: culture[a][b] = new seqCell();
-								culture[a][b].setInt("Mat", maturity);
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
 								break;
 						case 5: culture[a][b] = new randCell();
-								culture[a][b].setInt("Mat", maturity);
+								culture[a][b].setInt("Mat", decider.getMaturity());
 								break;
 						case 6: culture[a][b] = new conway();
-								culture[a][b].setInt("Mat", maturity);
+								culture[a][b].setInt("Mat", decider.getMaturity());
 								break;
 						case 7: culture[a][b] = new seeds();
-								culture[a][b].setInt("Mat", maturity);
+								culture[a][b].setInt("Mat", decider.getMaturity());
 								break;
 						case 8: culture[a][b] = new parityCell();
-								culture[a][b].setInt("Mat", maturity);
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
 								break;
 						case 9: culture[a][b] = new conveyorCell();
-								culture[a][b].setInt("Mat", maturity);
-								culture[a][b].setInt("Dir", setdir);
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setInt("Dir", decider.getDirection());
+								culture[a][b].setBool("Inv", decider.getInvert());
 								break;
 						case 10: culture[a][b] = new wolfram();
-								culture[a][b].setInt("Mat", maturity);
-								culture[a][b].setInt("Dir", setdir);
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setInt("Dir", decider.getDirection());
+								culture[a][b].setBool("Inv", decider.getInvert());
 								break;
 						case 11: culture[a][b] = new symmetriCell();
-								culture[a][b].setInt("Mat", maturity);
-								culture[a][b].setInt("Dir", setdir);
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setInt("Dir", decider.getDirection());
+								culture[a][b].setBool("Inv", decider.getInvert());
 								break;		
 						case 12: culture[a][b] = new mirrorCell();
-								culture[a][b].setInt("Mat", maturity);
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
 								break;		
 						default: culture[a][b] = new cell();
 								break;}
-						bigboard.setSpecies(a,b,celltype[a][b]);
-						bigboard.setLifespan(a,b,maturity); 
+						bigboard.setSpecies(a,b,decider.getCT());
+						bigboard.setLifespan(a,b,decider.getMaturity()); 
 					}
 					
 					// cell editing methods
 					public void cellDraw(int x, int y){
-						setdir = workdirA;
-						celltype[x][y] = workcell; maturity = workmat;
-						populate(x,y);}
+						populate(x,y,1);}
 						
 					public void cellAltDraw(int x, int y){
-						setdir = workdirB;
-						celltype[x][y] = workcellB; maturity = workmatB;
-						populate(x,y);} 
+						populate(x,y,2);} 
 					
 					public void cellCheckDraw(int x, int y){
 						if( y % 2 == 1 ^ x % 2 == 1){
-							setdir = workdirA;	
-						celltype[x][y] = workcell; maturity = workmat;}
-						else{setdir = workdirB; celltype[x][y] = workcellB; maturity = workmatB;}
-						populate(x,y);}
+						populate(x,y,1);}
+						else{
+						populate(x,y,2);}
+						}
+						
+					public void cellRCDraw(int x, int y){
+						if( y % 2 == 1 ^ x % 2 == 1){
+						populate(x,y,1);}
+						else{
+						populate(x,y,3);}
+						}
 						
 					public void cellRandDraw(int x, int y){
-						Random Iguana = new Random();
-						celltype[x][y] = Iguana.nextInt(13);
-						setdir = Iguana.nextInt(8);
-						maturity = Iguana.nextInt(4);
-						maturity +=1;
-						populate(x,y);
+						populate(x,y,3);
 					}
 						
 					
@@ -252,23 +265,33 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if(editcellflag){bigboard.repaint();}
 					}
 					
-					public void cellCheckFilltbt(){
+					public void cellRCFill(){
+						for(int y=0;y<=ysiz-1;y++){
+						for(int x=0;x<=xsiz-1;x++){	
+							cellRCDraw(x,y);
+							}}
+						if(editcellflag){bigboard.repaint();}
+					}
+					
+					public void cellCheckFilltbt(int a, int b){
 						for(int y=1; y<= ysiz-1; y+=3){
 						for(int x=1; x<= xsiz-1; x+=3){
 							if(y % 2 == 1 ^ x % 2 == 1){
-							tbtPop(x,y,1);}
-							else{tbtPop(x,y,2);}} 
+							tbtPop(x,y,a);}
+							else{tbtPop(x,y,b);}} 
 							if(xsiz-1 % 3 != 1){if(y % 2 == 1 ^ xsiz-1 % 2 == 1){
-							tbtPop(xsiz-1,y,1);}
-							else{tbtPop(xsiz-1,y,2);}  }}
+							tbtPop(xsiz-1,y,a);}
+							else{tbtPop(xsiz-1,y,b);}  }}
 							if(ysiz-1 % 3 != 1){ for(int x = 1; x<= xsiz-1; x+= 3){int y = ysiz-1;
 							if(y % 2 == 1 ^ x % 2 == 1){
-							tbtPop(x,y,1);}
-							else{tbtPop(x,y,2);}} 
+							tbtPop(x,y,a);}
+							else{tbtPop(x,y,b);}} 
 							if(xsiz-1 % 3 != 1){if(ysiz-1 % 2 == 1 ^ xsiz-1 % 2 == 1){
-							tbtPop(xsiz-1,ysiz-1,1);}
-							else{tbtPop(xsiz-1,ysiz-1,2);}  }}
+							tbtPop(xsiz-1,ysiz-1,a);}
+							else{tbtPop(xsiz-1,ysiz-1,b);}  }}
 							if(editcellflag){bigboard.repaint();}}
+							
+					
 					
 					public void cellRandFill(){
 						for(int y=0;y<=ysiz-1;y++){
@@ -285,6 +308,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x,y); break;
 							case 3: cellCheckDraw(x,y); break;
 							case 4: cellRandDraw(x,y); break;
+							case 5: cellRCDraw(x,y); break;
 							default: cellDraw(x,y);break;}
 						
 						// if the cell is on the border ignore the outside, otherwise populate 
@@ -295,6 +319,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x-1,y-1); break;
 							case 3: cellCheckDraw(x-1,y-1); break;
 							case 4: cellRandDraw(x-1,y-1); break;
+							case 5: cellRCDraw(x-1,y-1); break;
 							default: cellDraw(x-1,y-1);break;}}
 							
 							//x-1,y
@@ -304,6 +329,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x-1,y); break;
 							case 3: cellCheckDraw(x-1,y); break;
 							case 4: cellRandDraw(x-1,y); break;
+							case 5: cellRCDraw(x-1,y); break;
 							default: cellDraw(x-1,y);break;}}
 							
 							//x-1,y+1
@@ -313,6 +339,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x-1,y+1); break;
 							case 3: cellCheckDraw(x-1,y+1); break;
 							case 4: cellRandDraw(x-1,y+1); break;
+							case 5: cellRCDraw(x-1,y+1); break;
 							default: cellDraw(x-1,y+1);break;}}
 							
 							//x,y-1
@@ -322,6 +349,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x,y-1); break;
 							case 3: cellCheckDraw(x,y-1); break;
 							case 4: cellRandDraw(x,y-1); break;
+							case 5: cellRCDraw(x,y-1); break;
 							default: cellDraw(x,y-1);break;}}
 							
 							//x,y+1
@@ -331,6 +359,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x,y+1); break;
 							case 3: cellCheckDraw(x,y+1); break;
 							case 4: cellRandDraw(x,y+1); break;
+							case 5: cellRCDraw(x,y+1); break;
 							default: cellDraw(x,y+1);break;}}
 							
 							//x+1,y-1
@@ -340,6 +369,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x+1,y-1); break;
 							case 3: cellCheckDraw(x+1,y-1); break;
 							case 4: cellRandDraw(x+1,y-1); break;
+							case 5: cellRCDraw(x+1,y-1); break;
 							default: cellDraw(x+1,y-1);break;}}
 							
 							//x+1,y
@@ -349,6 +379,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x+1,y); break;
 							case 3: cellCheckDraw(x+1,y); break;
 							case 4: cellRandDraw(x+1,y); break;
+							case 5: cellRCDraw(x+1,y); break;
 							default: cellDraw(x+1,y);break;}}
 							
 							//x+1,y+1
@@ -358,6 +389,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 2: cellAltDraw(x+1,y+1); break;
 							case 3: cellCheckDraw(x+1,y+1); break;
 							case 4: cellRandDraw(x+1,y+1); break;
+							case 5: cellRCDraw(x+1,y+1); break;
 							default: cellDraw(x+1,y+1);break;}}
 							
 						}
@@ -370,6 +402,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								case 2: cellAltDraw(x,0); cellAltDraw(x, ysiz-1); break;
 								case 3: cellCheckDraw(x,0); cellCheckDraw(x,ysiz-1); break;
 								case 4: cellRandDraw(x,0); cellRandDraw(x, ysiz-1); break;
+								case 5: cellRCDraw(x,0); cellRCDraw(x,ysiz-1);break;
 								default: cellDraw(x,0); cellDraw(x, ysiz-1); break;}}
 						for(int y = 0; y<= ysiz-1; y++){
 							switch(option){
@@ -377,6 +410,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								case 2: cellAltDraw(0,y); cellAltDraw(xsiz-1, y); break;
 								case 3: cellCheckDraw(0,y); cellCheckDraw(xsiz-1,y); break;
 								case 4: cellRandDraw(0,y); cellRandDraw(xsiz-1, y); break;
+								case 5: cellRCDraw(0,y); cellRCDraw(xsiz-1, y); break;
 								default: cellDraw(0,y); cellDraw(xsiz-1, y); break;}}
 								if(editcellflag){bigboard.repaint();}
 					}
@@ -555,15 +589,15 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							// normal borders	
 							neighbors[0][0] = false;
 							//wraparound borders
-							if(hwrapflag){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}
+							if(merlin.getWrap("X") ){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}
 							else{neighbors[0][0] = false;}}
-							if(vwrapflag){if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];} else{neighbors[0][0] = false;}}
-							if(vwrapflag == true && hwrapflag == true){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){neighbors[0][0] = current[xsiz-1][ysiz-1];}}}
+							if( merlin.getWrap("Y")){if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];} else{neighbors[0][0] = false;}}
+							if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){neighbors[0][0] = current[xsiz-1][ysiz-1];}}}
 							//non-border
 							else{ if(current[x-1][y-1]== true){neighbors[0][0]=true;}}
 							
 							//Left-center neighbor
-							if(x==0){neighbors[0][1] = false; if(hwrapflag){neighbors[0][1] = current[xsiz-1][y];}}
+							if(x==0){neighbors[0][1] = false; if(merlin.getWrap("X") ){neighbors[0][1] = current[xsiz-1][y];}}
 							else{if(current[x-1][y] == true){neighbors[0][1] = true;}}
 							
 							//Lower-Left neighbor
@@ -571,18 +605,18 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							// normal border
 							neighbors[0][2] = false;
 							//wraparound borders 
-							if(hwrapflag){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];} else{neighbors[0][2] = false;}}
-							if(vwrapflag){if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}else{neighbors[0][2] = false;}}
-							if(hwrapflag == true && vwrapflag == true){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}if(x == 0 && y == ysiz-1){neighbors[0][2] = current[xsiz-1][0];}}}
+							if(merlin.getWrap("X") ){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];} else{neighbors[0][2] = false;}}
+							if( merlin.getWrap("Y")){if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}else{neighbors[0][2] = false;}}
+							if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}if(x == 0 && y == ysiz-1){neighbors[0][2] = current[xsiz-1][0];}}}
 							//non-border
 							else{if(current[x-1][y+1] == true) {neighbors[0][2] = true;}}
 							
 							//upper-center neighbor
-							if(y==0){neighbors[1][0] = false;if(vwrapflag){neighbors[1][0] = current[x][ysiz-1];}}
+							if(y==0){neighbors[1][0] = false;if( merlin.getWrap("Y")){neighbors[1][0] = current[x][ysiz-1];}}
 							else{if(current[x][y-1]==true){ neighbors[1][0] = true;}}
 							
 							//lower-center neighbor
-							if(y==ysiz-1){neighbors[1][2] = false;if(vwrapflag){neighbors[1][2] = current[x][0];}}
+							if(y==ysiz-1){neighbors[1][2] = false;if( merlin.getWrap("Y")){neighbors[1][2] = current[x][0];}}
 							else{if(current[x][y+1]==true){ neighbors[1][2] = true;}}
 							
 							//upper-right neighbor
@@ -590,14 +624,14 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							//normal border	
 							neighbors[2][0] = false;
 							//wraparound border
-							if(hwrapflag){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}else{neighbors[2][0] = false;}}
-							if(vwrapflag){if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}else{neighbors[2][0] = false;}}
-							if(hwrapflag == true && vwrapflag == true){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){neighbors[2][0] = current[0][ysiz-1];}}}
+							if(merlin.getWrap("X") ){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}else{neighbors[2][0] = false;}}
+							if( merlin.getWrap("Y")){if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}else{neighbors[2][0] = false;}}
+							if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){neighbors[2][0] = current[0][ysiz-1];}}}
 							//non-border
 							else{if(current[x+1][y-1]== true){neighbors[2][0] = true;}}
 							
 							//center-right neighbor
-							if(x==xsiz-1){neighbors[2][1] = false; if(hwrapflag){neighbors[2][1] = current[0][y];}if (hwrapflag && vwrapflag){neighbors[2][1] = current[0][y];}}
+							if(x==xsiz-1){neighbors[2][1] = false; if(merlin.getWrap("X") ){neighbors[2][1] = current[0][y];}if (merlin.getWrap("X") && merlin.getWrap("Y")){neighbors[2][1] = current[0][y];}}
 							else{if(current[x+1][y]==true){neighbors[2][1] = true;}}
 							
 							//lower-right neighbor
@@ -605,9 +639,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							// normal border	
 							neighbors[2][2] = false;
 							//wraparound border
-							if(hwrapflag){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} else {neighbors[2][2] = false;}}
-							if(vwrapflag){if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}else{neighbors[2][2] = false;}}
-							if(hwrapflag == true && vwrapflag == true){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){neighbors[2][2] = current[0][0];}}
+							if(merlin.getWrap("X")){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} else {neighbors[2][2] = false;}}
+							if( merlin.getWrap("Y")){if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}else{neighbors[2][2] = false;}}
+							if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){neighbors[2][2] = current[0][0];}}
 							}
 							//non-border
 							else{if(current[x+1][y+1] == true){neighbors[2][2] = true;}}
@@ -618,17 +652,17 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 		// neighborhood for one dimensional, horizontal cells
 		public boolean[][] getWolfram(int x, int y){
 			boolean[][] wolfhood = new boolean[3][1];
-			if (x == 0){wolfhood[0][0] = false; if(hwrapflag){wolfhood[0][0] = current[xsiz-1][y];}} else{wolfhood[0][0] = current[x-1][y];}
+			if (x == 0){wolfhood[0][0] = false; if(merlin.getWrap("X") ){wolfhood[0][0] = current[xsiz-1][y];}} else{wolfhood[0][0] = current[x-1][y];}
 			wolfhood[1][0] = current[x][y];
-			if(x == xsiz-1){wolfhood[2][0] = false;if(hwrapflag){wolfhood[2][0] = current[0][y];}} else{wolfhood[2][0] = current[x+1][y];}
+			if(x == xsiz-1){wolfhood[2][0] = false;if(merlin.getWrap("X") ){wolfhood[2][0] = current[0][y];}} else{wolfhood[2][0] = current[x+1][y];}
 			return wolfhood;}
 		
 		// neighborhood for one dimensional, vertical cells	
 		public boolean[][] getWolframV(int x, int y){
 			boolean[][] wolfhood = new boolean[3][1];
-			if(y == 0){wolfhood[0][0] = false;if(vwrapflag){wolfhood[0][0] = current[x][ysiz-1];}} else{wolfhood[0][0] = current[x][y-1];}
+			if(y == 0){wolfhood[0][0] = false;if( merlin.getWrap("Y")){wolfhood[0][0] = current[x][ysiz-1];}} else{wolfhood[0][0] = current[x][y-1];}
 			wolfhood[1][0] = current[x][y];
-			if(y == ysiz-1){wolfhood[2][0] = false;if(vwrapflag){wolfhood[2][0] = current[x][0];}} else{wolfhood[2][0] = current[x][y+1];}
+			if(y == ysiz-1){wolfhood[2][0] = false;if( merlin.getWrap("Y")){wolfhood[2][0] = current[x][0];}} else{wolfhood[2][0] = current[x][y+1];}
 			return wolfhood;}
 			
 		// neighborhood for one dimensional cells starting with upper left
@@ -638,9 +672,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				//normal border
 				wolfhood[0][0] = false;
 				//wraparound border
-				if(hwrapflag){if(x == 0 && y != 0){wolfhood[0][0] = current[xsiz-1][y-1];}else{wolfhood[0][0] = false;}}
-			if (vwrapflag){if(y == 0 && x != 0){wolfhood[0][0] = current[x-1][ysiz-1];} else{wolfhood[0][0] = false;}}
-			if(vwrapflag && hwrapflag){if(x == 0 && y != 0){wolfhood[0][0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){wolfhood[0][0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){wolfhood[0][0] = current[xsiz-1][ysiz-1];}}}
+				if(merlin.getWrap("X") ){if(x == 0 && y != 0){wolfhood[0][0] = current[xsiz-1][y-1];}else{wolfhood[0][0] = false;}}
+			if ( merlin.getWrap("Y")){if(y == 0 && x != 0){wolfhood[0][0] = current[x-1][ysiz-1];} else{wolfhood[0][0] = false;}}
+			if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x == 0 && y != 0){wolfhood[0][0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){wolfhood[0][0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){wolfhood[0][0] = current[xsiz-1][ysiz-1];}}}
 			//non-border
 			 else{ wolfhood[0][0] = current[x-1][y-1];}
 			 
@@ -651,9 +685,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				// normal border
 				wolfhood[2][0] = false;
 				//wraparound border
-				if(hwrapflag){if (x == xsiz-1 && y != ysiz-1){wolfhood[2][0] = current[0][y+1];} else {wolfhood[2][0] = false;}}
-				if(vwrapflag){if(y == ysiz-1 && x != xsiz-1){wolfhood[2][0] = current[x+1][0];}else{wolfhood[2][0] = false;}}
-				if(hwrapflag && vwrapflag){if (x == xsiz-1 && y != ysiz-1){wolfhood[2][0] = current[0][y+1];}if(y == ysiz-1 && x != xsiz-1){wolfhood[2][0] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){wolfhood[2][0] = current[0][0];}}} 
+				if(merlin.getWrap("X") ){if (x == xsiz-1 && y != ysiz-1){wolfhood[2][0] = current[0][y+1];} else {wolfhood[2][0] = false;}}
+				if( merlin.getWrap("Y")){if(y == ysiz-1 && x != xsiz-1){wolfhood[2][0] = current[x+1][0];}else{wolfhood[2][0] = false;}}
+				if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != ysiz-1){wolfhood[2][0] = current[0][y+1];}if(y == ysiz-1 && x != xsiz-1){wolfhood[2][0] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){wolfhood[2][0] = current[0][0];}}} 
 				//non-border
 				else{wolfhood[2][0] = current[x+1][y+1];}
 			return wolfhood;}
@@ -665,9 +699,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				// normal border
 				wolfhood[0][0] = false;
 				//wraparound borders 
-				if(hwrapflag){if(x == 0 && y != ysiz-1){wolfhood[0][0] = current[xsiz-1][y+1];} else{wolfhood[0][0] = false;}}
-				if(vwrapflag){if(y == ysiz-1 && x!= 0){wolfhood[0][0] = current[x-1][0];}else{wolfhood[0][0] = false;}}
-				if(hwrapflag && vwrapflag){if(x == 0 && y != ysiz-1){wolfhood[0][0] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){wolfhood[0][0] = current[x-1][0];}if(x == 0 && y == ysiz-1){wolfhood[0][0] = current[xsiz-1][0];}}}
+				if(merlin.getWrap("X")){if(x == 0 && y != ysiz-1){wolfhood[0][0] = current[xsiz-1][y+1];} else{wolfhood[0][0] = false;}}
+				if(merlin.getWrap("Y")){if(y == ysiz-1 && x!= 0){wolfhood[0][0] = current[x-1][0];}else{wolfhood[0][0] = false;}}
+				if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x == 0 && y != ysiz-1){wolfhood[0][0] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){wolfhood[0][0] = current[x-1][0];}if(x == 0 && y == ysiz-1){wolfhood[0][0] = current[xsiz-1][0];}}}
 			//non-border
 			else{wolfhood[0][0] = current[x-1][y+1];}
 			
@@ -678,9 +712,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				// normal border
 				wolfhood[2][0] = false;
 				//wraparound border
-				if(hwrapflag){if (x == xsiz-1 && y != 0){wolfhood[2][0] = current[0][y-1];}else{wolfhood[2][0] = false;}}
-				if(vwrapflag){if(y == 0 && x != xsiz-1){wolfhood[2][0] = current[x+1][ysiz-1];}else{wolfhood[2][0] = false;}}
-				if(hwrapflag && vwrapflag){if (x == xsiz-1 && y != 0){wolfhood[2][0] = current[0][y-1];}if(y == 0 && x != xsiz-1){wolfhood[2][0] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){wolfhood[2][0] = current[0][ysiz-1];}}} 
+				if(merlin.getWrap("X")){if (x == xsiz-1 && y != 0){wolfhood[2][0] = current[0][y-1];}else{wolfhood[2][0] = false;}}
+				if(merlin.getWrap("Y")){if(y == 0 && x != xsiz-1){wolfhood[2][0] = current[x+1][ysiz-1];}else{wolfhood[2][0] = false;}}
+				if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != 0){wolfhood[2][0] = current[0][y-1];}if(y == 0 && x != xsiz-1){wolfhood[2][0] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){wolfhood[2][0] = current[0][ysiz-1];}}} 
 				//non-border
 				else{wolfhood[2][0] = current[x+1][y-1];}
 			return wolfhood;}
@@ -762,7 +796,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 			 
 						//timeout between grid-wide iterations
 						try{
-				Thread.sleep(ztime);
+				Thread.sleep(merlin.getZT());
 			} catch(InterruptedException ie){}
 			
 			}
@@ -778,9 +812,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if (e.getY() < 1){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
 						
 						//edit state
-						if(editflag == true || interactive == true){
-							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
-							if (checkdrawflag && e.isMetaDown()){option = 5;}
+						if(editflag == true || merlin.getInter()){
+							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getSDO("Check")){option = 3;} if(merlin.getSDO("Rand")){option = 4;}
+							if (merlin.getSDO("Check") && e.isMetaDown()){option = 5;}
 							if(tbtflag){tbtState(xlocal, ylocal, option);}
 							else{
 							switch(option){
@@ -794,8 +828,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						
 						//editcell
 						if (editcellflag == true){
-							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
-							if (tbtflag){tbtPop(xlocal,ylocal,option);}
+							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getCDO("Check")){option = 3;}
+							if(merlin.getCDO("Rand")){option = 4;} if(merlin.getCDO("Check") && merlin.getCDO("Rand")){option = 5;}
+							if (merlin.getBrush() == "3x3"){tbtPop(xlocal,ylocal,option);}
 							else{
 							switch(option){
 							case 1: cellDraw(xlocal,ylocal); break;
@@ -813,9 +848,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if(e.getX() < 1){xlocal = 0;} else{xlocal = e.getX()/magnify;}
 						if(e.getY() < 1 ){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
 						//edit state
-						if(editflag == true || interactive == true){
-							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
-							if (checkdrawflag && e.isMetaDown()){option = 5;}
+						if(editflag == true || merlin.getInter()){
+							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getSDO("Check")){option = 3;} if(merlin.getSDO("Rand")){option = 4;}
+							if (merlin.getSDO("Check") && e.isMetaDown()){option = 5;}
 							if(tbtflag){tbtState(xlocal, ylocal, option);}
 							else{
 							switch(option){
@@ -826,10 +861,11 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								case 5: stateCheckDraw(xlocal, ylocal, false); break;
 								default: stateDraw(xlocal, ylocal); break;}}
 						 bigboard.repaint();}
-						//edit celltype
+						//edit cells
 						if (editcellflag == true){
-							int option = 1;if(e.isMetaDown()){option = 2;} if (checkdrawflag){option = 3;} if(randoflag){option = 4;}
-							if (tbtflag){tbtPop(xlocal,ylocal,option);}
+							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getCDO("Check")){option = 3;}
+							if(merlin.getCDO("Rand")){option = 4;} if(merlin.getCDO("Check") && merlin.getCDO("Rand")){option = 5;}
+							if (merlin.getBrush() == "3x3"){tbtPop(xlocal,ylocal,option);}
 							else{
 							switch(option){
 							case 1: cellDraw(xlocal,ylocal); break;
