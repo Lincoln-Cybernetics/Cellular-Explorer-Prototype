@@ -14,6 +14,10 @@ class wolfram extends cell{
 		if (a == "Dir"){direction = b; setDirHood();}
 		}
 		
+	public void setBool( String a, boolean b){
+		if (a == "Inv"){invert = b;}
+	} 
+		
 	public void setBoola( String a, boolean b[]){
 		if (a == "Rule"){for(int c = 0; c<=7; c++){
 			rule[c] = b[c];}}
@@ -53,6 +57,10 @@ class symmetriCell extends cell{
 		// additional direction options for this cell include
 		// direction = 8: returns true if any symmetry is present
 		// direction = 9: returns true if all symmetries are present
+	}
+	
+	public void setBool( String a, boolean b){
+		if(a == "Inv"){invert = b;}
 	}
 	
 	protected boolean calculate(){
@@ -125,7 +133,7 @@ class mirrorCell extends cell{
 	}
 	
 	public void setBool(String a, boolean b){
-		if(a == "Invert"){invert = b;}
+		if(a == "Inv"){invert = b;}
 	}
 	
 	public int getInt(String a){
@@ -135,12 +143,11 @@ class mirrorCell extends cell{
 	}
 	
 	public boolean getBool( String a){
-		if(a == "Invert"){return invert;}
+		if(a == "Inv"){return invert;}
 		else{return self;}
 	}
 	
 	protected boolean calculate(){
-		if (invert){ return !neighbors[0][0];}
-		else{ return neighbors[0][0];}
-	}
+		 return neighbors[0][0];}
+	
 }
