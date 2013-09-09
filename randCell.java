@@ -1,7 +1,10 @@
 import java.util.Random;
 
 class randCell extends cell{
-	
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat"};
+	static int ccount = 0;
+
 	Random attractor = new Random();
 	
 	public randCell(){
@@ -11,13 +14,24 @@ class randCell extends cell{
 	public void setInt(String a, int b){
 		if(a == "Mat"){ maturity = b;}
 	}
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+	}
+
 	
 	protected boolean calculate(){
 		return attractor.nextBoolean();}
 }
 
 class conway extends cell{
-	
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat"};
+	static int ccount = 0;
 	public conway(){
 		neighbors = new boolean[3][3];
 		hood = "Moore";
@@ -31,6 +45,16 @@ class conway extends cell{
 		if(a == "Inv"){ invert = b;}
 		if(a == "Rec"){ recursive = b;}
 	}
+	
+		// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+	}
+
 	
 	protected boolean calculate(){
 		cellstate = 0;
@@ -46,7 +70,9 @@ class conway extends cell{
 		}
 		
 class seeds extends cell{
-		
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat"};
+	static int ccount = 0;
 		public seeds(){
 			neighbors = new boolean[3][3];
 			hood = "Moore";
@@ -61,6 +87,15 @@ class seeds extends cell{
 			if(a == "Rec"){ recursive = b;}
 		}
 		
+		// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+	}
+		
 		protected boolean calculate(){
 			cellstate = 0;
 		for(int y = 0; y<=2; y++){
@@ -74,6 +109,9 @@ class seeds extends cell{
 		}
 
 class parityCell extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Inv"};
+	static int ccount = 0;
 	// parameter
 	// even parity = false, odd parity = true
 	boolean parity;
@@ -81,9 +119,9 @@ class parityCell extends cell{
 	// default:  non-recursive, even parity
 	public parityCell(){
 		neighbors = new boolean[3][3];
-		hood = "Moore";
 		recursive = false;
 		parity = false;
+		hood = "Moore";
 		maturity = 1;
 	}
 	
@@ -95,6 +133,15 @@ class parityCell extends cell{
 	
 	public void setInt( String a, int b){
 		if (a == "Mat"){maturity = b;}
+	}
+	
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
 	}
 	
 	protected boolean calculate(){
@@ -111,14 +158,24 @@ class parityCell extends cell{
 	}
 	
 class conveyorCell extends cell{
-	
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Dir", "Inv"};
+	static int ccount = 0;
 	public conveyorCell(){
 		neighbors = new boolean[3][3];
 		direction = 0;
-		maturity = 0;
 		hood = "Moore";
+		maturity = 0;
 	}
+		// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
 	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+	}
+		
 	public void setInt( String a, int b){
 		if(a == "Mat"){ maturity = b;}
 		if(a == "Dir"){ direction = b;}
