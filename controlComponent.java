@@ -3,6 +3,9 @@ import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 import java.awt.Checkbox.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+
 /*Cellular Explorer Prototype proof of concept
  * Copyright(C) 02013 Matt Ahlschwede
  *  This program is free software: you can redistribute it and/or modify
@@ -49,9 +52,11 @@ JButton about;
 //cell/state editing
 Checkbox tbt = new Checkbox("3x3");
 Checkbox ccd = new Checkbox("Checkerboard");
+Checkbox rnd = new Checkbox("Random");
+
+// cell editing
 Checkbox ccdcd = new Checkbox("Check");
 Checkbox ccdcf = new Checkbox("Check");
-Checkbox rnd = new Checkbox("Random");
 Checkbox rndcd = new Checkbox("Rand");
 Checkbox rndcf = new Checkbox("Rand");
 // state editing
@@ -82,6 +87,7 @@ SpinnerListModel dirselA = new SpinnerListModel(dirs);
 JSpinner condirA = new JSpinner(dirselA);
 SpinnerListModel dirselB = new SpinnerListModel(dirs);
 JSpinner condirB = new JSpinner(dirselB);
+
 
 //speed control
 String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
@@ -115,7 +121,6 @@ public controlComponent(){
 	eds= new JButton("Edit State");
 	stf = new JButton ("State Fill");
 	celledit = new JButton("Cell Editor");
-	//cellborder = new JButton("Set Border");
 	clear = new JButton("Clear");
 	about = new JButton("About");
 	setLayout( new FlowLayout() );
@@ -128,7 +133,6 @@ public controlComponent(){
 	add(eds);
 	add(stf);
 	add(celledit);
-	//add(cellborder);
 	add(clear);
 	add(rnd);
 	add(ccd);
@@ -146,7 +150,6 @@ public controlComponent(){
 	eds.addActionListener(this);
 	stf.addActionListener(this);
 	celledit.addActionListener(this);
-	//cellborder.addActionListener(this);
 	clear.addActionListener(this);
 	rnd.addItemListener(this);
 	ccd.addItemListener(this);
@@ -315,7 +318,7 @@ public void setWC(){
 		if(modelA.getValue()=="Mirror"){selVal = 12;}
 		
 	tray.castor.setCT(selVal);
-	selCelOptA(selVal);
+	selCelOpt(selVal,true);
 }
 
 public void setWCB(){
@@ -335,7 +338,7 @@ public void setWCB(){
 		if(modelAA.getValue()=="Mirror"){selVal = 12;}
 		
 	tray.pollux.setCT(selVal);
-	selCelOptB(selVal);
+	selCelOpt(selVal, false);
 }
 
 public void setMat(){
@@ -429,6 +432,11 @@ public void stateChanged(ChangeEvent e){
 	
 	}
 	}
+	
+
+	
+
+	
 public void makeMenu(String a){
 	if(a == "CE"){
 		ceflag = true;
@@ -441,15 +449,26 @@ public void makeMenu(String a){
 		cellborder = new JButton("Border");
 		cellborder.addActionListener(this);
 		ccdcf.addItemListener(this);
+		//components for primary cell
 		rndcf.addItemListener(this);
 		cellpicker.addChangeListener(this);
+		cellpicker.setMaximumSize(new Dimension(100,10));
 		matpicker.addChangeListener(this);
+		matpicker.setMaximumSize(new Dimension(10,10));
 		condirA.addChangeListener(this);
+		condirA.setMaximumSize(new Dimension(25,10));
 		invA.addItemListener(this);
+		
+		//components for secondary cell
 		Bcellpicker.addChangeListener(this);
+		Bcellpicker.setMaximumSize(new Dimension(100,10));
 		Bmatpicker.addChangeListener(this);
+		Bmatpicker.setMaximumSize(new Dimension(10,10));
 		condirB.addChangeListener(this);
+		condirB.setMaximumSize(new Dimension(25,10));
 		invB.addItemListener(this);
+		
+		//menu component holds all the components
 		cedit = new cellMenuComponent();
 		// layout the cell editor
 		GroupLayout celayout = new GroupLayout(cedit);
@@ -457,50 +476,62 @@ public void makeMenu(String a){
 		celayout.setAutoCreateContainerGaps(true);
 		celayout.setHorizontalGroup(
 				celayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+					//cell edit mode
 					.addComponent(edc)
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(ccdcd)
 						.addComponent(rndcd))
+					// cell fill
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(cf)
 						.addComponent(cellborder))
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(ccdcf)
 						.addComponent(rndcf))
+					//primary cell
 					.addComponent(cellpicker)
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(matpicker)
 						.addComponent(condirA))
-					.addComponent(invA)
+					.addGroup(celayout.createSequentialGroup()
+						.addComponent(invA))
+					//secondary cell
 					.addComponent(Bcellpicker)
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(Bmatpicker)
 						.addComponent(condirB))
-					.addComponent(invB)
+					.addGroup(celayout.createSequentialGroup()
+						.addComponent(invB))
 				);
 				
 		celayout.setVerticalGroup(
 				celayout.createSequentialGroup()
+					//cell edit mode
 					.addComponent(edc)
 					.addGroup(celayout.createParallelGroup()
 						.addComponent(ccdcd)
 						.addComponent(rndcd))
+					//cell fill
 					.addGroup(celayout.createParallelGroup()
 						.addComponent(cf)
 						.addComponent(cellborder))
 					.addGroup(celayout.createParallelGroup()
 						.addComponent(ccdcf)
 						.addComponent(rndcf))
+					//primary cell
 					.addComponent(cellpicker)
 					.addGroup(celayout.createParallelGroup()
 							.addComponent(matpicker)
 							.addComponent(condirA))
-					.addComponent(invA)
+					.addGroup(celayout.createParallelGroup()
+							.addComponent(invA))
+					//secondary cell
 					.addComponent(Bcellpicker)
 					.addGroup(celayout.createParallelGroup()
 							.addComponent(Bmatpicker)
 							.addComponent(condirB))
-					.addComponent(invB)
+					.addGroup(celayout.createParallelGroup()
+							.addComponent(invB))
 				);
 		
 		ceframe = new JFrame("Cell Editor");
@@ -512,47 +543,28 @@ public void makeMenu(String a){
 		cedit.setLayout(celayout);
 		ceframe.setVisible(true);
 		setWC();
-		setWCB();}
+		setWCB();
+		}
 		
 	}
 	
 	// brings up cell-specific parameters on the editing menu
-	public void selCelOptA(int a){
+	public void selCelOpt(int a, boolean b){
+		Component[] cellcontrolA = new Component[]{matpicker, condirA, invA};
+		Component[] cellcontrolB = new Component[]{Bmatpicker, condirB, invB};
+		Component[] cellcontrolC;
+		boolean cpresent = false;
+		if(b){cellcontrolC = cellcontrolA;}else{cellcontrolC = cellcontrolB;}
 		if(ceflag){
-		switch(a){
-			case 0: invA.setVisible(false); invA.setEnabled(false);ceframe.setVisible(true); break;
-			case 1: invA.setVisible(false); invA.setEnabled(false);ceframe.setVisible(true); break;
-			case 2: invA.setVisible(false); invA.setEnabled(false);ceframe.setVisible(true);break;
-			case 3: invA.setVisible(false); invA.setEnabled(false);ceframe.setVisible(true); break;
-			case 4: invA.setVisible(true); invA.setEnabled(true);ceframe.setVisible(true);break;
-			case 5: invA.setVisible(false); invA.setEnabled(false);ceframe.setVisible(true); break;
-			case 6: invA.setVisible(false); invA.setEnabled(false);ceframe.setVisible(true); break;
-			case 7: invA.setVisible(false); invA.setEnabled(false); ceframe.setVisible(true);break;
-			case 8:  invA.setVisible(true); invA.setEnabled(true);ceframe.setVisible(true);break;
-			case 9:  invA.setVisible(true); invA.setEnabled(true);ceframe.setVisible(true);break;
-			case 10:  invA.setVisible(true); invA.setEnabled(true);ceframe.setVisible(true);break;
-			case 11:  invA.setVisible(true); invA.setEnabled(true);ceframe.setVisible(true);break;
-			case 12:  invA.setVisible(true); invA.setEnabled(true);ceframe.setVisible(true);break;
-		}}
+		for (int cntr = 0; cntr < cellcontrolC.length; cntr++){
+		cpresent = tray.merlin.getCellOpt(a,cntr);
+		if(cpresent){cellcontrolC[cntr].setVisible(true);cellcontrolC[cntr].setEnabled(true);}
+		else{cellcontrolC[cntr].setVisible(false);cellcontrolC[cntr].setEnabled(false);}
+		}
+		cedit.repaint();
+		}
 	}
 	
-	public void selCelOptB(int a){
-		if(ceflag){
-		switch(a){
-			case 0: invB.setVisible(false); invB.setEnabled(false);ceframe.setVisible(true); break;
-			case 1: invB.setVisible(false); invB.setEnabled(false); ceframe.setVisible(true);break;
-			case 2: invB.setVisible(false); invB.setEnabled(false); ceframe.setVisible(true);break;
-			case 3: invB.setVisible(false); invB.setEnabled(false);ceframe.setVisible(true); break;
-			case 4: invB.setVisible(true); invB.setEnabled(true);ceframe.setVisible(true);break;
-			case 5: invB.setVisible(false); invB.setEnabled(false); ceframe.setVisible(true);break;
-			case 6: invB.setVisible(false); invB.setEnabled(false);ceframe.setVisible(true); break;
-			case 7: invB.setVisible(false); invB.setEnabled(false);ceframe.setVisible(true); break;
-			case 8:  invB.setVisible(true); invB.setEnabled(true);ceframe.setVisible(true);break;
-			case 9:  invB.setVisible(true); invB.setEnabled(true);ceframe.setVisible(true);break;
-			case 10:  invB.setVisible(true); invB.setEnabled(true);ceframe.setVisible(true);break;
-			case 11:  invB.setVisible(true); invB.setEnabled(true);ceframe.setVisible(true);break;
-			case 12:  invB.setVisible(true); invB.setEnabled(true);ceframe.setVisible(true);break;
-		}}
-	}
+	
 
 }
