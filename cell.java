@@ -12,7 +12,10 @@ public class cell{
 	int maturity;
 	int direction;
 	String hood;
-	
+	// array that determines what parameters can be set for this type of cell
+	// order:  maturity, direction, mirrorX, mirrorY, invert
+	static String[] controls = new String[]{"None"};
+	static int ccount = 0;
 	//constructors
 	public cell(){
 		hood = "Self";
@@ -35,8 +38,8 @@ public class cell{
 		neighbors = new boolean[1][1];
 	}
 	
-	// get parameters
-	public String getNeighborhood(){ return hood;}
+	// get settable parameters
+	
 	
 	public int getMat(){return maturity;}
 	
@@ -45,6 +48,18 @@ public class cell{
 	public int getInt( String a ){return counter;}
 	
 	public boolean getBool( String a){return self;}
+	
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];
+		}
+		
+	public static  void incControl(){
+		ccount += 1;
+		if(ccount == controls.length){ccount = 0;}
+	}
+	// get neighborhood
+	public String getNeighborhood(){ return hood;}
 	
 	// set parameters
 	public void setBool( String a, boolean b){}
@@ -86,26 +101,37 @@ public class cell{
 }
 
 class offCell extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"None"};
+	//determines which cells' states are in this cell's neighborhood
+	
 	public offCell(){
 		hood = "None";
 		maturity = 1;
 		self = false;
 		}
+	
 	protected boolean calculate(){
 		return false;}
 }
 
 class onCell extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"None"};
 	public onCell(){
 		hood = "None";
 		maturity = 1;
 		self = true;
 		}
+	
+		
 	protected boolean calculate(){
 		return true;}
 }
 
 class blinkCell extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat"};
 	public blinkCell(){
 		hood = "None";
 		maturity = 1;
@@ -118,12 +144,21 @@ class blinkCell extends cell{
 	public void setInt(String a, int b){
 		if(a == "Mat"){ maturity = b;}
 	}
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];
+		}
 		
+
+	//logic	
 	protected boolean calculate(){ return !self;}
 	
 }
 
 class seqCell extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Inv"};
+	static int ccount = 0;
 	//the array holds the sequence of states, the counter indexes the array
 	boolean[] seq;
 	int seqlen;
@@ -161,6 +196,17 @@ class seqCell extends cell{
 	public void setBool(String a, boolean b){
 		if(a == "Inv"){invert = b;}
 	}	
+		
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];
+		}
+	public static  void incControl(){
+		ccount += 1;
+		if(ccount == controls.length){ccount = 0;}
+	}
+		
+
 		
 	protected boolean calculate(){
 		boolean temp = seq[seqcounter];
