@@ -25,8 +25,14 @@ boolean sdrand = false;
 int sfo;
 boolean sfcheck = false;
 boolean sfrand = false;
+// cell control options
+int cellcount = 13;
+int controlcount = 3;
+String[] conts = new String[]{"Mat","Dir","Inv"};
+boolean[][] cellopts = new boolean[cellcount][controlcount];
 
 public automatonOptionHandler(){
+	setCellOpts();
 }
 //option setting methods
 
@@ -65,6 +71,25 @@ public void setSFO(String a, boolean b){
 	if(a == "Rand"){if(b){sfrand = true;}else{sfrand = false;}}
 }
 
+// cell control options
+public void setCellOpts(){
+	for (int a = 0; a < controlcount; a++){
+		if(cell.getControl() == conts[a]){cellopts[0][a] = true; cell.incControl();}else{cellopts[0][a] = false;}
+		if(offCell.getControl() == conts[a]){cellopts[1][a] = true; offCell.incControl();}else{cellopts[1][a] = false;}
+		if(onCell.getControl() == conts[a]){cellopts[2][a] = true; onCell.incControl();}else{cellopts[2][a] = false;}
+		if(blinkCell.getControl() == conts[a]){cellopts[3][a] = true; blinkCell.incControl();}else{cellopts[3][a] = false;}
+		if(seqCell.getControl() == conts[a]){cellopts[4][a] = true; seqCell.incControl();}else{cellopts[4][a] = false;}
+		if(randCell.getControl() == conts[a]){cellopts[5][a] = true; randCell.incControl();}else{cellopts[5][a] = false;}
+		if(conway.getControl() == conts[a]){cellopts[6][a] = true; conway.incControl();}else{cellopts[6][a] = false;}
+		if(seeds.getControl() == conts[a]){cellopts[7][a] = true; seeds.incControl();}else{cellopts[7][a] = false;}
+		if(parityCell.getControl() == conts[a]){cellopts[8][a] = true; parityCell.incControl();}else{cellopts[8][a] = false;}
+		if(conveyorCell.getControl() == conts[a]){cellopts[9][a] = true; conveyorCell.incControl();}else{cellopts[9][a] = false;}
+		if(wolfram.getControl() == conts[a]){cellopts[10][a] = true; wolfram.incControl();}else{cellopts[10][a] = false;}
+		if(symmetriCell.getControl() == conts[a]){cellopts[11][a] = true; symmetriCell.incControl();}else{cellopts[11][a] = false;}
+		if(mirrorCell.getControl() == conts[a]){cellopts[12][a] = true; mirrorCell.incControl();}else{cellopts[12][a] = false;}
+	}
+}
+		
 
 		
 //option getting methods
@@ -110,4 +135,8 @@ public boolean getSFO(String a){
 	return false;
 	}
 
+//cell controll options
+public boolean getCellOpt(int a, int b){
+	return cellopts[a][b];
+}
 }
