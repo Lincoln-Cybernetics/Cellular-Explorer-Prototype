@@ -1,6 +1,10 @@
 
 
 class wolfram extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Dir"};
+	static int ccount = 0;
+	//parameter for which Wolfram rule to apply
 	boolean[] rule = new boolean[]{false,true,true,true,false,true,true,false};
 	
 	public wolfram(){
@@ -28,6 +32,16 @@ class wolfram extends cell{
 		if(direction == 2 || direction == 6){hood = "Wolfram";}
 		if(direction == 3 || direction == 7){hood = "WolframUL";}
 	}
+	
+		// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+	}
+		
 	protected boolean calculate(){
 		 cellstate = 0;
 		 //assign a value to cellstate based on the cell's neighbors
@@ -43,7 +57,9 @@ class wolfram extends cell{
 }
 
 class symmetriCell extends cell{
-	
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Dir", "Inv"};
+	static int ccount = 0;
 	public symmetriCell(){
 		neighbors = new boolean[3][3];
 		direction = 0;
@@ -61,6 +77,15 @@ class symmetriCell extends cell{
 	
 	public void setBool( String a, boolean b){
 		if(a == "Inv"){invert = b;}
+	}
+	
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
 	}
 	
 	protected boolean calculate(){
@@ -104,6 +129,9 @@ class symmetriCell extends cell{
 	}
 	
 class mirrorCell extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Inv"};
+	static int ccount = 0;
 	int hoodX;
 	int hoodY;
 	boolean invert;
@@ -145,6 +173,15 @@ class mirrorCell extends cell{
 	public boolean getBool( String a){
 		if(a == "Inv"){return invert;}
 		else{return self;}
+	}
+	
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
 	}
 	
 	protected boolean calculate(){
