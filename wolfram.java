@@ -130,7 +130,7 @@ class symmetriCell extends cell{
 	
 class mirrorCell extends cell{
 	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat", "Inv"};
+	static String[] controls = new String[]{"Mat", "Inv", "Mir"};
 	static int ccount = 0;
 	int hoodX;
 	int hoodY;
@@ -158,6 +158,8 @@ class mirrorCell extends cell{
 		if(a == "Mat"){maturity = b;}
 		if(a == "HX"){hoodX = b;}
 		if(a == "HY"){hoodY = b;}
+	
+		
 	}
 	
 	public void setBool(String a, boolean b){
