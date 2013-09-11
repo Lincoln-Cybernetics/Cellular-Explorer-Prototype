@@ -88,6 +88,9 @@ JSpinner condirA = new JSpinner(dirselA);
 SpinnerListModel dirselB = new SpinnerListModel(dirs);
 JSpinner condirB = new JSpinner(dirselB);
 
+// mirror selector
+JButton mirsel;
+JButton mirselB;
 
 //speed control
 String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
@@ -235,7 +238,14 @@ public void actionPerformed(ActionEvent e){
 		if (tray.merlin.getCFO("Rand")){ celleditoption = 4;}
 		if(tray.merlin.getCFO("Check") && tray.merlin.getCFO("Rand")){ celleditoption = 5;}
 		tray.setBorder(celleditoption);}
-	
+		
+	// mirror cell neighborhood selectors
+	if(e.getSource() == mirsel){
+	tray.mirSel(true);
+	}
+	if(e.getSource() == mirselB){
+		tray.mirSel(false);
+	}
 }
 	
 	
@@ -458,6 +468,7 @@ public void makeMenu(String a){
 		condirA.addChangeListener(this);
 		condirA.setMaximumSize(new Dimension(25,10));
 		invA.addItemListener(this);
+		mirsel = new JButton("SelectMirror");mirsel.addActionListener(this);
 		
 		//components for secondary cell
 		Bcellpicker.addChangeListener(this);
@@ -467,6 +478,7 @@ public void makeMenu(String a){
 		condirB.addChangeListener(this);
 		condirB.setMaximumSize(new Dimension(25,10));
 		invB.addItemListener(this);
+		mirselB = new JButton("Select Mirror");mirselB.addActionListener(this);
 		
 		//menu component holds all the components
 		cedit = new cellMenuComponent();
@@ -494,14 +506,16 @@ public void makeMenu(String a){
 						.addComponent(matpicker)
 						.addComponent(condirA))
 					.addGroup(celayout.createSequentialGroup()
-						.addComponent(invA))
+						.addComponent(invA)
+						.addComponent(mirsel))
 					//secondary cell
 					.addComponent(Bcellpicker)
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(Bmatpicker)
 						.addComponent(condirB))
 					.addGroup(celayout.createSequentialGroup()
-						.addComponent(invB))
+						.addComponent(invB)
+						.addComponent(mirselB))
 				);
 				
 		celayout.setVerticalGroup(
@@ -524,14 +538,16 @@ public void makeMenu(String a){
 							.addComponent(matpicker)
 							.addComponent(condirA))
 					.addGroup(celayout.createParallelGroup()
-							.addComponent(invA))
+							.addComponent(invA)
+							.addComponent(mirsel))
 					//secondary cell
 					.addComponent(Bcellpicker)
 					.addGroup(celayout.createParallelGroup()
 							.addComponent(Bmatpicker)
 							.addComponent(condirB))
 					.addGroup(celayout.createParallelGroup()
-							.addComponent(invB))
+							.addComponent(invB)
+							.addComponent(mirselB))
 				);
 		
 		ceframe = new JFrame("Cell Editor");
@@ -550,8 +566,8 @@ public void makeMenu(String a){
 	
 	// brings up cell-specific parameters on the editing menu
 	public void selCelOpt(int a, boolean b){
-		Component[] cellcontrolA = new Component[]{matpicker, condirA, invA};
-		Component[] cellcontrolB = new Component[]{Bmatpicker, condirB, invB};
+		Component[] cellcontrolA = new Component[]{matpicker, condirA, invA, mirsel};
+		Component[] cellcontrolB = new Component[]{Bmatpicker, condirB, invB, mirselB};
 		Component[] cellcontrolC;
 		boolean cpresent = false;
 		if(b){cellcontrolC = cellcontrolA;}else{cellcontrolC = cellcontrolB;}
