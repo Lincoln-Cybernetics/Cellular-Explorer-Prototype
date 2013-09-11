@@ -14,6 +14,10 @@ public class cellComponent extends JComponent
 	int[][] species;
 	int[][] lifespan;
 	int[][] orientation;
+	int hlx = 0;
+	int hly = 0;
+	int hlc = 0;
+	boolean hiliteflag = false;
 	
 	public cellComponent(){
 		xdim = 500;
@@ -59,6 +63,11 @@ public class cellComponent extends JComponent
 	public int getMode(){
 		return mode;}
 
+//hilights a cell
+	public void setHiLite(int a, int b, int c){
+		hiliteflag = true; hlx = a; hly = b; hlc = c; repaint();}
+
+//main paint method
 public void paintComponent( Graphics g){
 					int x = 0;
 					int y = 0;
@@ -112,7 +121,19 @@ public void paintComponent( Graphics g){
 									case 4: g.setColor(Color.black); break;
 									default: g.setColor(Color.green); break;
 								}
-								g.drawRect(x*magnify,y*magnify,magnify,magnify);}
+								g.drawRect(x*magnify,y*magnify,magnify,magnify);
+								
+								// hilite a hilited cell
+								if(hiliteflag){
+									if(x == hlx && y == hly){
+								switch(hlc){
+									case 1: g.setColor(Color.red); break;
+									case 2: g.setColor(Color.blue); break;
+									default: g.setColor(Color.red); break;}
+								g.drawRect(x*magnify, y*magnify, magnify, magnify);
+									}}
+									
+								}
 								
 							
 								
