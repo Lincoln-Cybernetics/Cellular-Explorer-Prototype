@@ -37,14 +37,13 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	public cellOptionHandler castor;
 	public cellOptionHandler pollux;
 	public cellOptionHandler eris;
-	//int ztime = 20;
+	
 	int workcell = 0;
-	//int workcellB = 0;
+	
 	int workmat = 1;
-	//int workmatB = 1;
+	
 	int setdir = 0;
-	//int workdirA = 0;
-	//int workdirB = 0;
+	
 	int magnify = 5;
 	
 	
@@ -64,7 +63,11 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	//cell editing flags
 	boolean editcellflag = false;
 	boolean tbtflag = false;
+	boolean prisec = true;//shunts settings info to castor(true) or pollux(false)
+	boolean mirselflag = false;//toggles mirror selection mode
 	
+	// display flags
+	boolean hiliteflag = false; //used to signal when to hilite a cell
 	
 	//automaton flags
 	//none
@@ -217,6 +220,8 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						case 12: culture[a][b] = new mirrorCell();
 								culture[a][b].setInt("Mat", decider.getMaturity());
 								culture[a][b].setBool("Inv", decider.getInvert());
+								culture[a][b].setInt("HX", decider.getInt("MirrX"));
+								culture[a][b].setInt("HY", decider.getInt("MirrY"));
 								break;		
 						default: culture[a][b] = new cell();
 								break;}
@@ -225,6 +230,8 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					}
 					
 					// cell editing methods
+					
+					// cell drawing methods
 					public void cellDraw(int x, int y){
 						populate(x,y,1);}
 						
@@ -249,7 +256,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						populate(x,y,3);
 					}
 						
-					
+					// cell filling methods
 					public void cellFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
@@ -310,8 +317,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 4: cellRandDraw(x,y); break;
 							case 5: cellRCDraw(x,y); break;
 							default: cellDraw(x,y);break;}
-						
-						// if the cell is on the border ignore the outside, otherwise populate 
+							// if the cell is on the border ignore the outside, otherwise populate 
 							//x-1,y-1
 							if(x==0 || y==0){}
 							else{ switch (opt){
@@ -320,8 +326,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x-1,y-1); break;
 							case 4: cellRandDraw(x-1,y-1); break;
 							case 5: cellRCDraw(x-1,y-1); break;
-							default: cellDraw(x-1,y-1);break;}}
-							
+							default: cellDraw(x-1,y-1);break;}}						
 							//x-1,y
 							if(x==0){}
 							else{switch (opt){
@@ -330,8 +335,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x-1,y); break;
 							case 4: cellRandDraw(x-1,y); break;
 							case 5: cellRCDraw(x-1,y); break;
-							default: cellDraw(x-1,y);break;}}
-							
+							default: cellDraw(x-1,y);break;}}		
 							//x-1,y+1
 							if(x==0 || y==ysiz-1){}
 							else{switch (opt){
@@ -340,8 +344,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x-1,y+1); break;
 							case 4: cellRandDraw(x-1,y+1); break;
 							case 5: cellRCDraw(x-1,y+1); break;
-							default: cellDraw(x-1,y+1);break;}}
-							
+							default: cellDraw(x-1,y+1);break;}}		
 							//x,y-1
 							if(y==0){}
 							else{switch (opt){
@@ -350,8 +353,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x,y-1); break;
 							case 4: cellRandDraw(x,y-1); break;
 							case 5: cellRCDraw(x,y-1); break;
-							default: cellDraw(x,y-1);break;}}
-							
+							default: cellDraw(x,y-1);break;}}		
 							//x,y+1
 							if(y==ysiz-1){}
 							else{switch (opt){
@@ -360,8 +362,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x,y+1); break;
 							case 4: cellRandDraw(x,y+1); break;
 							case 5: cellRCDraw(x,y+1); break;
-							default: cellDraw(x,y+1);break;}}
-							
+							default: cellDraw(x,y+1);break;}}		
 							//x+1,y-1
 							if(x==xsiz-1 || y==0){}
 							else{switch (opt){
@@ -370,8 +371,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x+1,y-1); break;
 							case 4: cellRandDraw(x+1,y-1); break;
 							case 5: cellRCDraw(x+1,y-1); break;
-							default: cellDraw(x+1,y-1);break;}}
-							
+							default: cellDraw(x+1,y-1);break;}}		
 							//x+1,y
 							if(x==xsiz-1){}
 							else{switch (opt){
@@ -380,8 +380,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x+1,y); break;
 							case 4: cellRandDraw(x+1,y); break;
 							case 5: cellRCDraw(x+1,y); break;
-							default: cellDraw(x+1,y);break;}}
-							
+							default: cellDraw(x+1,y);break;}}	
 							//x+1,y+1
 							if(x==xsiz-1 || y==ysiz-1){}
 							else{switch (opt){
@@ -390,8 +389,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: cellCheckDraw(x+1,y+1); break;
 							case 4: cellRandDraw(x+1,y+1); break;
 							case 5: cellRCDraw(x+1,y+1); break;
-							default: cellDraw(x+1,y+1);break;}}
-							
+							default: cellDraw(x+1,y+1);break;}}		
 						}
 						
 						// sets the cells around the outside edge of the automaton 
@@ -414,6 +412,12 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								default: cellDraw(0,y); cellDraw(xsiz-1, y); break;}}
 								if(editcellflag){bigboard.repaint();}
 					}
+					//sets neighborhoods for mirror cells
+					public void mirSel(boolean a){
+						if(mirselflag == false){mirselflag = true; hiliteflag = true; prisec = a;}
+						else{if(prisec != a){prisec = a; mirselflag = true; hiliteflag = true;}
+							else{mirselflag = false; hiliteflag = false;}}
+						}
 				
 				// State editing methods
 				
@@ -481,8 +485,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 4: stateRandDraw(x,y); break;
 							case 5: stateCheckDraw(x,y, false); break;
 							default: stateDraw(x,y);break;}
-						
-						// if the cell is on the border ignore the outside, otherwise populate 
+							// if the cell is on the border ignore the outside, otherwise populate 
 							//x-1,y-1
 							if(x==0 || y==0){}
 							else{ switch (opt){
@@ -491,8 +494,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: stateCheckDraw(x-1,y-1, true); break;
 							case 4: stateRandDraw(x-1,y-1); break;
 							case 5: stateCheckDraw(x-1,y-1, false); break;
-							default: stateDraw(x-1,y-1);break;}}
-							
+							default: stateDraw(x-1,y-1);break;}}		
 							//x-1,y
 							if(x==0){}
 							else{switch (opt){
@@ -501,8 +503,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: stateCheckDraw(x-1,y, true); break;
 							case 4: stateRandDraw(x-1,y); break;
 							case 5: stateCheckDraw(x-1,y, false); break;
-							default: stateDraw(x-1,y);break;}}
-							
+							default: stateDraw(x-1,y);break;}}				
 							//x-1,y+1
 							if(x==0 || y==ysiz-1){}
 							else{switch (opt){
@@ -511,8 +512,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: stateCheckDraw(x-1,y+1, true); break;
 							case 4: stateRandDraw(x-1,y+1); break;
 							case 5: stateCheckDraw(x-1,y+1, false); break;
-							default: stateDraw(x-1,y+1);break;}}
-							
+							default: stateDraw(x-1,y+1);break;}}						
 							//x,y-1
 							if(y==0){}
 							else{switch (opt){
@@ -521,8 +521,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: stateCheckDraw(x,y-1, true); break;
 							case 4: stateRandDraw(x,y-1); break;
 							case 5: stateCheckDraw(x,y-1, false); break;
-							default: stateDraw(x,y-1);break;}}
-							
+							default: stateDraw(x,y-1);break;}}						
 							//x,y+1
 							if(y==ysiz-1){}
 							else{switch (opt){
@@ -531,8 +530,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: stateCheckDraw(x,y+1, true); break;
 							case 4: stateRandDraw(x,y+1); break;
 							case 5: stateCheckDraw(x,y+1, false); break;
-							default: stateDraw(x,y+1);break;}}
-							
+							default: stateDraw(x,y+1);break;}}						
 							//x+1,y-1
 							if(x==xsiz-1 || y==0){}
 							else{switch (opt){
@@ -541,8 +539,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: stateCheckDraw(x+1,y-1, true); break;
 							case 4: stateRandDraw(x+1,y-1); break;
 							case 5: stateCheckDraw(x+1,y-1, false); break;
-							default: stateDraw(x+1,y-1);break;}}
-							
+							default: stateDraw(x+1,y-1);break;}}						
 							//x+1,y
 							if(x==xsiz-1){}
 							else{switch (opt){
@@ -551,8 +548,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 3: stateCheckDraw(x+1,y, true); break;
 							case 4: stateRandDraw(x+1,y); break;
 							case 5: stateCheckDraw(x+1,y, false); break;
-							default: stateDraw(x+1,y);break;}}
-							
+							default: stateDraw(x+1,y);break;}}						
 							//x+1,y+1
 							if(x==xsiz-1 || y==ysiz-1){}
 							else{switch (opt){
@@ -804,12 +800,24 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				}
 				
 			
+			// mouse interaction methods
 					public void mouseMoved( MouseEvent e){
-					
-				}
+						if(e.getX() < 1){xlocal =0;} else{xlocal = e.getX()/magnify;}
+						if (e.getY() < 1){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
+						if (xlocal > xsiz-1){xlocal = xsiz-1;}
+						if (ylocal > ysiz-1){ylocal = ysiz-1;}
+						
+						// hilite passed over cells
+						if(hiliteflag){if(mirselflag && editcellflag){int colsel; if(prisec){colsel = 1;}
+						else{colsel = 2;} bigboard.setHiLite(xlocal, ylocal, colsel);}
+						 }
+						}
+						
 					public void mouseDragged(MouseEvent e) {
 						if(e.getX() < 1){xlocal =0;} else{xlocal = e.getX()/magnify;}
 						if (e.getY() < 1){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
+						if (xlocal > xsiz-1){xlocal = xsiz-1;}
+						if (ylocal > ysiz-1){ylocal = ysiz-1;}
 						
 						//edit state
 						if(editflag == true || merlin.getInter()){
@@ -827,7 +835,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							bigboard.repaint();}
 						
 						//editcell
-						if (editcellflag == true){
+						if (editcellflag == true && mirselflag == false){
 							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getCDO("Check")){option = 3;}
 							if(merlin.getCDO("Rand")){option = 4;} if(merlin.getCDO("Check") && merlin.getCDO("Rand")){option = 5;}
 							if (merlin.getBrush() == "3x3"){tbtPop(xlocal,ylocal,option);}
@@ -840,13 +848,20 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							default: cellDraw(xlocal, ylocal); break;
 							}}
 							bigboard.repaint();}}
+							
 					public void mouseEntered(MouseEvent e){}
+					
 					public void mouseExited(MouseEvent e){}
 					public void mousePressed(MouseEvent e){}
+					
 					public void mouseReleased(MouseEvent e){}
+					
 					public void mouseClicked(MouseEvent e){
 						if(e.getX() < 1){xlocal = 0;} else{xlocal = e.getX()/magnify;}
 						if(e.getY() < 1 ){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
+						if (xlocal > xsiz-1){xlocal = xsiz-1;}
+						if (ylocal > ysiz-1){ylocal = ysiz-1;}
+						
 						//edit state
 						if(editflag == true || merlin.getInter()){
 							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getSDO("Check")){option = 3;} if(merlin.getSDO("Rand")){option = 4;}
@@ -861,8 +876,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								case 5: stateCheckDraw(xlocal, ylocal, false); break;
 								default: stateDraw(xlocal, ylocal); break;}}
 						 bigboard.repaint();}
+						 
 						//edit cells
-						if (editcellflag == true){
+						if (editcellflag == true && mirselflag == false){
 							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getCDO("Check")){option = 3;}
 							if(merlin.getCDO("Rand")){option = 4;} if(merlin.getCDO("Check") && merlin.getCDO("Rand")){option = 5;}
 							if (merlin.getBrush() == "3x3"){tbtPop(xlocal,ylocal,option);}
@@ -875,6 +891,13 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							default: cellDraw(xlocal, ylocal); break;
 							}} 
 							bigboard.repaint();}
+							
+						//mirror selection
+						if(editcellflag && mirselflag){
+							if(prisec){castor.setInt("MirrX", xlocal);castor.setInt("MirrY", ylocal); mirselflag = false; hiliteflag = false;}
+							else{pollux.setInt("MirrX", xlocal); pollux.setInt("MirrY", ylocal); mirselflag = false; hiliteflag = false;}
+						}
+						
 						}
 					
 				
