@@ -71,13 +71,13 @@ SpinnerListModel modelAA = new SpinnerListModel(cells);
 JSpinner Bcellpicker = new JSpinner(modelAA);
 
 //cell maturity selection
-String[] mats = new String[]{"1","2","3","4"};
+String[] mats = new String[]{"1","2","3","4", "8", "16", "32"};
 SpinnerListModel modelC = new SpinnerListModel(mats);
 JSpinner matpicker = new JSpinner(modelC);
 SpinnerListModel modelCC = new SpinnerListModel(mats);
 JSpinner Bmatpicker = new JSpinner(modelCC);
 
-//inversion control
+//inversion control (true to invert)
 Checkbox invA = new Checkbox("Invert");
 Checkbox invB = new Checkbox("Invert");
 
@@ -91,6 +91,15 @@ JSpinner condirB = new JSpinner(dirselB);
 // mirror selector
 JButton mirsel;
 JButton mirselB;
+
+//parity control (false = even, true = odd)
+Checkbox parA = new Checkbox("Parity");
+Checkbox parB = new Checkbox("Parity");
+
+// recursive setting
+Checkbox recA = new Checkbox("Recursive");
+Checkbox recB = new Checkbox("Recursive");
+
 
 //speed control
 String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
@@ -307,6 +316,14 @@ public void itemStateChanged(ItemEvent e){
 	if(e.getItemSelectable() == invA){if(invA.getState()){tray.castor.setInvert(true);}else{tray.castor.setInvert(false);}}
 	
 	if(e.getItemSelectable() == invB){if(invB.getState()){tray.pollux.setInvert(true);}else{tray.pollux.setInvert(false);}}
+	
+	if(e.getItemSelectable() == parA){tray.castor.setBool("Par", parA.getState());}
+	
+	if(e.getItemSelectable() == parB){tray.pollux.setBool("Par", parB.getState());}
+	
+	if(e.getItemSelectable() == recA){tray.castor.setBool("Rec", recA.getState());}
+	
+	if(e.getItemSelectable() == recA){tray.pollux.setBool("Rec", recB.getState());}
 }
 }
 	
@@ -319,9 +336,9 @@ public void setWC(){
 		if(modelA.getValue()=="BlinkCell"){ selVal = 3;}
 		if(modelA.getValue()=="sequenceCell") {selVal = 4;} 
 		if(modelA.getValue()=="randomCell") {selVal = 5;}
-		if(modelA.getValue()=="Life") {selVal = 6;}
-		if(modelA.getValue()=="Seeds") {selVal = 7;}
-		if(modelA.getValue()=="ParityCell") {selVal = 8;}
+		if(modelA.getValue()=="Life") {selVal = 6;recA.setState(false);}
+		if(modelA.getValue()=="Seeds") {selVal = 7;recA.setState(false);}
+		if(modelA.getValue()=="ParityCell") {selVal = 8;recA.setState(true);}
 		if(modelA.getValue()=="Conveyor") {selVal = 9;}
 		if(modelA.getValue()=="Wolfram"){selVal = 10;}
 		if(modelA.getValue()=="Symmetrical"){selVal = 11;}
@@ -339,9 +356,9 @@ public void setWCB(){
 		if(modelAA.getValue()=="BlinkCell"){ selVal = 3;}
 		if(modelAA.getValue()=="sequenceCell") {selVal = 4;} 
 		if(modelAA.getValue()=="randomCell") {selVal = 5;}
-		if(modelAA.getValue()=="Life") {selVal = 6;}
-		if(modelAA.getValue()=="Seeds") {selVal = 7;}
-		if(modelAA.getValue()=="ParityCell") {selVal = 8;}
+		if(modelAA.getValue()=="Life") {selVal = 6;recB.setState(false);}
+		if(modelAA.getValue()=="Seeds") {selVal = 7;recB.setState(false);}
+		if(modelAA.getValue()=="ParityCell") {selVal = 8;recB.setState(true);}
 		if(modelAA.getValue()=="Conveyor") {selVal = 9;}
 		if(modelAA.getValue()=="Wolfram"){selVal = 10;}
 		if(modelAA.getValue()=="Symmetrical"){selVal = 11;}
@@ -357,6 +374,9 @@ public void setMat(){
 	if(modelC.getValue() == "2") {selVal = 2;}
 	if(modelC.getValue() == "3") {selVal = 3;}
 	if(modelC.getValue() == "4") {selVal = 4;}
+	if(modelC.getValue() == "8") {selVal = 8;}
+	if(modelC.getValue() == "16") {selVal = 16;}
+	if(modelC.getValue() == "32") {selVal = 32;}
 	tray.castor.setMaturity(selVal);
 }
 
@@ -366,6 +386,9 @@ public void setMatB(){
 	if(modelCC.getValue() == "2"){selVal = 2;}
 	if(modelCC.getValue() == "3"){selVal = 3;}
 	if(modelCC.getValue() == "4"){selVal = 4;}
+	if(modelCC.getValue() == "8"){selVal = 8;}
+	if(modelCC.getValue() == "16"){selVal = 16;}
+	if(modelCC.getValue() == "32"){selVal = 32;}
 	tray.pollux.setMaturity(selVal);
 }
 
@@ -464,21 +487,29 @@ public void makeMenu(String a){
 		cellpicker.addChangeListener(this);
 		cellpicker.setMaximumSize(new Dimension(100,10));
 		matpicker.addChangeListener(this);
-		matpicker.setMaximumSize(new Dimension(10,10));
+		matpicker.setMaximumSize(new Dimension(40, 25));
+		matpicker.setMinimumSize(new Dimension(40, 25));
 		condirA.addChangeListener(this);
-		condirA.setMaximumSize(new Dimension(25,10));
+		condirA.setMaximumSize(new Dimension(40,25));
+		condirA.setMinimumSize(new Dimension(40, 25));
 		invA.addItemListener(this);
 		mirsel = new JButton("SelectMirror");mirsel.addActionListener(this);
+		parA.addItemListener(this);
+		recA.addItemListener(this);
 		
 		//components for secondary cell
 		Bcellpicker.addChangeListener(this);
 		Bcellpicker.setMaximumSize(new Dimension(100,10));
 		Bmatpicker.addChangeListener(this);
-		Bmatpicker.setMaximumSize(new Dimension(10,10));
+		Bmatpicker.setMaximumSize(new Dimension(40,25));
+		Bmatpicker.setMinimumSize(new Dimension(40, 25));
 		condirB.addChangeListener(this);
-		condirB.setMaximumSize(new Dimension(25,10));
+		condirB.setMaximumSize(new Dimension(40,25));
+		condirB.setMinimumSize(new Dimension(40,25));
 		invB.addItemListener(this);
 		mirselB = new JButton("Select Mirror");mirselB.addActionListener(this);
+		parB.addItemListener(this);
+		recB.addItemListener(this);
 		
 		//menu component holds all the components
 		cedit = new cellMenuComponent();
@@ -492,14 +523,14 @@ public void makeMenu(String a){
 					.addComponent(edc)
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(ccdcd)
-						.addComponent(rndcd))
+						.addComponent(rndcd))	
 					// cell fill
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(cf)
 						.addComponent(cellborder))
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(ccdcf)
-						.addComponent(rndcf))
+						.addComponent(rndcf))	
 					//primary cell
 					.addComponent(cellpicker)
 					.addGroup(celayout.createSequentialGroup()
@@ -507,7 +538,9 @@ public void makeMenu(String a){
 						.addComponent(condirA))
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(invA)
-						.addComponent(mirsel))
+						.addComponent(mirsel)
+						.addComponent(parA)
+						.addComponent(recA))		
 					//secondary cell
 					.addComponent(Bcellpicker)
 					.addGroup(celayout.createSequentialGroup()
@@ -515,7 +548,9 @@ public void makeMenu(String a){
 						.addComponent(condirB))
 					.addGroup(celayout.createSequentialGroup()
 						.addComponent(invB)
-						.addComponent(mirselB))
+						.addComponent(mirselB)
+						.addComponent(parB)
+						.addComponent(recB))
 				);
 				
 		celayout.setVerticalGroup(
@@ -539,7 +574,9 @@ public void makeMenu(String a){
 							.addComponent(condirA))
 					.addGroup(celayout.createParallelGroup()
 							.addComponent(invA)
-							.addComponent(mirsel))
+							.addComponent(mirsel)
+							.addComponent(parA)
+							.addComponent(recA))
 					//secondary cell
 					.addComponent(Bcellpicker)
 					.addGroup(celayout.createParallelGroup()
@@ -547,7 +584,9 @@ public void makeMenu(String a){
 							.addComponent(condirB))
 					.addGroup(celayout.createParallelGroup()
 							.addComponent(invB)
-							.addComponent(mirselB))
+							.addComponent(mirselB)
+							.addComponent(parB)
+							.addComponent(recB))
 				);
 		
 		ceframe = new JFrame("Cell Editor");
@@ -566,8 +605,8 @@ public void makeMenu(String a){
 	
 	// brings up cell-specific parameters on the editing menu
 	public void selCelOpt(int a, boolean b){
-		Component[] cellcontrolA = new Component[]{matpicker, condirA, invA, mirsel};
-		Component[] cellcontrolB = new Component[]{Bmatpicker, condirB, invB, mirselB};
+		Component[] cellcontrolA = new Component[]{matpicker, condirA, invA, mirsel, parA, recA};
+		Component[] cellcontrolB = new Component[]{Bmatpicker, condirB, invB, mirselB, parB, recB};
 		Component[] cellcontrolC;
 		boolean cpresent = false;
 		if(b){cellcontrolC = cellcontrolA;}else{cellcontrolC = cellcontrolB;}
