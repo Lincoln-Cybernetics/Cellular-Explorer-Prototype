@@ -85,6 +85,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 		castor = new cellOptionHandler();
 		pollux = new cellOptionHandler();
 		eris = new randcellOptionHandler();
+		eris.setInt("Xsiz", xsiz); eris.setInt("Ysiz", ysiz);
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
@@ -114,6 +115,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 		castor = new cellOptionHandler();
 		pollux = new cellOptionHandler();
 		eris = new randcellOptionHandler();
+		eris.setInt("Xsiz", xsiz); eris.setInt("Ysiz", ysiz);
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
@@ -194,13 +196,17 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								break;
 						case 6: culture[a][b] = new conway();
 								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
 								break;
 						case 7: culture[a][b] = new seeds();
 								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
 								break;
 						case 8: culture[a][b] = new parityCell();
 								culture[a][b].setInt("Mat", decider.getMaturity());
 								culture[a][b].setBool("Inv", decider.getInvert());
+								culture[a][b].setBool("Par", decider.getBool("Par"));
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
 								break;
 						case 9: culture[a][b] = new conveyorCell();
 								culture[a][b].setInt("Mat", decider.getMaturity());
@@ -807,10 +813,17 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if (xlocal > xsiz-1){xlocal = xsiz-1;}
 						if (ylocal > ysiz-1){ylocal = ysiz-1;}
 						
-						// hilite passed over cells
+						// hilight passed over cells
 						if(hiliteflag){if(mirselflag && editcellflag){int colsel; if(prisec){colsel = 1;}
 						else{colsel = 2;} bigboard.setHiLite(xlocal, ylocal, colsel);}
 						 }
+						// hilight a mirrorCell's targets as each mirrrorCell is moused over in the editor 
+						 if(mirselflag == false && editcellflag){
+						if(culture[xlocal][ylocal].hood == "Mirror"){bigboard.setHiLite(
+							culture[xlocal][ylocal].getInt("HX"),culture[xlocal][ylocal].getInt("HY"), 1);}
+						else{}	
+						}
+						
 						}
 						
 					public void mouseDragged(MouseEvent e) {
@@ -894,8 +907,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							
 						//mirror selection
 						if(editcellflag && mirselflag){
-							if(prisec){castor.setInt("MirrX", xlocal);castor.setInt("MirrY", ylocal); mirselflag = false; hiliteflag = false;}
-							else{pollux.setInt("MirrX", xlocal); pollux.setInt("MirrY", ylocal); mirselflag = false; hiliteflag = false;}
+							if(prisec){castor.setInt("MirrX", xlocal);castor.setInt("MirrY", ylocal); mirselflag = false;hiliteflag = false;}
+							else{pollux.setInt("MirrX", xlocal); pollux.setInt("MirrY", ylocal); mirselflag = false;hiliteflag = false;}
+							bigboard.setHiLite(xlocal, ylocal, 3);
 						}
 						
 						}
