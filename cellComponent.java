@@ -66,6 +66,9 @@ public class cellComponent extends JComponent
 //hilights a cell
 	public void setHiLite(int a, int b, int c){
 		hiliteflag = true; hlx = a; hly = b; hlc = c; repaint();}
+// remove hilight
+	public void remHilite(){
+		hiliteflag = false; repaint();}
 
 //main paint method
 public void paintComponent( Graphics g){
@@ -119,6 +122,9 @@ public void paintComponent( Graphics g){
 									case 2: g.setColor(Color.red); break;
 									case 3: g.setColor(Color.blue); break;
 									case 4: g.setColor(Color.black); break;
+									case 8: g.setColor(Color.yellow); break;
+									case 16: g.setColor(Color.cyan); break;
+									case 32: g.setColor(Color.magenta); break;
 									default: g.setColor(Color.green); break;
 								}
 								g.drawRect(x*magnify,y*magnify,magnify,magnify);
@@ -129,6 +135,7 @@ public void paintComponent( Graphics g){
 								switch(hlc){
 									case 1: g.setColor(Color.red); break;
 									case 2: g.setColor(Color.blue); break;
+									case 3: g.setColor(Color.orange); break;
 									default: g.setColor(Color.red); break;}
 								g.drawRect(x*magnify, y*magnify, magnify, magnify);
 									}}
