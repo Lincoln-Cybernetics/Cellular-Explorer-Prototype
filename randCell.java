@@ -30,7 +30,7 @@ class randCell extends cell{
 
 class conway extends cell{
 	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat"};
+	static String[] controls = new String[]{"Mat", "Rec"};
 	static int ccount = 0;
 	public conway(){
 		neighbors = new boolean[3][3];
@@ -71,7 +71,7 @@ class conway extends cell{
 		
 class seeds extends cell{
 	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat"};
+	static String[] controls = new String[]{"Mat", "Rec"};
 	static int ccount = 0;
 		public seeds(){
 			neighbors = new boolean[3][3];
@@ -110,7 +110,7 @@ class seeds extends cell{
 
 class parityCell extends cell{
 	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat", "Inv"};
+	static String[] controls = new String[]{"Mat", "Inv", "Par", "Rec"};
 	static int ccount = 0;
 	// parameter
 	// even parity = false, odd parity = true
@@ -126,7 +126,7 @@ class parityCell extends cell{
 	}
 	
 	public void setBool( String a, boolean b){
-		if(a == "Parity"){parity = b;}
+		if(a == "Par"){parity = b;}
 		if(a == "Rec"){recursive = b;}
 		if(a == "Inv"){invert = b;}
 	}
