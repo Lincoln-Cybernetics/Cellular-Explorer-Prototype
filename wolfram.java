@@ -187,6 +187,6 @@ class mirrorCell extends cell{
 	}
 	
 	protected boolean calculate(){
-		 return neighbors[0][0];}
+		if(invert){return !neighbors[0][0];}else{ return neighbors[0][0];}}
 	
 }
