@@ -27,8 +27,8 @@ boolean sfcheck = false;
 boolean sfrand = false;
 // cell control options
 int cellcount = 13;
-int controlcount = 4;
-String[] conts = new String[]{"Mat","Dir","Inv", "Mir"};
+int controlcount = 6;
+String[] conts = new String[]{"Mat","Dir","Inv", "Mir", "Par", "Rec"};
 boolean[][] cellopts = new boolean[cellcount][controlcount];
 
 public automatonOptionHandler(){
