@@ -26,7 +26,7 @@ int sfo;
 boolean sfcheck = false;
 boolean sfrand = false;
 // cell control options
-int cellcount = 13;
+int cellcount = 14;
 int controlcount = 6;
 String[] conts = new String[]{"Mat","Dir","Inv", "Mir", "Par", "Rec"};
 boolean[][] cellopts = new boolean[cellcount][controlcount];
@@ -87,6 +87,7 @@ public void setCellOpts(){
 		if(wolfram.getControl() == conts[a]){cellopts[10][a] = true; wolfram.incControl();}else{cellopts[10][a] = false;}
 		if(symmetriCell.getControl() == conts[a]){cellopts[11][a] = true; symmetriCell.incControl();}else{cellopts[11][a] = false;}
 		if(mirrorCell.getControl() == conts[a]){cellopts[12][a] = true; mirrorCell.incControl();}else{cellopts[12][a] = false;}
+		if(majorityCell.getControl() == conts[a]){cellopts[13][a] = true; majorityCell.incControl();}else{cellopts[13][a] = false;}
 	}
 }
 		
