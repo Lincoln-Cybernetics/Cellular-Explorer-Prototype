@@ -74,7 +74,7 @@ class randcellOptionHandler extends cellOptionHandler{
 	}
 		
 	// generate random cells
-	public int getCT(){ return shovel.nextInt(13);}
+	public int getCT(){ return shovel.nextInt(14);}
 	public int getMaturity(){int ranmat =  shovel.nextInt(4); ranmat +=1; return ranmat;}
 	public int getDirection(){return shovel.nextInt(8);}
 	public boolean getInvert(){return shovel.nextBoolean();}
