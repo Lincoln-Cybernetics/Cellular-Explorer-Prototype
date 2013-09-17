@@ -190,3 +190,61 @@ class mirrorCell extends cell{
 		if(invert){return !neighbors[0][0];}else{ return neighbors[0][0];}}
 	
 }
+
+class majorityCell extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Inv", "Rec"};
+	static int ccount = 0;
+	boolean invert;
+	boolean recursive;
+	boolean self;
+	
+	public majorityCell(){
+		neighbors = new boolean[3][3];
+		hood = "Moore";
+		maturity = 1;
+		invert = false;
+		recursive = true;
+	}
+	
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+		}
+		
+	public void setInt(String a, int b){
+		if(a == "Mat"){maturity = b;}	
+	}
+	
+	public void setBool(String a, boolean b){
+		if(a == "Inv"){invert = b;}
+		if(a == "Rec"){recursive = b;}
+	}
+	
+	public int getInt(String a){
+		if(a == "Mat"){ return maturity;}
+		else{ return counter;}
+	}
+	
+	public boolean getBool( String a){
+		if(a == "Inv"){return invert;}
+		if(a == "Rec"){return recursive;}
+		else{return self;}
+	}
+	
+	protected boolean calculate(){
+		int ons = 0; int offs = 0; active = false;
+		for(int y = 0; y <= 2; y++){
+			for(int x = 0; x <= 2; x++){
+				if(x == 1 && y == 1){ if(recursive){if(neighbors[x][y]){ons += 1;}else{offs += 1;}}}
+				else{if(neighbors[x][y]){ons += 1;}else{offs += 1;}}
+			}}
+			if(ons > offs){ return true;}
+			if(offs > ons){ return false;}
+			if(ons == offs){ return self;}
+			return self;}		
+}
