@@ -64,7 +64,7 @@ Checkbox interact = new Checkbox("Interactive");
 
  // cell type selection
 String[] cells = new String[]{"Cell", "offCell", "onCell", "BlinkCell", "sequenceCell","randomCell", "Life",
- "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror"};
+ "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror", "Majority"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
@@ -343,6 +343,7 @@ public void setWC(){
 		if(modelA.getValue()=="Wolfram"){selVal = 10;}
 		if(modelA.getValue()=="Symmetrical"){selVal = 11;}
 		if(modelA.getValue()=="Mirror"){selVal = 12;}
+		if(modelA.getValue()=="Majority"){selVal = 13; recA.setState(true);}
 		
 	tray.castor.setCT(selVal);
 	selCelOpt(selVal,true);
@@ -363,6 +364,7 @@ public void setWCB(){
 		if(modelAA.getValue()=="Wolfram"){selVal = 10;}
 		if(modelAA.getValue()=="Symmetrical"){selVal = 11;}
 		if(modelAA.getValue()=="Mirror"){selVal = 12;}
+		if(modelAA.getValue()=="Majority"){selVal = 13; recB.setState(true);}
 		
 	tray.pollux.setCT(selVal);
 	selCelOpt(selVal, false);
