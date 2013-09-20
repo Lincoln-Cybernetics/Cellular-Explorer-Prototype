@@ -50,9 +50,18 @@ boolean ceflag = false;
 JButton about;
 
 //cell/state editing
-Checkbox tbt = new Checkbox("3x3");
 Checkbox ccd = new Checkbox("Checkerboard");
 Checkbox rnd = new Checkbox("Random");
+
+// Brush selection
+
+JRadioButton oneby = new JRadioButton("1x1", true);
+JRadioButton twoby = new JRadioButton("2x2", false);
+JRadioButton threeby = new JRadioButton("3x3", false);
+ButtonGroup brushes = new ButtonGroup();
+
+
+//Checkbox tbt = new Checkbox("3x3");
 
 // cell editing
 Checkbox ccdcd = new Checkbox("Check");
@@ -93,8 +102,8 @@ JButton mirsel;
 JButton mirselB;
 
 //parity control (false = even, true = odd)
-Checkbox parA = new Checkbox("Parity");
-Checkbox parB = new Checkbox("Parity");
+Checkbox parA = new Checkbox("Even");
+Checkbox parB = new Checkbox("Even");
 
 // recursive setting
 Checkbox recA = new Checkbox("Recursive");
@@ -148,12 +157,17 @@ public controlComponent(){
 	add(clear);
 	add(rnd);
 	add(ccd);
-	add(tbt);
+	add(oneby);
+	add(twoby);
+	add(threeby);
 	add(interact);
 	add(hwrap);
 	add(vwrap);
 	add(about);
 	
+	brushes.add(oneby);
+	brushes.add(twoby);
+	brushes.add(threeby);
 	
 	scon.addChangeListener(this);
 	ss.addActionListener(this);
@@ -165,7 +179,9 @@ public controlComponent(){
 	clear.addActionListener(this);
 	rnd.addItemListener(this);
 	ccd.addItemListener(this);
-	tbt.addItemListener(this);
+	oneby.addActionListener(this);
+	twoby.addActionListener(this);
+	threeby.addActionListener(this);
 	interact.addItemListener(this);
 	hwrap.addItemListener(this);
 	vwrap.addItemListener(this);
@@ -204,6 +220,14 @@ public void actionPerformed(ActionEvent e){
 	else{tray.sfflag = true; tray.sfopt = 2;}
 	}
 	
+	//brush selection
+	//basic 1x1
+	if(e.getSource() == oneby){ tray.merlin.setBrush(1);}
+	// 2x2 brush
+	if(e.getSource() == twoby){ tray.merlin.setBrush(2);}
+	//3x3 brush
+	if(e.getSource() == threeby){ tray.merlin.setBrush(3);}
+	
 	// Edit State button goes to/from state editing mode
 	if(e.getSource() == eds){ if (tray.editflag == false){ pflag = true; tray.setPause(true);
 	tray.setEdit(true);}
@@ -211,12 +235,14 @@ public void actionPerformed(ActionEvent e){
 	
 	// State Fill button set the on/off state of all cells
 	if(e.getSource() == stf){int option = 1; if(ccd.getState()){option = 2;} if(rnd.getState()){option = 3;} 
-	if(ccd.getState() && tbt.getState()){option = 4;}
+	if(ccd.getState() && tray.merlin.getBrush() == 3){option = 4;}
+	if(ccd.getState() && tray.merlin.getBrush() == 2){option = 5;}
 			switch(option){
 				case 1: if(tray.paused){tray.stateFill();}else{ tray.sfflag = true; tray.sfopt = 1;} break;
 				case 2: if(tray.paused){tray.stateCheckFill();}else{tray.sfflag =true; tray.sfopt =3;} break;
 				case 3: if(tray.paused){tray.stateRandFill();}else{tray.sfflag = true; tray.sfopt = 4;} break;
 				case 4: if(tray.paused){tray.stateCheckFilltbt();}else{tray.sfflag = true; tray.sfopt = 5;} break;
+				case 5: if(tray.paused){tray.stateCheckFill2x2();}else{tray.sfflag = true; tray.sfopt = 6;} break;
 				default:if(tray.paused){tray.stateCheckFill();}else{ tray.sfflag = true; tray.sfopt = 3;} break;}}
 		
 	//open the cell editor menu
@@ -229,10 +255,14 @@ public void actionPerformed(ActionEvent e){
 		else{tray.setCellEdit(false);}}	
 		
 	//Cell Fill button sets all cells
-	if(e.getSource() == cf){celleditoption = 1; if(tray.merlin.getCFO("Check")){celleditoption = 2;} 
-		if (tray.merlin.getCFO("Rand")){ celleditoption = 3;} if(ccd.getState() && tbt.getState()){celleditoption = 4;} 
+	if(e.getSource() == cf){celleditoption = 1; 
+		if(tray.merlin.getCFO("Check")){celleditoption = 2;} 
+		if (tray.merlin.getCFO("Rand")){ celleditoption = 3;} 
+		if(tray.merlin.getCFO("Check") && tray.merlin.getCFO("Rand") == false && tray.merlin.getBrush() == 3){celleditoption = 4;} 
 		if(tray.merlin.getCFO("Rand") && tray.merlin.getCFO("Check")){celleditoption = 5;} 
-		if(tray.merlin.getCFO("Rand") && tray.merlin.getCFO("Check") && tray.merlin.getBrush() == "3x3"){celleditoption = 6;}
+		if(tray.merlin.getCFO("Rand") && tray.merlin.getCFO("Check") && tray.merlin.getBrush() == 3){celleditoption = 6;}
+		if(tray.merlin.getCFO("Check") && tray.merlin.getCFO("Rand") == false && tray.merlin.getBrush() == 2){celleditoption = 7;}
+		if(tray.merlin.getCFO("Check") && tray.merlin.getCFO("Rand") && tray.merlin.getBrush() == 2){celleditoption = 8;}
 			switch (celleditoption){
 				case 1: tray.cellFill(); break;
 				case 2: tray.cellCheckFill(); break;
@@ -240,6 +270,8 @@ public void actionPerformed(ActionEvent e){
 				case 4: tray.cellCheckFilltbt(1,2); break;
 				case 5: tray.cellRCFill(); break;
 				case 6: tray.cellCheckFilltbt(1,4); break;
+				case 7: tray.cellCheckFill2x2(1,2); break;
+				case 8: tray.cellCheckFill2x2(1,4); break;
 				default: tray.cellFill(); break; }}
 	
 	// the Set Border button sets the cells at the edge of the automaton
@@ -287,8 +319,8 @@ public void itemStateChanged(ItemEvent e){
 	
 	if (cflag){
 	
-	if(e.getItemSelectable() == tbt){if (tbt.getState()){tray.tbtflag = true;tray.merlin.setBrush("3x3");}
-	else{tray.tbtflag = false;tray.merlin.setBrush("Normal");}}
+	//if(e.getItemSelectable() == tbt){if (tbt.getState()){tray.tbtflag = true;tray.merlin.setBrush("3x3");}
+	//else{tray.tbtflag = false;tray.merlin.setBrush("Normal");}}
 	
 	if(e.getItemSelectable() == ccd){if (ccd.getState()){tray.merlin.setSDO("Check", true);tray.merlin.setSFO("Check", true);}
 	else{tray.merlin.setSDO("Check", false);tray.merlin.setSFO("Check", false);}}
@@ -317,9 +349,9 @@ public void itemStateChanged(ItemEvent e){
 	
 	if(e.getItemSelectable() == invB){if(invB.getState()){tray.pollux.setInvert(true);}else{tray.pollux.setInvert(false);}}
 	
-	if(e.getItemSelectable() == parA){tray.castor.setBool("Par", parA.getState());}
+	if(e.getItemSelectable() == parA){tray.castor.setBool("Par", parA.getState());if(parA.getState()){parA.setLabel("Odd");}else{parA.setLabel("Even");}}
 	
-	if(e.getItemSelectable() == parB){tray.pollux.setBool("Par", parB.getState());}
+	if(e.getItemSelectable() == parB){tray.pollux.setBool("Par", parB.getState());if(parB.getState()){parB.setLabel("Odd");}else{parB.setLabel("Even");}}
 	
 	if(e.getItemSelectable() == recA){tray.castor.setBool("Rec", recA.getState());}
 	
