@@ -6,7 +6,7 @@ boolean xwrap = false;
 boolean ywrap = false;
 int ztime = 2000;
 // brush options	
-String brush = "Normal";
+int brush = 1;
 // cell drawing options
 int cdo;
 boolean cdcheck = false;
@@ -46,7 +46,7 @@ public void setZT(int a){
 	ztime = a;}
 
 // drawing brush
-public void setBrush(String a){
+public void setBrush(int a){
 	brush = a;}
 //celldrawing	
 public void setCDO(String a, boolean b){
@@ -105,7 +105,7 @@ public int getZT(){
 	return ztime;}
 
 // brush
-public String getBrush(){
+public int getBrush(){
 	return brush;}
 //cell drawing
 public boolean getCDO(String a){
