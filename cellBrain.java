@@ -161,11 +161,11 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				
 				// enters/exits state edit mode
 				public void setEdit(boolean a){
-					editflag = a; if(a){bigboard.setMode(2);} else{bigboard.setMode(1);}}
+					editflag = a; if(a){bigboard.setMode(2);} else{bigboard.setMode(merlin.getDisp());}}
 					
 				// enters/exits cell edit mode
 				public void setCellEdit(boolean a){
-					editcellflag = a; if(a){bigboard.setMode(3);}else{bigboard.setMode(1);}}
+					editcellflag = a; if(a){bigboard.setMode(3);}else{bigboard.setMode(merlin.getDisp());bigboard.remHilite();}}
 				
 				
 				//makes the cells
@@ -868,6 +868,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if(culture[x][y].getNeighborhood() == "Mirror"){
 							culture[x][y].setNeighbors(getSelf(culture[x][y].getInt("HX"), culture[x][y].getInt("HY")));
 							newstate[x][y] = culture[x][y].iterate();}
+							
+						//set age for multicolor mode
+						if(bigboard.getMode() == 4){bigboard.setAge(x,y,newstate[x][y]);}
 					}}
 					
 					// cycles new values into current state
