@@ -13,6 +13,8 @@ public class cellComponent extends JComponent
 	boolean[][] cstate;
 	int[][] species;
 	int[][] lifespan;
+	int[][] age;
+	int[][] ageclass;
 	int[][] orientation;
 	int hlx = 0;
 	int hly = 0;
@@ -26,6 +28,8 @@ public class cellComponent extends JComponent
 		cstate = new boolean[xdim][ydim];
 		species = new int[xdim][ydim];
 		lifespan = new int[xdim][ydim];
+		age = new int[xdim][ydim];
+		ageclass = new int[xdim][ydim];
 		orientation = new int[xdim][ydim];
 		setPreferredSize(new Dimension(xdim*magnify, ydim*magnify));
 	}
@@ -37,6 +41,8 @@ public class cellComponent extends JComponent
 		cstate = new boolean[xdim][ydim];
 		species = new int[xdim][ydim];
 		lifespan = new int[xdim][ydim];
+		age = new int[xdim][ydim];
+		ageclass = new int[xdim][ydim];
 		orientation = new int[xdim][ydim];
 		setPreferredSize(new Dimension(xdim*magnify, ydim*magnify));
 
@@ -47,7 +53,12 @@ public class cellComponent extends JComponent
 		repaint();}
 		
 	public void setMode(int a){
-		mode = a; repaint();}
+		mode = a; repaint();
+		/*Mode 1: normal rendering for running the automaton
+		 *Mode 2: state editing mode
+		 *Mode 3: Cell editing mode 
+		 *Mode 4: multicolor mode 
+		 */}
 		
 	public void setMag(int a){
 		magnify = a; repaint();}
@@ -57,6 +68,18 @@ public class cellComponent extends JComponent
 		
 	public void setLifespan(int a, int b, int c){
 		lifespan[a][b] = c;}
+		
+	public void setAge(int x, int y, boolean a){
+		if(a){ age[x][y] += 1;}else{age[x][y] = 0;}
+		if (age[x][y] == 0){ageclass[x][y] = 0;}
+		if (age[x][y] == 1){ageclass[x][y] = 1;}
+		if (age[x][y] == 2){ageclass[x][y] = 2;}
+		if (age[x][y] == 4){ageclass[x][y] = 3;}
+		if (age[x][y] == 8){ageclass[x][y] = 4;}
+		if(age[x][y] == 16){ageclass[x][y] = 5;}
+		if(age[x][y] == 32){ageclass[x][y] = 6;}
+		if(age[x][y] == 64){ageclass[x][y] = 7;}
+	}
 
 //get variables
 
@@ -129,7 +152,23 @@ public void paintComponent( Graphics g){
 									default: g.setColor(Color.green); break;
 								}
 								g.drawRect(x*magnify,y*magnify,magnify,magnify);
+							}
+							
+							//multicolor rendering
+							if (mode == 4){
+								switch(ageclass[x][y]){
+									case 0: g.setColor(Color.black);break;
+									case 1: g.setColor(Color.white);break;
+									case 2: g.setColor(Color.green);break;
+									case 3: g.setColor(Color.yellow);break;
+									case 4: g.setColor(Color.orange);break;
+									case 5: g.setColor(Color.red);break;
+									case 6: g.setColor(new Color(156,21,7));break;
+									case 7: g.setColor(new Color(144,68,21));break;
+									default: g.setColor(Color.black);break;}
 								
+								g.fillRect(x*magnify,y*magnify,magnify,magnify);}
+						
 								// hilite a hilited cell
 								if(hiliteflag){
 									if(x == hlx && y == hly){
@@ -141,7 +180,7 @@ public void paintComponent( Graphics g){
 								g.drawRect(x*magnify, y*magnify, magnify, magnify);
 									}}
 									
-								}
+								
 								
 							
 								
