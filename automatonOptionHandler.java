@@ -30,6 +30,8 @@ int cellcount = 14;
 int controlcount = 6;
 String[] conts = new String[]{"Mat","Dir","Inv", "Mir", "Par", "Rec"};
 boolean[][] cellopts = new boolean[cellcount][controlcount];
+// display options
+int dispopt;
 
 public automatonOptionHandler(){
 	setCellOpts();
@@ -90,6 +92,10 @@ public void setCellOpts(){
 		if(majorityCell.getControl() == conts[a]){cellopts[13][a] = true; majorityCell.incControl();}else{cellopts[13][a] = false;}
 	}
 }
+
+// set display options
+public void setDisp(int a){
+	dispopt = a;}
 		
 
 		
@@ -140,4 +146,8 @@ public boolean getSFO(String a){
 public boolean getCellOpt(int a, int b){
 	return cellopts[a][b];
 }
+
+// display options
+public int getDisp(){
+	return dispopt;}
 }
