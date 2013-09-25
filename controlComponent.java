@@ -61,8 +61,6 @@ JRadioButton threeby = new JRadioButton("3x3", false);
 ButtonGroup brushes = new ButtonGroup();
 
 
-//Checkbox tbt = new Checkbox("3x3");
-
 // cell editing
 Checkbox ccdcd = new Checkbox("Check");
 Checkbox ccdcf = new Checkbox("Check");
@@ -109,7 +107,7 @@ Checkbox parB = new Checkbox("Even");
 Checkbox recA = new Checkbox("Recursive");
 Checkbox recB = new Checkbox("Recursive");
 
-
+//automaton rules
 //speed control
 String[] speed = new String[]{"Very Slow", "Slow", "Fast", "Very Fast"};
 SpinnerListModel modelB = new SpinnerListModel(speed);
@@ -119,11 +117,14 @@ JSpinner scon = new JSpinner(modelB);
 Checkbox hwrap = new Checkbox("Wrap-X");
 Checkbox vwrap = new Checkbox("Wrap-Y");
 
+//"Fade" rule
+Checkbox fade = new Checkbox("Fade");
+
 // multicolor mode
 Checkbox multiC = new Checkbox("Multicolor");
 
 cellBrain tray;
-//int windowflag = 0;
+
 
 boolean firstflag;
 boolean pflag;
@@ -166,6 +167,7 @@ public controlComponent(){
 	add(interact);
 	add(hwrap);
 	add(vwrap);
+	add(fade);
 	add(multiC);
 	add(about);
 	
@@ -189,6 +191,7 @@ public controlComponent(){
 	interact.addItemListener(this);
 	hwrap.addItemListener(this);
 	vwrap.addItemListener(this);
+	fade.addItemListener(this);
 	multiC.addItemListener(this);
 	about.addActionListener(this);
 	
@@ -338,6 +341,9 @@ public void itemStateChanged(ItemEvent e){
 	
 	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray.merlin.setWrap("Y", true);}
 	else{tray.merlin.setWrap("Y", false);}}
+	
+	if(e.getItemSelectable() == fade){if(fade.getState()){tray.merlin.setDisp(5);tray.merlin.setBool("Fade", true);tray.bigboard.setMode(5);}
+	else{tray.merlin.setBool("Fade",false);tray.bigboard.setMode(1);}}
 	
 	if(e.getItemSelectable() == multiC){if(multiC.getState()){tray.merlin.setDisp(4);if(tray.bigboard.getMode() == 1){tray.bigboard.setMode(4);}}
 	else{tray.merlin.setDisp(1);if(tray.bigboard.getMode() == 4){tray.bigboard.setMode(1);}}}
