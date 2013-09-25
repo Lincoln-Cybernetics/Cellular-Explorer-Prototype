@@ -1,10 +1,26 @@
+/*Cellular Explorer Prototype proof of concept
+ * Copyright(C) 02013 Matt Ahlschwede
+ *  This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 public class automatonOptionHandler{
 
 //automaton options
 boolean xwrap = false;
 boolean ywrap = false;
 int ztime = 2000;
+//automaton rules
+boolean fadeflag = false;
 // brush options	
 int brush = 1;
 // cell drawing options
@@ -93,6 +109,11 @@ public void setCellOpts(){
 	}
 }
 
+// set general boolean options
+public void setBool(String a, boolean b){
+	if(a == "Fade"){fadeflag = b;}
+}
+
 // set display options
 public void setDisp(int a){
 	dispopt = a;}
@@ -150,4 +171,10 @@ public boolean getCellOpt(int a, int b){
 // display options
 public int getDisp(){
 	return dispopt;}
+	
+// get general booleans
+public boolean getBool(String a){
+	if(a == "Fade"){return fadeflag;}
+	return false;
+}
 }
