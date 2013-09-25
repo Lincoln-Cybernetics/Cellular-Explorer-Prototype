@@ -871,6 +871,8 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							
 						//set age for multicolor mode
 						if(bigboard.getMode() == 4){bigboard.setAge(x,y,newstate[x][y]);}
+						// set age for the fade rule
+						if(merlin.getBool("Fade")){bigboard.setAge(x,y,newstate[x][y]);if(bigboard.getAgeClass(x,y) == 0){newstate[x][y] = false;}}
 					}}
 					
 					// cycles new values into current state
