@@ -3,7 +3,21 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.Random;
 import javax.swing.event.*;
+/*Cellular Explorer Prototype proof of concept
+ * Copyright(C) 02013 Matt Ahlschwede
+ *  This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 public class cellComponent extends JComponent 
 {
 	int xdim;
@@ -71,6 +85,7 @@ public class cellComponent extends JComponent
 		
 	public void setAge(int x, int y, boolean a){
 		if(a){ age[x][y] += 1;}else{age[x][y] = 0;}
+		if(mode == 4){
 		if (age[x][y] == 0){ageclass[x][y] = 0;}
 		if (age[x][y] == 1){ageclass[x][y] = 1;}
 		if (age[x][y] == 2){ageclass[x][y] = 2;}
@@ -80,11 +95,32 @@ public class cellComponent extends JComponent
 		if(age[x][y] == 32){ageclass[x][y] = 6;}
 		if(age[x][y] == 64){ageclass[x][y] = 7;}
 	}
+	if (mode == 5){
+		if(age[x][y] == 0){ageclass[x][y] = 0;}
+		else{if(age[x][y] == 1){ageclass[x][y] = 255;}
+				if(age[x][y] == 33){ageclass[x][y] = 223;}
+				if(age[x][y] == 65){ageclass[x][y] = 191;}
+				if(age[x][y] == 97){ageclass[x][y] = 159;}
+				if(age[x][y] == 129){ageclass[x][y] = 127;}
+				if(age[x][y] == 161){ageclass[x][y] = 95;}
+				if(age[x][y] == 193){ageclass[x][y] = 63;}
+				if(age[x][y] == 225){ageclass[x][y] = 31;}
+				//ageclass[x][y] = 256-age[x][y];
+				if(age[x][y] == 255){ageclass[x][y] = 0;}
+				}
+	}
+	}
+	
+public void setAgeClass(int a, int b, int c){
+	ageclass[a][b] = c;}
 
 //get variables
 
 	public int getMode(){
 		return mode;}
+		
+	public int getAgeClass(int a, int b){
+		return ageclass[a][b];}
 
 //hilights a cell
 	public void setHiLite(int a, int b, int c){
@@ -168,6 +204,11 @@ public void paintComponent( Graphics g){
 									default: g.setColor(Color.black);break;}
 								
 								g.fillRect(x*magnify,y*magnify,magnify,magnify);}
+						
+						// rendering for the "Fade" rule
+						if (mode == 5){
+							g.setColor(new Color(ageclass[x][y], ageclass[x][y], ageclass[x][y]));
+							g.fillRect(x*magnify,y*magnify,magnify,magnify);}
 						
 								// hilite a hilited cell
 								if(hiliteflag){
