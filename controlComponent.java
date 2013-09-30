@@ -60,6 +60,11 @@ JRadioButton twoby = new JRadioButton("2x2", false);
 JRadioButton threeby = new JRadioButton("3x3", false);
 ButtonGroup brushes = new ButtonGroup();
 
+// selection tools
+JButton selall;
+JButton selcel;
+JButton desel;
+Checkbox hidsel = new Checkbox("Hide Selection");
 
 // cell editing
 Checkbox ccdcd = new Checkbox("Check");
@@ -128,6 +133,7 @@ cellBrain tray;
 
 boolean firstflag;
 boolean pflag;
+boolean selflag = false;
 boolean cflag = false;
 int xx = 0;
 int yy = 0;
@@ -147,6 +153,9 @@ public controlComponent(){
 	stf = new JButton ("State Fill");
 	celledit = new JButton("Cell Editor");
 	clear = new JButton("Clear");
+	selall = new JButton("Select All");
+	selcel = new JButton("Select Cell");
+	desel = new JButton("Deselect");
 	about = new JButton("About");
 	setLayout( new FlowLayout() );
 	
@@ -164,6 +173,10 @@ public controlComponent(){
 	add(oneby);
 	add(twoby);
 	add(threeby);
+	add(selall);
+	add(selcel);
+	add(desel);
+	add(hidsel);
 	add(interact);
 	add(hwrap);
 	add(vwrap);
@@ -188,6 +201,10 @@ public controlComponent(){
 	oneby.addActionListener(this);
 	twoby.addActionListener(this);
 	threeby.addActionListener(this);
+	selall.addActionListener(this);
+	selcel.addActionListener(this);
+	desel.addActionListener(this);
+	hidsel.addItemListener(this);
 	interact.addItemListener(this);
 	hwrap.addItemListener(this);
 	vwrap.addItemListener(this);
@@ -236,9 +253,20 @@ public void actionPerformed(ActionEvent e){
 	//3x3 brush
 	if(e.getSource() == threeby){ tray.merlin.setBrush(3);}
 	
+	// selection tools
+	// select all
+	if(e.getSource() == selall){selflag = true;tray.harry.selectAll(); tray.bigboard.selAll();}
+	// select a cell
+	if(e.getSource() == selcel){if(selflag == false){tray.setSelection(1);selflag = true;tray.merlin.setMAction("SSel");selcel.setText("Selection done");}
+	else{tray.setSelection(2);selflag = false;selcel.setText("Select Cell");tray.bigboard.remHilite();if(tray.bigboard.getMode() == 3){tray.merlin.setMAction("CDraw");}
+	else{tray.merlin.setMAction("SDraw");}}}
+	
+	//deselect
+	if(e.getSource() == desel){selflag = false;tray.harry.deselect();tray.bigboard.deSel();}
+	
 	// Edit State button goes to/from state editing mode
 	if(e.getSource() == eds){ if (tray.editflag == false){ pflag = true; tray.setPause(true);
-	tray.setEdit(true);}
+	tray.setEdit(true);tray.merlin.setMAction("SDraw");}
 	else{tray.setEdit(false);}}
 	
 	// State Fill button set the on/off state of all cells
@@ -259,8 +287,8 @@ public void actionPerformed(ActionEvent e){
 	// Edit Cell button goes to/from cell editing mode	
 	if(e.getSource() == edc){ 
 	if(tray.editcellflag == false){pflag = true;
-	tray.setPause(true); tray.setCellEdit(true);}
-		else{tray.setCellEdit(false);}}	
+	tray.setPause(true); tray.setCellEdit(true);tray.merlin.setMAction("CDraw");}
+		else{tray.setCellEdit(false);tray.merlin.setMAction("SDraw");}}	
 		
 	//Cell Fill button sets all cells
 	if(e.getSource() == cf){celleditoption = 1; 
@@ -290,10 +318,10 @@ public void actionPerformed(ActionEvent e){
 		
 	// mirror cell neighborhood selectors
 	if(e.getSource() == mirsel){
-	tray.mirSel(true);
+	tray.mirSel(true);tray.merlin.setMAction("Mirsel");
 	}
 	if(e.getSource() == mirselB){
-		tray.mirSel(false);
+		tray.mirSel(false);tray.merlin.setMAction("Mirsel");
 	}
 }
 	
@@ -333,6 +361,9 @@ public void itemStateChanged(ItemEvent e){
 	if(e.getItemSelectable() == rnd){if (rnd.getState()){tray.merlin.setSDO("Rand", true);tray.merlin.setSFO("Rand", true);}
 	else{tray.merlin.setSDO("Rand", false);tray.merlin.setSFO("Rand", false);}}
 	
+	if(e.getItemSelectable() == hidsel){if(hidsel.getState() == true){tray.bigboard.setSelect(false);tray.bigboard.repaint();}
+	else{tray.bigboard.setSelect(true);tray.bigboard.repaint();}}
+	
 	if(e.getItemSelectable() == interact){if(interact.getState()){tray.merlin.setSDO("Interactive", true);}
 	else{tray.merlin.setSDO("Interactive", false);}}
 	
@@ -342,10 +373,10 @@ public void itemStateChanged(ItemEvent e){
 	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray.merlin.setWrap("Y", true);}
 	else{tray.merlin.setWrap("Y", false);}}
 	
-	if(e.getItemSelectable() == fade){if(fade.getState()){tray.merlin.setDisp(5);tray.merlin.setBool("Fade", true);tray.bigboard.setMode(5);}
-	else{tray.merlin.setBool("Fade",false);tray.bigboard.setMode(1);}}
+	if(e.getItemSelectable() == fade){if(fade.getState()){tray.merlin.setDisp(5);tray.merlin.setBool("Fade", true);if(tray.bigboard.getMode() == 1 || tray.bigboard.getMode() == 4){tray.bigboard.setMode(5);}}
+	else{tray.merlin.setBool("Fade",false);tray.merlin.setDisp(1);if(tray.bigboard.getMode() == 5){tray.bigboard.setMode(1);}}}
 	
-	if(e.getItemSelectable() == multiC){if(multiC.getState()){tray.merlin.setDisp(4);if(tray.bigboard.getMode() == 1){tray.bigboard.setMode(4);}}
+	if(e.getItemSelectable() == multiC){if(multiC.getState()){tray.merlin.setDisp(4);if(tray.bigboard.getMode() == 1 || tray.bigboard.getMode() == 5){tray.bigboard.setMode(4);}}
 	else{tray.merlin.setDisp(1);if(tray.bigboard.getMode() == 4){tray.bigboard.setMode(1);}}}
 	
 	if(e.getItemSelectable() == ccdcd){if(ccdcd.getState()){tray.merlin.setCDO("Check",true);}else{tray.merlin.setCDO("Check", false);}}
