@@ -1,5 +1,19 @@
 
+/*Cellular Explorer Prototype proof of concept
+ * Copyright(C) 02013 Matt Ahlschwede
+ *  This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 class wolfram extends cell{
 	// array that determines what parameters can be set for this type of cell
 	static String[] controls = new String[]{"Mat", "Dir"};
@@ -50,8 +64,8 @@ class wolfram extends cell{
 		if(neighbors[2][0]){if(direction > 0 && direction < 5){cellstate += 1;} else{cellstate += 4;}}
 	
 	// determine the on/off state of the cell
-	active = rule[cellstate];
-	return active;
+	return rule[cellstate];
+	
 
 }
 }
@@ -89,13 +103,13 @@ class symmetriCell extends cell{
 	}
 	
 	protected boolean calculate(){
-		int astate = 0; int bstate = 0; active = false;
+		int astate = 0; int bstate = 0; boolean state = false;
 			// check for horizontal symmetry
 			if (direction == 4 || direction == 0 || direction == 8 || direction == 9){
 				if (neighbors[0][0]){astate += 1;} if (neighbors[2][0]){bstate += 1;}
 				if (neighbors[0][1]){astate += 2;} if (neighbors[2][1]){bstate += 2;}
 				if (neighbors[0][2]){astate += 4;} if (neighbors[2][2]){bstate += 4;}
-				if (astate == bstate){ if (direction != 9){active = true; return active;}}
+				if (astate == bstate){ if (direction != 9){state = true; return state;}}
 				else{if (direction == 9){return false;}}}
 				astate = 0; bstate = 0;
 				
@@ -104,7 +118,7 @@ class symmetriCell extends cell{
 				if (neighbors[1][0]){astate += 1;} if (neighbors[2][1]){bstate += 1;}
 				if (neighbors[0][0]){astate += 2;} if (neighbors[2][2]){bstate += 2;}
 				if (neighbors[0][1]){astate += 4;} if (neighbors[1][2]){bstate += 4;}
-				if (astate == bstate){ if (direction != 9){active = true; return active;}}
+				if (astate == bstate){ if (direction != 9){state = true; return state;}}
 				else{if (direction == 9){return false;}}}
 				astate = 0; bstate = 0;
 				
@@ -113,7 +127,7 @@ class symmetriCell extends cell{
 				if (neighbors[0][0]){astate += 1;} if (neighbors[0][2]){bstate += 1;}
 				if (neighbors[1][0]){astate += 2;} if (neighbors[1][2]){bstate += 2;}
 				if (neighbors[2][0]){astate += 4;} if (neighbors[2][2]){bstate += 4;}
-				if (astate == bstate){ if (direction != 9){active = true; return active;}}
+				if (astate == bstate){ if (direction != 9){state = true; return state;}}
 				else{if (direction == 9){return false;}}}
 				astate = 0; bstate = 0;
 
@@ -122,10 +136,10 @@ class symmetriCell extends cell{
 				if (neighbors[0][1]){astate += 1;} if (neighbors[1][0]){bstate += 1;}
 				if (neighbors[0][2]){astate += 2;} if (neighbors[2][0]){bstate += 2;}
 				if (neighbors[1][2]){astate += 4;} if (neighbors[2][1]){bstate += 4;}
-				if (astate == bstate){ if (direction != 9){active = true; return active;}}
+				if (astate == bstate){ if (direction != 9){state = true; return state;}}
 				else{if (direction == 9){return false;}}}
-				if(direction == 9){active = true;}
-				return active;}
+				if(direction == 9){state = true;}
+				return state;}
 	}
 	
 class mirrorCell extends cell{
