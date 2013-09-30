@@ -151,7 +151,7 @@ class blinkCell extends cell{
 		
 
 	//logic	
-	protected boolean calculate(){ return !self;}
+	protected boolean calculate(){ if(active){return false;}else{return true;}}
 	
 }
 
