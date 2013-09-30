@@ -25,6 +25,8 @@ public class cellComponent extends JComponent
 	int magnify;
 	int mode = 1;
 	boolean[][] cstate;
+	boolean[][] selection;
+	boolean selectionflag = false;
 	int[][] species;
 	int[][] lifespan;
 	int[][] age;
@@ -40,6 +42,7 @@ public class cellComponent extends JComponent
 		ydim = 300;
 		magnify = 5;
 		cstate = new boolean[xdim][ydim];
+		selection = new boolean[xdim][ydim];
 		species = new int[xdim][ydim];
 		lifespan = new int[xdim][ydim];
 		age = new int[xdim][ydim];
@@ -53,6 +56,7 @@ public class cellComponent extends JComponent
 		ydim = y;
 		magnify = 5;
 		cstate = new boolean[xdim][ydim];
+		selection = new boolean[xdim][ydim];
 		species = new int[xdim][ydim];
 		lifespan = new int[xdim][ydim];
 		age = new int[xdim][ydim];
@@ -65,6 +69,31 @@ public class cellComponent extends JComponent
 	public void setState(boolean update[][]){
 		cstate = update;
 		repaint();}
+	
+	// selects and deselects cells	
+	public void setSelection(int x, int y, boolean z){
+		selection[x][y] = z;}
+	
+	//selects all
+	public void selAll(){
+		selectionflag = true;
+		for (int y = 0; y<= ydim-1; y++){
+			for(int x = 0; x<= xdim-1; x++){
+				selection[x][y] = true;}}
+				repaint();}
+	
+	//selects none
+	public void deSel(){
+		selectionflag = false;
+		for (int y = 0; y<= ydim-1; y++){
+			for(int x = 0; x<= xdim-1; x++){
+				selection[x][y] = false;}}
+				repaint();}
+		
+	// 	shows or hides selection hilighting
+	public void setSelect(boolean a){
+		selectionflag = a;}
+		
 		
 	public void setMode(int a){
 		mode = a; repaint();
@@ -72,6 +101,7 @@ public class cellComponent extends JComponent
 		 *Mode 2: state editing mode
 		 *Mode 3: Cell editing mode 
 		 *Mode 4: multicolor mode 
+		 *Mode 5: Fade rule
 		 */}
 		
 	public void setMag(int a){
@@ -121,6 +151,12 @@ public void setAgeClass(int a, int b, int c){
 		
 	public int getAgeClass(int a, int b){
 		return ageclass[a][b];}
+		
+	public int getAge(int a, int b){
+		return age[a][b];}
+		
+	public boolean getSelect(){
+		return selectionflag;}
 
 //hilights a cell
 	public void setHiLite(int a, int b, int c){
@@ -221,7 +257,12 @@ public void paintComponent( Graphics g){
 								g.drawRect(x*magnify, y*magnify, magnify, magnify);
 									}}
 									
-								
+								//hilite a selection	
+								if(selectionflag){ 
+									if(selection[x][y]){
+										g.setColor(new Color(252,76,31));
+										g.drawRect(x*magnify, y*magnify, magnify, magnify);
+									}}
 								
 							
 								
