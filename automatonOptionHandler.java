@@ -21,6 +21,8 @@ boolean ywrap = false;
 int ztime = 2000;
 //automaton rules
 boolean fadeflag = false;
+//mouse actions
+String maction = "SDraw";
 // brush options	
 int brush = 1;
 // cell drawing options
@@ -47,7 +49,7 @@ int controlcount = 6;
 String[] conts = new String[]{"Mat","Dir","Inv", "Mir", "Par", "Rec"};
 boolean[][] cellopts = new boolean[cellcount][controlcount];
 // display options
-int dispopt;
+int dispopt = 1;
 
 public automatonOptionHandler(){
 	setCellOpts();
@@ -62,10 +64,20 @@ public void setWrap(String a, boolean b){
 
 public void setZT(int a){
 	ztime = a;}
+	
+// mouse action
+public void setMAction(String a){
+	maction = a;
+	/*mouse actions:
+	 * "SSel" select single cell
+	 * "CDraw" cell draw
+	 * "SDraw" state draw
+	 */ }
 
 // drawing brush
 public void setBrush(int a){
 	brush = a;}
+	
 //celldrawing	
 public void setCDO(String a, boolean b){
 	if(a == "Check"){if(b){cdcheck = true;}else{cdcheck = false;}}
@@ -130,6 +142,10 @@ public boolean getWrap(String a){
 
 public int getZT(){
 	return ztime;}
+	
+//get mouse action
+public String getMAction(){
+	return maction;}
 
 // brush
 public int getBrush(){
