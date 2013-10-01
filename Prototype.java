@@ -22,7 +22,7 @@ public class Prototype
 		JFrame cpanel = new JFrame("Cellular Explorer Prototype");
 		cpanel.getContentPane().add( new controlComponent() );
 		cpanel.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		cpanel.setSize(625,150);
+		cpanel.setSize(675,165);
 		cpanel.setResizable(false);
 		cpanel.setVisible(true);
 		
