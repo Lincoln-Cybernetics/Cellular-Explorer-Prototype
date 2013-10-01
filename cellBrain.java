@@ -148,7 +148,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				garden.getContentPane().add( new JScrollPane(bigboard) );
 				garden.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				garden.setSize(1000,500);
-				garden.setLocation(200,150);
+				garden.setLocation(200,165);
 				garden.setResizable(true);
 				garden.setVisible( true );}
 				
