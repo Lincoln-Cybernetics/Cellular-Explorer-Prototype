@@ -364,7 +364,7 @@ public void itemStateChanged(ItemEvent e){
 	if(e.getItemSelectable() == hidsel){if(hidsel.getState() == true){tray.bigboard.setSelect(false);tray.bigboard.repaint();}
 	else{tray.bigboard.setSelect(true);tray.bigboard.repaint();}}
 	
-	if(e.getItemSelectable() == interact){if(interact.getState()){tray.merlin.setSDO("Interactive", true);}
+	if(e.getItemSelectable() == interact){if(interact.getState()){tray.merlin.setSDO("Interactive", true);tray.merlin.setMAction("SDraw");}
 	else{tray.merlin.setSDO("Interactive", false);}}
 	
 	if(e.getItemSelectable() == hwrap){if(hwrap.getState()){tray.merlin.setWrap("X", true);}
@@ -670,7 +670,7 @@ public void makeMenu(String a){
 		ceframe.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		ceframe.setSize(200,500);
 		ceframe.setResizable(false);
-		ceframe.setLocation(0,150);
+		ceframe.setLocation(0,165);
 		cedit.setLayout(celayout);
 		ceframe.setVisible(true);
 		setWC();
