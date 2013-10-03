@@ -514,7 +514,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				public void stateClearFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-						stateAltDraw(x,y);}}
+						current[x][y] = false;}}
 						if(bigboard.getMode() == 1 || bigboard.getMode() == 2){bigboard.repaint();}
 						}
 						
