@@ -75,8 +75,8 @@ Checkbox rndcf = new Checkbox("Rand");
 Checkbox interact = new Checkbox("Interactive");
 
  // cell type selection
-String[] cells = new String[]{"Cell", "offCell", "onCell", "BlinkCell", "sequenceCell","randomCell", "Life",
- "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror", "Majority"};
+String[] cells = new String[]{"Cell", "offCell", "onCell", "BlinkCell", //"sequenceCell",
+"randomCell", "Life", "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror", "Majority"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
