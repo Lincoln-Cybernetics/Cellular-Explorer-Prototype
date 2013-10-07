@@ -167,12 +167,15 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					pauseflag = a;}
 					
 					// general editing methods
+					
+					//selection methods
 					public void setSelection(int a){
 						switch(a){
 							case 1: hiliteflag = true; singleselflag = true;bigboard.setSelect(true);break;
 							case 2: hiliteflag = false; singleselflag = false; break;
 						}
 					}
+				
 				
 				
 					// cell editing methods	
@@ -1054,10 +1057,20 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							bigboard.setHiLite(xlocal, ylocal, 3);merlin.setMAction("CDraw");
 						}}
 						
-						//single cell selection
+						// cell selection
 						if(merlin.getMAction() == "SSel"){
-						if(singleselflag){if(e.isMetaDown()){harry.removeCell(xlocal, ylocal);bigboard.setSelection(xlocal, ylocal, false);}
-						else{harry.selectCell(xlocal,ylocal); bigboard.setSelection(xlocal, ylocal, true);}}}
+						if(singleselflag){//if(e.isMetaDown()){harry.removeCell(xlocal, ylocal);bigboard.setSelection(xlocal, ylocal, false);}
+						//else{harry.selectCell(xlocal,ylocal); bigboard.setSelection(xlocal, ylocal, true);}
+						switch(merlin.getBrush()){
+							case 1: if(e.isMetaDown()){harry.removeCell(xlocal,ylocal);}else{harry.selectCell(xlocal,ylocal);}break;
+							case 2: if(e.isMetaDown()){harry.seltwoby(xlocal,ylocal,false);}else{harry.seltwoby(xlocal,ylocal,true);}break;
+							case 3: if(e.isMetaDown()){harry.selthreeby(xlocal,ylocal,false);}else{harry.selthreeby(xlocal,ylocal,true);}break;
+							default:if(e.isMetaDown()){harry.removeCell(xlocal,ylocal);}else{harry.selectCell(xlocal,ylocal);}break;
+						}}
+						for(int y = 0; y<= ysiz-1; y++){
+							for(int x = 0; x<= xsiz-1; x++){
+								bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+						}
 						
 						}
 					
