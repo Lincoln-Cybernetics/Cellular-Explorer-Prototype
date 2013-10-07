@@ -258,7 +258,7 @@ public void actionPerformed(ActionEvent e){
 	if(e.getSource() == selall){selflag = true;tray.harry.selectAll(); tray.bigboard.selAll();}
 	// select a cell
 	if(e.getSource() == selcel){if(selflag == false){tray.setSelection(1);selflag = true;tray.merlin.setMAction("SSel");selcel.setText("Selection done");}
-	else{tray.setSelection(2);selflag = false;selcel.setText("Select Cell");tray.bigboard.remHilite();if(tray.bigboard.getMode() == 3){tray.merlin.setMAction("CDraw");}
+	else{tray.setSelection(2);selflag = false;selcel.setText("Select Cells");tray.bigboard.remHilite();if(tray.bigboard.getMode() == 3){tray.merlin.setMAction("CDraw");}
 	else{tray.merlin.setMAction("SDraw");}}}
 	
 	//deselect
@@ -328,25 +328,26 @@ public void actionPerformed(ActionEvent e){
 	
 	if(e.getSource() == about){
 		JFrame cpanel = new JFrame("About");
-		String noticea = "Cellular Explorer Prototype proof of concept\n";
-  String noticeb ="Copyright(C) 02013 Matt Ahlschwede\n";
-  String noticec = "This program is free software: you can redistribute it and/or modify\n";
-  String noticed ="  it under the terms of the GNU General Public License as published by\n";
-  String noticee=  "the Free Software Foundation, either version 3 of the License, or\n";
-  String noticef =  "(at your option) any later version.\n";
-  String noticeg =  "This program is distributed in the hope that it will be useful,\n";
-  String noticeh =  "but WITHOUT ANY WARRANTY; without even the implied warranty of\n";
-  String noticei =  "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n";
-  String noticej =  "GNU General Public License for more details.\n";
-  String noticek =  "You should have received a copy of the GNU General Public License\n";
+		String noticea = "Cellular Explorer Prototype v. 0.0.2\nPowered by Lincoln Cybernetics.\nLincolnCybernetics.com\n";
+  String noticeb ="Copyright(C) 02013 Matt Ahlschwede\n\n";
+  String noticec = " This program is free software: you can redistribute it and/or\nmodify";
+  String noticed ="  it under the terms of the GNU General Public\nLicense as published by";
+  String noticee=  "the Free Software Foundation,\neither version 3 of the License, or";
+  String noticef =  "(at your option) any later version.\n\n";
+  String noticeg =  " This program is distributed in the hope that it will be useful,\n";
+  String noticeh =  "but WITHOUT ANY WARRANTY; without even the implied warranty of";
+  String noticei =  " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the";
+  String noticej =  "GNU General Public License for more details.\n\n";
+  String noticek =  " You should have received a copy of the GNU General Public License";
   String noticel =  "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
   String noticem = "The GPL is appended to the end of the file Prototype.java";
   String  notice = noticea+noticeb+noticec+noticed+noticee+noticef+noticeg+noticeh+noticei+noticej+noticek+noticel+noticem;
 		JTextPane sign = new JTextPane();
+		sign.setEditable(false);
 		sign.setText(notice);
 		cpanel.getContentPane().add(sign);
-
-		cpanel.setSize(400,500);
+		cpanel.setLocation(675,0);
+		cpanel.setSize(400,350);
 		cpanel.setVisible(true);
 	}
 }
