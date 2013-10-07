@@ -76,7 +76,12 @@ public void setMAction(String a){
 
 // drawing brush
 public void setBrush(int a){
-	brush = a;}
+	brush = a;
+	/*brushes
+	 * 1 = 1x1
+	 * 2 = 2x2
+	 * 3 = 3x3
+	 * */}
 	
 //celldrawing	
 public void setCDO(String a, boolean b){
