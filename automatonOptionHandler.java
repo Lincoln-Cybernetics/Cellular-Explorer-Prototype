@@ -72,6 +72,7 @@ public void setMAction(String a){
 	 * "SSel" select single cell
 	 * "CDraw" cell draw
 	 * "SDraw" state draw
+	 * "None" none
 	 */ }
 
 // drawing brush
