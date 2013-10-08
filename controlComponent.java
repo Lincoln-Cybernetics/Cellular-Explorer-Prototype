@@ -366,10 +366,10 @@ public void itemStateChanged(ItemEvent e){
 	else{tray.bigboard.setSelect(true);tray.bigboard.repaint();}}
 	
 	if(e.getItemSelectable() == interact){if(interact.getState()){tray.merlin.setSDO("Interactive", true);tray.merlin.setMAction("SDraw");}
-	else{tray.merlin.setSDO("Interactive", false);}}
+	else{tray.merlin.setSDO("Interactive", false);tray.merlin.setMAction("None");}}
 	
 	if(e.getItemSelectable() == hwrap){if(hwrap.getState()){tray.merlin.setWrap("X", true);}
-	else{tray.merlin.setWrap("Y", false);}}
+	else{tray.merlin.setWrap("X", false);}}
 	
 	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray.merlin.setWrap("Y", true);}
 	else{tray.merlin.setWrap("Y", false);}}
