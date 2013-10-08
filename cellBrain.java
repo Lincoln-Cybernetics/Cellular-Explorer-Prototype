@@ -1000,7 +1000,24 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							case 4: cellRandDraw(xlocal,ylocal); break;
 							default: cellDraw(xlocal, ylocal); break;
 							}}
-							bigboard.repaint();}}}
+							bigboard.repaint();}}
+							
+							// cell selection
+						if(merlin.getMAction() == "SSel"){
+						if(singleselflag){
+						switch(merlin.getBrush()){
+							case 1: if(e.isMetaDown()){harry.removeCell(xlocal,ylocal);}else{harry.selectCell(xlocal,ylocal);}break;
+							case 2: if(e.isMetaDown()){harry.seltwoby(xlocal,ylocal,false);}else{harry.seltwoby(xlocal,ylocal,true);}break;
+							case 3: if(e.isMetaDown()){harry.selthreeby(xlocal,ylocal,false);}else{harry.selthreeby(xlocal,ylocal,true);}break;
+							default:if(e.isMetaDown()){harry.removeCell(xlocal,ylocal);}else{harry.selectCell(xlocal,ylocal);}break;
+						}}
+						for(int y = 0; y<= ysiz-1; y++){
+							for(int x = 0; x<= xsiz-1; x++){
+								bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+						bigboard.repaint();
+						}
+						
+							}
 							
 					public void mouseEntered(MouseEvent e){}
 					
@@ -1059,8 +1076,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						
 						// cell selection
 						if(merlin.getMAction() == "SSel"){
-						if(singleselflag){//if(e.isMetaDown()){harry.removeCell(xlocal, ylocal);bigboard.setSelection(xlocal, ylocal, false);}
-						//else{harry.selectCell(xlocal,ylocal); bigboard.setSelection(xlocal, ylocal, true);}
+						if(singleselflag){
 						switch(merlin.getBrush()){
 							case 1: if(e.isMetaDown()){harry.removeCell(xlocal,ylocal);}else{harry.selectCell(xlocal,ylocal);}break;
 							case 2: if(e.isMetaDown()){harry.seltwoby(xlocal,ylocal,false);}else{harry.seltwoby(xlocal,ylocal,true);}break;
@@ -1070,6 +1086,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						for(int y = 0; y<= ysiz-1; y++){
 							for(int x = 0; x<= xsiz-1; x++){
 								bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+								bigboard.repaint();
 						}
 						
 						}
