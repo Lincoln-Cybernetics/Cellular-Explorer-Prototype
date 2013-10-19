@@ -30,10 +30,12 @@ class wolfram extends cell{
 	public void setInt( String a, int b){
 		if (a == "Mat"){maturity = b;}
 		if (a == "Dir"){direction = b; setDirHood();}
+		if(a == "FadeRate"){faderate = b;}
 		}
 		
 	public void setBool( String a, boolean b){
 		if (a == "Inv"){invert = b;}
+		if(a == "Fade"){fade = b;}
 	} 
 		
 	public void setBoola( String a, boolean b[]){
@@ -87,10 +89,12 @@ class symmetriCell extends cell{
 		// additional direction options for this cell include
 		// direction = 8: returns true if any symmetry is present
 		// direction = 9: returns true if all symmetries are present
+		if(a == "FadeRate"){faderate = b;}
 	}
 	
 	public void setBool( String a, boolean b){
 		if(a == "Inv"){invert = b;}
+		if(a == "Fade"){fade = b;}
 	}
 	
 	// get settable parameters
@@ -172,17 +176,20 @@ class mirrorCell extends cell{
 		if(a == "Mat"){maturity = b;}
 		if(a == "HX"){hoodX = b;}
 		if(a == "HY"){hoodY = b;}
+		if(a == "FadeRate"){ faderate = b;}
 	
 		
 	}
 	
 	public void setBool(String a, boolean b){
 		if(a == "Inv"){invert = b;}
+		if(a == "Fade"){fade = b;}
 	}
 	
 	public int getInt(String a){
 		if(a == "HX"){ return hoodX;}
 		if(a == "HY"){ return hoodY;}
+		if(a == "Age"){return age;}
 		else{ return counter;}
 	}
 	
@@ -231,16 +238,19 @@ class majorityCell extends cell{
 		}
 		
 	public void setInt(String a, int b){
-		if(a == "Mat"){maturity = b;}	
+		if(a == "Mat"){maturity = b;}
+		if(a == "FadeRate"){faderate = b;}	
 	}
 	
 	public void setBool(String a, boolean b){
 		if(a == "Inv"){invert = b;}
 		if(a == "Rec"){recursive = b;}
+		if(a == "Fade"){fade = b;}
 	}
 	
 	public int getInt(String a){
 		if(a == "Mat"){ return maturity;}
+		if(a == "Age"){return age;}
 		else{ return counter;}
 	}
 	
@@ -261,4 +271,136 @@ class majorityCell extends cell{
 			if(offs > ons){ return false;}
 			if(ons == offs){ return self;}
 			return self;}		
+}
+
+class gnarl extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Inv", "Rec"};
+	static int ccount = 0;
+	
+	public gnarl(){
+		neighbors = new boolean[3][3];
+		hood = "Moore";
+		maturity = 1;
+		invert = false;
+		recursive = true;
+	}
+	
+	
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+		}
+		
+	public void setInt(String a, int b){
+		if(a == "Mat"){maturity = b;}
+		if(a == "FadeRate"){faderate = b;}	
+	}
+	
+	public void setBool(String a, boolean b){
+		if(a == "Inv"){invert = b;}
+		if(a == "Rec"){recursive = b;}
+		if(a == "Fade"){fade = b;}
+	}
+	
+	public int getInt(String a){
+		if(a == "Mat"){ return maturity;}
+		if(a == "Age"){return age;}
+		else{ return counter;}
+	}
+	
+	public boolean getBool( String a){
+		if(a == "Inv"){return invert;}
+		if(a == "Rec"){return recursive;}
+		else{return self;}
+	}	
+	
+	protected boolean calculate(){
+		int cellstate = 0;
+			for(int y = 0; y <=2; y++){
+				for(int x = 0; x <= 2; x++){
+					if(x == 1 && y == 1){if(recursive){if(neighbors[x][y]){cellstate += 1;}}}
+					else{if(neighbors[x][y]){cellstate += 1;}}
+				}}
+			if(cellstate == 1){return true;}
+			else{return false;}
+						
+		}
+		
+}
+
+
+class amoeba extends cell{
+	// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat", "Inv", "Rec"};
+	static int ccount = 0;
+	
+	public amoeba(){
+		neighbors = new boolean[3][3];
+		hood = "Moore";
+		maturity = 1;
+		invert = false;
+		recursive = true;
+	}
+	
+	
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+		}
+		
+	public void setInt(String a, int b){
+		if(a == "Mat"){maturity = b;}
+		if(a == "FadeRate"){faderate = b;}	
+	}
+	
+	public void setBool(String a, boolean b){
+		if(a == "Inv"){invert = b;}
+		if(a == "Rec"){recursive = b;}
+		if(a == "Fade"){fade = b;}
+	}
+	
+	public int getInt(String a){
+		if(a == "Mat"){ return maturity;}
+		if(a == "Age"){return age;}
+		else{ return counter;}
+	}
+	
+	public boolean getBool( String a){
+		if(a == "Inv"){return invert;}
+		if(a == "Rec"){return recursive;}
+		else{return self;}
+	}	
+	
+	protected boolean calculate(){
+		int cellstate = 0;
+		boolean stim;
+			for(int y = 0; y <=2; y++){
+				for(int x = 0; x <= 2; x++){
+					if(x == 1 && y == 1){if(recursive){if(neighbors[x][y]){cellstate += 1;}}}
+					else{if(neighbors[x][y]){cellstate += 1;}}
+				}}
+			switch(cellstate){
+			case 0: stim = false; break;
+			case 1: if(self){stim = true;}else{stim = false;} break;
+			case 2: stim = false; break;
+			case 3: stim = true; break;
+			case 4: stim = false; break;
+			case 5: stim = true; break;
+			case 6: stim = false; break;
+			case 7: if(self == false){stim = true;}else{stim = false;}break;
+			case 8: if(self){stim = true;}else{stim = false;} break;
+			default: stim = false; break;
+			}
+			return stim;			
+		}
+		
 }
