@@ -74,21 +74,7 @@ public class cellComponent extends JComponent
 	public void setSelection(int x, int y, boolean z){
 		selection[x][y] = z;}
 	
-	//selects all
-	public void selAll(){
-		selectionflag = true;
-		for (int y = 0; y<= ydim-1; y++){
-			for(int x = 0; x<= xdim-1; x++){
-				selection[x][y] = true;}}
-				repaint();}
-	
-	//selects none
-	public void deSel(){
-		selectionflag = false;
-		for (int y = 0; y<= ydim-1; y++){
-			for(int x = 0; x<= xdim-1; x++){
-				selection[x][y] = false;}}
-				repaint();}
+
 		
 	// 	shows or hides selection hilighting
 	public void setSelect(boolean a){
@@ -113,8 +99,8 @@ public class cellComponent extends JComponent
 	public void setLifespan(int a, int b, int c){
 		lifespan[a][b] = c;}
 		
-	public void setAge(int x, int y, boolean a){
-		if(a){ age[x][y] += 1;}else{age[x][y] = 0;}
+	public void setAge(int x, int y, int a){
+		age[x][y] = a;
 		if(mode == 4){
 		if (age[x][y] == 0){ageclass[x][y] = 0;}
 		if (age[x][y] == 1){ageclass[x][y] = 1;}
@@ -126,18 +112,16 @@ public class cellComponent extends JComponent
 		if(age[x][y] == 64){ageclass[x][y] = 7;}
 	}
 	if (mode == 5){
-		if(age[x][y] == 0){ageclass[x][y] = 0;}
-		else{if(age[x][y] == 1){ageclass[x][y] = 255;}
-				if(age[x][y] == 33){ageclass[x][y] = 223;}
-				if(age[x][y] == 65){ageclass[x][y] = 191;}
-				if(age[x][y] == 97){ageclass[x][y] = 159;}
-				if(age[x][y] == 129){ageclass[x][y] = 127;}
-				if(age[x][y] == 161){ageclass[x][y] = 95;}
-				if(age[x][y] == 193){ageclass[x][y] = 63;}
-				if(age[x][y] == 225){ageclass[x][y] = 31;}
-				//ageclass[x][y] = 256-age[x][y];
-				if(age[x][y] == 255){ageclass[x][y] = 0;}
-				}
+		//if(age[x][y] == 0){ageclass[x][y] = 0;}
+		//else{//if(age[x][y] == 1){ageclass[x][y] = 255;}
+				//if(age[x][y] == 33){ageclass[x][y] = 223;}
+				//if(age[x][y] == 65){ageclass[x][y] = 191;}
+				//if(age[x][y] == 97){ageclass[x][y] = 159;}
+				//if(age[x][y] == 129){ageclass[x][y] = 127;}
+				//if(age[x][y] == 161){ageclass[x][y] = 95;}
+				//if(age[x][y] == 193){ageclass[x][y] = 63;}
+				//if(age[x][y] == 225){ageclass[x][y] = 31;}
+				//}
 	}
 	}
 	
@@ -210,6 +194,10 @@ public void paintComponent( Graphics g){
 											 g.setColor(Color.red);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									case 13:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
 											 g.setColor(Color.blue);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									case 14:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.orange);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									case 15:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.green);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									default: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
 								}
 								//outline each cell according to its maturity setting
@@ -242,9 +230,9 @@ public void paintComponent( Graphics g){
 								g.fillRect(x*magnify,y*magnify,magnify,magnify);}
 						
 						// rendering for the "Fade" rule
-						if (mode == 5){
+						/*if (mode == 5){
 							g.setColor(new Color(ageclass[x][y], ageclass[x][y], ageclass[x][y]));
-							g.fillRect(x*magnify,y*magnify,magnify,magnify);}
+							g.fillRect(x*magnify,y*magnify,magnify,magnify);}*/
 						
 								// hilite a hilited cell
 								if(hiliteflag){
