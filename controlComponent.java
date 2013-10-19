@@ -44,6 +44,8 @@ int celleditoption =1;
 JFrame ceframe;
 cellMenuComponent cedit;
 boolean ceflag = false;
+JFrame selframe;
+cellMenuComponent selcomp;
 
 
 // other buttons
@@ -61,9 +63,11 @@ JRadioButton threeby = new JRadioButton("3x3", false);
 ButtonGroup brushes = new ButtonGroup();
 
 // selection tools
+JButton selwin;
 JButton selall;
 JButton selcel;
 JButton desel;
+JButton invsel;
 Checkbox hidsel = new Checkbox("Hide Selection");
 
 // cell editing
@@ -76,7 +80,7 @@ Checkbox interact = new Checkbox("Interactive");
 
  // cell type selection
 String[] cells = new String[]{"Cell", "offCell", "onCell", "BlinkCell", //"sequenceCell",
-"randomCell", "Life", "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror", "Majority"};
+"randomCell", "Life", "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror", "Majority", "Gnarl", "Amoeba"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
@@ -123,7 +127,8 @@ Checkbox hwrap = new Checkbox("Wrap-X");
 Checkbox vwrap = new Checkbox("Wrap-Y");
 
 //"Fade" rule
-Checkbox fade = new Checkbox("Fade");
+JButton fade = new JButton("Fade");
+JButton unfade = new JButton("Un-Fade");
 
 // multicolor mode
 Checkbox multiC = new Checkbox("Multicolor");
@@ -153,9 +158,7 @@ public controlComponent(){
 	stf = new JButton ("State Fill");
 	celledit = new JButton("Cell Editor");
 	clear = new JButton("Clear");
-	selall = new JButton("Select All");
-	selcel = new JButton("Select Cell");
-	desel = new JButton("Deselect");
+	selwin = new JButton("Selection menu");
 	about = new JButton("About");
 	setLayout( new FlowLayout() );
 	
@@ -173,14 +176,12 @@ public controlComponent(){
 	add(oneby);
 	add(twoby);
 	add(threeby);
-	add(selall);
-	add(selcel);
-	add(desel);
-	add(hidsel);
+	add(selwin);
 	add(interact);
 	add(hwrap);
 	add(vwrap);
 	add(fade);
+	add(unfade);
 	add(multiC);
 	add(about);
 	
@@ -201,14 +202,12 @@ public controlComponent(){
 	oneby.addActionListener(this);
 	twoby.addActionListener(this);
 	threeby.addActionListener(this);
-	selall.addActionListener(this);
-	selcel.addActionListener(this);
-	desel.addActionListener(this);
-	hidsel.addItemListener(this);
+	selwin.addActionListener(this);
 	interact.addItemListener(this);
 	hwrap.addItemListener(this);
 	vwrap.addItemListener(this);
-	fade.addItemListener(this);
+	fade.addActionListener(this);
+	unfade.addActionListener(this);
 	multiC.addItemListener(this);
 	about.addActionListener(this);
 	
@@ -254,15 +253,29 @@ public void actionPerformed(ActionEvent e){
 	if(e.getSource() == threeby){ tray.merlin.setBrush(3);}
 	
 	// selection tools
+	
+	// selection menu
+	if(e.getSource() == selwin){if(selframe == null){makeMenu("Sel");}else{selframe.setVisible(true);}}
+	
 	// select all
-	if(e.getSource() == selall){selflag = true;tray.harry.selectAll(); tray.bigboard.selAll();}
+	if(e.getSource() == selall){selflag = true;tray.harry.selectAll(); tray.refreshSel();}
 	// select a cell
 	if(e.getSource() == selcel){if(selflag == false){tray.setSelection(1);selflag = true;tray.merlin.setMAction("SSel");selcel.setText("Selection done");}
 	else{tray.setSelection(2);selflag = false;selcel.setText("Select Cells");tray.bigboard.remHilite();if(tray.bigboard.getMode() == 3){tray.merlin.setMAction("CDraw");}
 	else{tray.merlin.setMAction("SDraw");}}}
 	
 	//deselect
-	if(e.getSource() == desel){selflag = false;tray.harry.deselect();tray.bigboard.deSel();}
+	if(e.getSource() == desel){selflag = false;tray.harry.deselect();tray.refreshSel();}
+	
+	//invert selection
+	if(e.getSource() == invsel){tray.harry.invertSel();tray.refreshSel();}
+	
+	//rules
+	// Fade
+	if(e.getSource() == fade){tray.boolFill("Fade",true);}
+	
+	//unFade
+	if(e.getSource() == unfade){tray.boolFill("Fade",false);}
 	
 	// Edit State button goes to/from state editing mode
 	if(e.getSource() == eds){ if (tray.editflag == false){ pflag = true; tray.setPause(true);
@@ -374,9 +387,6 @@ public void itemStateChanged(ItemEvent e){
 	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray.merlin.setWrap("Y", true);}
 	else{tray.merlin.setWrap("Y", false);}}
 	
-	if(e.getItemSelectable() == fade){if(fade.getState()){tray.merlin.setDisp(5);tray.merlin.setBool("Fade", true);if(tray.bigboard.getMode() == 1 || tray.bigboard.getMode() == 4){tray.bigboard.setMode(5);}}
-	else{tray.merlin.setBool("Fade",false);tray.merlin.setDisp(1);if(tray.bigboard.getMode() == 5){tray.bigboard.setMode(1);}}}
-	
 	if(e.getItemSelectable() == multiC){if(multiC.getState()){tray.merlin.setDisp(4);if(tray.bigboard.getMode() == 1 || tray.bigboard.getMode() == 5){tray.bigboard.setMode(4);}}
 	else{tray.merlin.setDisp(1);if(tray.bigboard.getMode() == 4){tray.bigboard.setMode(1);}}}
 	
@@ -419,6 +429,8 @@ public void setWC(){
 		if(modelA.getValue()=="Symmetrical"){selVal = 11;}
 		if(modelA.getValue()=="Mirror"){selVal = 12;}
 		if(modelA.getValue()=="Majority"){selVal = 13; recA.setState(true);}
+		if(modelA.getValue()=="Gnarl"){selVal = 14; recA.setState(false);}
+		if(modelA.getValue()=="Amoeba"){selVal = 15; recA.setState(false);}
 		
 	tray.castor.setCT(selVal);
 	selCelOpt(selVal,true);
@@ -440,6 +452,8 @@ public void setWCB(){
 		if(modelAA.getValue()=="Symmetrical"){selVal = 11;}
 		if(modelAA.getValue()=="Mirror"){selVal = 12;}
 		if(modelAA.getValue()=="Majority"){selVal = 13; recB.setState(true);}
+		if(modelAA.getValue()=="Gnarl"){selVal = 14; recB.setState(false);}
+		if(modelAA.getValue()=="Amoeba"){selVal = 15; recB.setState(false);}
 		
 	tray.pollux.setCT(selVal);
 	selCelOpt(selVal, false);
@@ -678,6 +692,34 @@ public void makeMenu(String a){
 		setWCB();
 		}
 		
+		if(a == "Sel"){
+			//make window
+			selframe = new JFrame("Selection tools");
+			selframe.setLocation(675,0);
+			// make controls
+			selall = new JButton("Select All");
+			selcel = new JButton("Select");
+			desel = new JButton("Deselect");
+			invsel = new JButton("Invert Selection");
+			selall.addActionListener(this);
+			selcel.addActionListener(this);
+			desel.addActionListener(this);
+			invsel.addActionListener(this);
+			hidsel.addItemListener(this);
+			//make the menu
+			selcomp = new cellMenuComponent();
+			selcomp.setLayout(new FlowLayout());
+			selcomp.add(selall);
+			selcomp.add(selcel);
+			selcomp.add(desel);
+			selcomp.add(invsel);
+			selcomp.add(hidsel);
+			//set up window
+			selframe.getContentPane().add(selcomp);
+			selframe.setSize(675,165);
+			selframe.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			selframe.setResizable(false);
+		}
 	}
 	
 	// brings up cell-specific parameters on the editing menu
