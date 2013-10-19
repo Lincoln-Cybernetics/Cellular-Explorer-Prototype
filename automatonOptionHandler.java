@@ -44,7 +44,7 @@ int sfo;
 boolean sfcheck = false;
 boolean sfrand = false;
 // cell control options
-int cellcount = 14;
+int cellcount = 16;
 int controlcount = 6;
 String[] conts = new String[]{"Mat","Dir","Inv", "Mir", "Par", "Rec"};
 boolean[][] cellopts = new boolean[cellcount][controlcount];
@@ -124,6 +124,8 @@ public void setCellOpts(){
 		if(symmetriCell.getControl() == conts[a]){cellopts[11][a] = true; symmetriCell.incControl();}else{cellopts[11][a] = false;}
 		if(mirrorCell.getControl() == conts[a]){cellopts[12][a] = true; mirrorCell.incControl();}else{cellopts[12][a] = false;}
 		if(majorityCell.getControl() == conts[a]){cellopts[13][a] = true; majorityCell.incControl();}else{cellopts[13][a] = false;}
+		if(gnarl.getControl() == conts[a]){cellopts[14][a] = true; gnarl.incControl();}else{cellopts[14][a] = false;}
+		if(amoeba.getControl() == conts[a]){cellopts[15][a] = true; amoeba.incControl();}else{cellopts[15][a] = false;}
 	}
 }
 
@@ -191,6 +193,7 @@ public boolean getCellOpt(int a, int b){
 }
 
 // display options
+//display mode
 public int getDisp(){
 	return dispopt;}
 	
