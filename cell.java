@@ -8,10 +8,13 @@ public class cell{
 	boolean self;
 	boolean recursive;
 	boolean invert;
+	int age = 0;
 	// parameter variables
 	int maturity;
 	int direction;
 	String hood;
+	boolean fade = false;
+	int faderate = 255;
 	// array that determines what parameters can be set for this type of cell
 	// order:  maturity, direction, mirrorX, mirrorY, invert
 	static String[] controls = new String[]{"None"};
@@ -47,6 +50,8 @@ public class cell{
 	
 	public int getInt( String a ){return counter;}
 	
+	public int getAge(){return age;}
+	
 	public boolean getBool( String a){return self;}
 	
 	// get settable parameters
@@ -62,9 +67,11 @@ public class cell{
 	public String getNeighborhood(){ return hood;}
 	
 	// set parameters
-	public void setBool( String a, boolean b){}
+	public void setBool( String a, boolean b){
+		if(a == "Fade"){fade = b;}}
 	public void setBoola( String a, boolean b[]){}
-	public void setInt( String a, int b){}
+	public void setInt( String a, int b){
+		if(a == "FadeRate"){faderate = b;}}
 	
 	
 		
@@ -93,6 +100,10 @@ public class cell{
 		counter+= 1;
 		if(counter == maturity){counter = 0;if(invert){active = !calculate();}else{active = calculate();}}
 		else{active = self;}
+		if(active){age += 1;} 
+		if(active == false){age = 0;}
+		if(fade){if(age >= faderate){age = 0; active = false;}}
+		if(age >= 2000000000){age = 0;}
 		return active;}
 		
 	// if maturity is reached, calculate the new state
@@ -123,8 +134,7 @@ class onCell extends cell{
 		maturity = 1;
 		self = true;
 		}
-	
-		
+			
 	protected boolean calculate(){
 		return true;}
 }
@@ -139,10 +149,12 @@ class blinkCell extends cell{
 	
 	public void setBool(String a, boolean b){
 		if(a == "Self"){self = b;}
+		if(a == "Fade"){fade = b;}
 	}
 	
 	public void setInt(String a, int b){
 		if(a == "Mat"){ maturity = b;}
+		if(a == "FadeRate"){ faderate = b;}
 	}
 	// get settable parameters
 	public static String getControl(){
@@ -188,13 +200,15 @@ class seqCell extends cell{
 			if(b.length<= c){
 		seq[c] = b[c];}}
 	}
-	// set maturity	
+	// set ints
 	public void setInt( String a, int b){
 		if(a == "Mat"){ maturity = b;}
+		if(a == "FadeRate"){faderate = b;}
 	}
 	// set invert
 	public void setBool(String a, boolean b){
 		if(a == "Inv"){invert = b;}
+		if(a == "Fade"){fade = b;}
 	}	
 		
 	// get settable parameters
