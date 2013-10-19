@@ -169,6 +169,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					// general editing methods
 					
 					//selection methods
+					//tells the brain a selection is being made
 					public void setSelection(int a){
 						switch(a){
 							case 1: hiliteflag = true; singleselflag = true;bigboard.setSelect(true);break;
@@ -176,7 +177,14 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						}
 					}
 				
-				
+					// refreshes the selection in the display
+					public void refreshSel(){
+						for(int y=0;y<=ysiz-1;y++){
+						for(int x=0;x<=xsiz-1;x++){
+							bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+							bigboard.repaint();
+						}
+						
 				
 					// cell editing methods	
 					
@@ -251,6 +259,19 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								culture[a][b].setBool("Inv", decider.getInvert());
 								culture[a][b].setBool("Rec", decider.getBool("Rec"));
 								break;
+								
+						case 14: culture[a][b] = new gnarl();
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
+								break;
+								
+						case 15: culture[a][b] = new amoeba();
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
+								break;
+								
 						default: culture[a][b] = new cell();
 								break;}
 						bigboard.setSpecies(a,b,decider.getCT());
@@ -289,6 +310,14 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					for(int x=0;x<=xsiz-1;x++){
 						cellDraw(x,y);}}
 						if(editcellflag){bigboard.repaint();}
+					}
+					
+					public void boolFill(String a, boolean b){
+						for(int y=0;y<=ysiz-1;y++){
+						for(int x=0;x<=xsiz-1;x++){
+							if(harry.getSelected() == false || harry.getSelection(x,y)){
+								if(a == "Fade"){culture[x][y].setBool("Fade",b);}
+						}}}
 					}
 					
 					public void cellCheckFill(){
@@ -897,17 +926,21 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							newstate[x][y] = culture[x][y].iterate();}
 							
 						//set age for multicolor mode
-						if(bigboard.getMode() == 4 || merlin.getBool("Fade")){bigboard.setAge(x,y,newstate[x][y]);}
+							//if(bigboard.getMode() == 4 || merlin.getBool("Fade")){bigboard.setAge(x,y,newstate[x][y]);}
 						// set age for the fade rule
-						if(merlin.getBool("Fade")){
-						if(bigboard.getAge(x,y) == 255){bigboard.setAgeClass(x,y,0); newstate[x][y] = false;}
+							//if(merlin.getBool("Fade")){
+							//if(bigboard.getAge(x,y) == 255){bigboard.setAgeClass(x,y,0); newstate[x][y] = false;}
 				
-						}
+					
+						
 					}}
 					
 					// cycles new values into current state
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
+								// set age
+						bigboard.setAge(x,y,culture[x][y].getAge());
+				
 						current[x][y] = newstate[x][y];}}
 				bigboard.setState(current);}
 			
