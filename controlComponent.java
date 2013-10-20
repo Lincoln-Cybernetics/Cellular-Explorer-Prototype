@@ -80,7 +80,8 @@ Checkbox interact = new Checkbox("Interactive");
 
  // cell type selection
 String[] cells = new String[]{"Cell", "offCell", "onCell", "BlinkCell", //"sequenceCell",
-"randomCell", "Life", "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror", "Majority", "Gnarl", "Amoeba"};
+"randomCell", "Life", "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror",
+ "Majority", "Gnarl", "Amoeba", "HighLife", "Prime"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
@@ -431,6 +432,8 @@ public void setWC(){
 		if(modelA.getValue()=="Majority"){selVal = 13; recA.setState(true);}
 		if(modelA.getValue()=="Gnarl"){selVal = 14; recA.setState(false);}
 		if(modelA.getValue()=="Amoeba"){selVal = 15; recA.setState(false);}
+		if(modelA.getValue()=="HighLife"){selVal = 16; recA.setState(false);}
+		if(modelA.getValue()=="Prime"){selVal = 17; recA.setState(false);}
 		
 	tray.castor.setCT(selVal);
 	selCelOpt(selVal,true);
@@ -454,6 +457,8 @@ public void setWCB(){
 		if(modelAA.getValue()=="Majority"){selVal = 13; recB.setState(true);}
 		if(modelAA.getValue()=="Gnarl"){selVal = 14; recB.setState(false);}
 		if(modelAA.getValue()=="Amoeba"){selVal = 15; recB.setState(false);}
+		if(modelAA.getValue()=="HighLife"){selVal = 16; recB.setState(false);}
+		if(modelAA.getValue()=="Prime"){selVal = 17; recB.setState(false);}
 		
 	tray.pollux.setCT(selVal);
 	selCelOpt(selVal, false);
