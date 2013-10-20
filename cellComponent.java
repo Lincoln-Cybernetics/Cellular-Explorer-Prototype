@@ -198,6 +198,10 @@ public void paintComponent( Graphics g){
 											 g.setColor(Color.orange);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									case 15:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
 											 g.setColor(Color.green);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									case 16:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.cyan);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									case 17:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.yellow);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									default: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
 								}
 								//outline each cell according to its maturity setting
