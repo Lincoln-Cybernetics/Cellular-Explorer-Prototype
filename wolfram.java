@@ -404,3 +404,121 @@ class amoeba extends cell{
 		}
 		
 }
+
+
+
+class highlife extends cell{
+
+// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat","Inv", "Rec"};
+	static int ccount = 0;
+
+public highlife(){
+	neighbors = new boolean[3][3];
+	hood = "Moore";
+	maturity = 1;
+	direction = 0;
+	invert = false;
+	recursive = false;	
+	}
+
+
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+		}
+
+	// set parameters
+	public void setInt( String a, int b){
+		if (a == "Mat"){maturity = b;}
+		if (a == "Dir"){direction = b;}
+		if(a == "FadeRate"){faderate = b;}
+		}
+		
+	public void setBool( String a, boolean b){
+		if (a == "Inv"){invert = b;}
+		if(a == "Rec"){recursive = b;}
+		if(a == "Fade"){fade = b;}
+	} 
+
+	protected boolean calculate(){
+	int cellstate = 0;
+			for(int y = 0; y <=2; y++){
+				for(int x = 0; x <= 2; x++){
+					if(x == 1 && y == 1){if(recursive){if(neighbors[x][y]){cellstate += 1;}}}
+					else{if(neighbors[x][y]){cellstate += 1;}}
+				}}
+			if(self){if(cellstate == 2 || cellstate == 3){return true;}else {return false;}}
+			else{if(cellstate == 3 || cellstate == 6){return true;}else{ return false;}}
+	}
+
+}
+
+
+
+class prime extends cell{
+
+// array that determines what parameters can be set for this type of cell
+	static String[] controls = new String[]{"Mat","Inv", "Rec"};
+	static int ccount = 0;
+
+public prime(){
+	neighbors = new boolean[3][3];
+	hood = "Moore";
+	maturity = 1;
+	direction = 0;
+	invert = false;
+	recursive = false;	
+	}
+
+
+	// get settable parameters
+	public static String getControl(){
+		return controls[ccount];}
+	
+	public static void incControl(){
+		ccount +=1;
+		if(ccount == controls.length){ccount = 0;}
+		}
+
+	// set parameters
+	public void setInt( String a, int b){
+		if (a == "Mat"){maturity = b;}
+		if (a == "Dir"){direction = b;}
+		if(a == "FadeRate"){faderate = b;}
+		}
+		
+	public void setBool( String a, boolean b){
+		if (a == "Inv"){invert = b;}
+		if(a == "Rec"){recursive = b;}
+		if(a == "Fade"){fade = b;}
+	} 
+
+	protected boolean calculate(){
+	int cellstate = 0;
+			for(int y = 0; y <=2; y++){
+				for(int x = 0; x <= 2; x++){
+					if(x == 1 && y == 1){if(recursive){if(neighbors[x][y]){cellstate += 1;}}}
+					else{if(neighbors[x][y]){cellstate += 1;}}
+				}}
+		
+			switch(cellstate){
+				case 1: return false; 
+				case 2: return true; 
+				case 3: return true; 
+				case 4: return false; 
+				case 5: return true; 
+				case 6: return false; 
+				case 7: return true; 
+				case 8: return false; 
+				case 9: return  false;}
+				return false;
+				
+			}
+}
+
+
