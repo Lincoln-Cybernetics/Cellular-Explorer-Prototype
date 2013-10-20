@@ -272,6 +272,18 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								culture[a][b].setBool("Rec", decider.getBool("Rec"));
 								break;
 								
+						case 16: culture[a][b] = new highlife();
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
+								break;
+								
+						case 17: culture[a][b] = new prime();
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
+								break;
+								
 						default: culture[a][b] = new cell();
 								break;}
 						bigboard.setSpecies(a,b,decider.getCT());
