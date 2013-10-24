@@ -44,7 +44,7 @@ int sfo;
 boolean sfcheck = false;
 boolean sfrand = false;
 // cell control options
-int cellcount = 18;
+int cellcount = 19;
 int controlcount = 6;
 String[] conts = new String[]{"Mat","Dir","Inv", "Mir", "Par", "Rec"};
 boolean[][] cellopts = new boolean[cellcount][controlcount];
@@ -128,6 +128,7 @@ public void setCellOpts(){
 		if(amoeba.getControl() == conts[a]){cellopts[15][a] = true; amoeba.incControl();}else{cellopts[15][a] = false;}
 		if(highlife.getControl() == conts[a]){cellopts[16][a] = true; highlife.incControl();}else{cellopts[16][a] = false;}
 		if(prime.getControl() == conts[a]){cellopts[17][a] = true; prime.incControl();}else{cellopts[17][a] = false;}
+		if(dayNight.getControl() == conts[a]){cellopts[18][a] = true; dayNight.incControl();}else{cellopts[18][a] = false;}
 	}
 }
 
