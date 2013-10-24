@@ -37,17 +37,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	public cellOptionHandler castor;
 	public cellOptionHandler pollux;
 	public cellOptionHandler eris;
-	
-	int workcell = 0;
-	
-	int workmat = 1;
-	
-	int setdir = 0;
-	
+	//display settings
 	int magnify = 5;
-	
-	
-	
+
 	//general array counters Int x, and Int y are instantiated locally for each use
 	
 	//keep track of mouse position in edit mode
@@ -56,9 +48,15 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	//changestate flag 
 	boolean pauseflag = false;
 	boolean paused = true;
+	
 	//general editing flags
+	
 	//for selecting a single cell
 	boolean singleselflag = false;
+	//rectangle selection
+	int rectselflag = 0;
+	boolean rectselfie = false;
+	
 	//state editing flags
 	boolean editflag = false;
 	boolean sfflag = false;
@@ -174,6 +172,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						switch(a){
 							case 1: hiliteflag = true; singleselflag = true;bigboard.setSelect(true);break;
 							case 2: hiliteflag = false; singleselflag = false; break;
+							case 3: hiliteflag = true; bigboard.setSelect(true); rectselflag = 1; break;
 						}
 					}
 				
@@ -283,6 +282,12 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								culture[a][b].setBool("Inv", decider.getInvert());
 								culture[a][b].setBool("Rec", decider.getBool("Rec"));
 								break;
+								
+						case 18: culture[a][b] = new dayNight();
+								culture[a][b].setInt("Mat", decider.getMaturity());
+								culture[a][b].setBool("Inv", decider.getInvert());
+								culture[a][b].setBool("Rec", decider.getBool("Rec"));
+								break;		
 								
 						default: culture[a][b] = new cell();
 								break;}
@@ -587,6 +592,13 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					}} 
 					if(bigboard.getMode() == 1 || bigboard.getMode() == 2){bigboard.repaint();}
 					}
+				
+				public void stateInvert(){
+					for(int y = 0; y<= ysiz-1; y++){
+						for(int x=0; x<= xsiz-1; x++){
+							setCellState(x,y,!current[x][y]);}}
+					if(bigboard.getMode() == 1 || bigboard.getMode() == 2){bigboard.repaint();}
+				}		
 				
 				//state drawing methods	
 				public void stateDraw(int x,int y){
@@ -899,6 +911,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				   case 4: stateRandFill(); break;
 				   case 5: stateCheckFilltbt(); break;
 				   case 6: stateCheckFill2x2(); break;
+				   case 7: stateInvert(); break;
 				   default: stateCheckFill(); break;}
 				   sfflag = false;}
 				   
@@ -997,7 +1010,14 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if(hiliteflag){if(mirselflag && editcellflag){int colsel; if(prisec){colsel = 1;}
 						else{colsel = 2;} bigboard.setHiLite(xlocal, ylocal, colsel);}
 						if(singleselflag){bigboard.setHiLite(xlocal,ylocal,1);}
+						if(rectselflag == 1){bigboard.setHiLite(xlocal,ylocal,1);}
 						 }
+						 // draws rectangle during rectangle selection
+						 if(rectselflag == 2){for(int y = 0; y <= ysiz-1; y++){
+												for(int x = 0; x <= xsiz-1; x++){
+													bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+							 bigboard.finishRect(xlocal,ylocal); rectselfie = false;}
+						 
 						// hilight a mirrorCell's targets as each mirrrorCell is moused over in the editor 
 						 if(mirselflag == false && editcellflag){
 						if(culture[xlocal][ylocal].hood == "Mirror"){bigboard.setHiLite(
@@ -1062,14 +1082,51 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						bigboard.repaint();
 						}
 						
+						 // draws rectangle during rectangle selection
+						 if(merlin.getMAction() == "SRect"){
+						 if(rectselflag == 2){for(int y = 0; y <= ysiz-1; y++){
+												for(int x = 0; x <= xsiz-1; x++){
+													bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+							 bigboard.finishRect(xlocal,ylocal); rectselfie = false;}}
 							}
 							
 					public void mouseEntered(MouseEvent e){}
 					
 					public void mouseExited(MouseEvent e){}
-					public void mousePressed(MouseEvent e){}
+					public void mousePressed(MouseEvent e){
+						if(e.getX() < 1){xlocal = 0;} else{xlocal = e.getX()/magnify;}
+						if(e.getY() < 1 ){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
+						if (xlocal > xsiz-1){xlocal = xsiz-1;}
+						if (ylocal > ysiz-1){ylocal = ysiz-1;}
+						
+						//rectangle selection
+						if(merlin.getMAction() == "SRect"){
+						if(rectselflag == 1){harry.startRect(xlocal,ylocal, !e.isMetaDown());hiliteflag = false;
+						 bigboard.remHilite();bigboard.beginRect(xlocal,ylocal,!e.isMetaDown()); rectselflag = 2;rectselfie = true;}}
+						}
 					
-					public void mouseReleased(MouseEvent e){}
+					public void mouseReleased(MouseEvent e){
+						if(e.getX() < 1){xlocal = 0;} else{xlocal = e.getX()/magnify;}
+						if(e.getY() < 1 ){ylocal = 0;} else{ ylocal = e.getY()/magnify;}
+						if (xlocal > xsiz-1){xlocal = xsiz-1;}
+						if (ylocal > ysiz-1){ylocal = ysiz-1;}
+						
+						//rectangle selection
+						if(merlin.getMAction() == "SRect"){
+						if(rectselflag == 2&& rectselfie == false){harry.endRect(xlocal,ylocal); 
+							for(int y = 0; y<= ysiz-1; y++){
+							for(int x = 0; x<= xsiz-1; x++){
+								bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+								bigboard.repaint();rectselflag = 0;
+								switch(bigboard.getMode()){
+									case 1: if(merlin.getInter()){merlin.setMAction("SDraw");}else{merlin.setMAction("None");}break;
+									case 2: merlin.setMAction("SDraw"); break;
+									case 3: merlin.setMAction("CDraw"); break;
+									case 4: if(merlin.getInter()){merlin.setMAction("SDraw");}else{merlin.setMAction("None");}break;
+									default: if(merlin.getInter()){merlin.setMAction("SDraw");}else{merlin.setMAction("None");}break;}
+								}
+							}
+						}
 					
 					public void mouseClicked(MouseEvent e){
 						if(e.getX() < 1){xlocal = 0;} else{xlocal = e.getX()/magnify;}
@@ -1134,7 +1191,23 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								bigboard.repaint();
 						}
 						
+						//rectangle selection
+						if(merlin.getMAction() == "SRect"){
+						if(rectselflag == 1){harry.startRect(xlocal,ylocal, !e.isMetaDown());hiliteflag = false; bigboard.remHilite();bigboard.beginRect(xlocal,ylocal,!e.isMetaDown()); rectselflag = 2;rectselfie = true;}
+						if(rectselflag == 2 && rectselfie == false){harry.endRect(xlocal,ylocal); 
+							for(int y = 0; y<= ysiz-1; y++){
+							for(int x = 0; x<= xsiz-1; x++){
+								bigboard.setSelection(x,y,harry.getSelection(x,y));}}
+								bigboard.repaint();rectselflag = 0;
+								switch(bigboard.getMode()){
+									case 1: if(merlin.getInter()){merlin.setMAction("SDraw");}else{merlin.setMAction("None");}break;
+									case 2: merlin.setMAction("SDraw"); break;
+									case 3: merlin.setMAction("CDraw"); break;
+									case 4: if(merlin.getInter()){merlin.setMAction("SDraw");}else{merlin.setMAction("None");}break;
+									default: if(merlin.getInter()){merlin.setMAction("SDraw");}else{merlin.setMAction("None");}break;}
+								}
 						}
+				}
 					
 				
 		}
