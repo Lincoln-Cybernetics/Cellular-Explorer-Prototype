@@ -19,6 +19,10 @@ class selector{
 	int ysiz;
 	boolean[][] selection;
 	boolean isselected = false;
+	boolean allsel = false;
+	int xl;
+	int yt;
+	boolean rectstate;
 	public selector(int x, int y){
 		xsiz = x;
 		ysiz = y;
@@ -37,17 +41,60 @@ class selector{
 			}
 				
 	public void selectAll(){
-		isselected = true;
+		isselected = true; allsel = true;
 		for(int y = 0; y<= ysiz-1; y++){
 			for(int x = 0; x<= xsiz-1; x++){
 				selection[x][y] = true;}}
+			}
+			
+	public void invertSel(){
+		boolean isl = isselected;
+		if(allsel){isselected = false;}
+		if(isl){allsel = false;}
+		for(int y = 0; y<= ysiz-1; y++){
+			for(int x = 0; x<= xsiz-1; x++){
+				selection[x][y] = !selection[x][y];}}
 			}
 			
 	public void selectCell(int x, int y){
 		isselected = true;
 		selection[x][y] = true;}
 		
+	public void seltwoby(int x, int y, boolean b){
+			if(b){selectCell(x,y);}else{removeCell(x,y);}
+			if(x == xsiz-1){}else{if(b){selectCell(x+1,y);}else{removeCell(x+1,y);}}
+			if(y == ysiz-1){}else{if(b){selectCell(x,y+1);}else{removeCell(x,y+1);}} 
+			if(x == xsiz-1 || y == ysiz-1){}else{if(b){selectCell(x+1,y+1);}else{removeCell(x+1,y+1);}}
+			}
+		
+	public void selthreeby(int x, int y, boolean b){	
+			if(b){selectCell(x,y);}else{removeCell(x,y);}
+			if(x == xsiz-1){}else{if(b){selectCell(x+1,y);}else{removeCell(x+1,y);}}
+			if(y == ysiz-1){}else{if(b){selectCell(x,y+1);}else{removeCell(x,y+1);}} 
+			if(x == xsiz-1 || y == ysiz-1){}else{if(b){selectCell(x+1,y+1);}else{removeCell(x+1,y+1);}}
+			if(x == 0 || y == 0){}else{if(b){selectCell(x-1,y-1);}else{removeCell(x-1,y-1);}}
+			if(x == 0){}else{if(b){selectCell(x-1,y);}else{removeCell(x-1,y);}}
+			if(y == 0){}else{if(b){selectCell(x,y-1);}else{removeCell(x,y-1);}}
+			if(x == 0 || y == ysiz-1){}else{if(b){selectCell(x-1,y+1);}else{removeCell(x-1,y+1);}}
+			if(x == xsiz-1 || y == 0){}else{if(b){selectCell(x+1,y-1);}else{removeCell(x+1,y-1);}}
+			}
+			
+	public void startRect(int x, int y, boolean b ){
+		xl = x; yt = y; rectstate = b;}
+			
+	public void endRect(int x, int y){
+		
+		int xr; int yb;
+		if(x<0){x=0;}if(y<0){y=0;}if(x>xsiz-1){x=xsiz-1;}if(y>ysiz-1){y=ysiz-1;}
+		if(xl > x){xr = xl; xl = x;}else{xr = x;}
+		if(yt > y){yb = yt; yt = y;}else{yb = y;}
+			for(int yc = yt; yc <= yb; yc++){
+			for(int xc = xl; xc <= xr; xc++){
+				if(rectstate){selectCell(xc,yc);}else{removeCell(xc,yc);}}}
+			}		
+			
 	public void removeCell(int x, int y){
+		allsel = false;
 		selection[x][y] = false;}
 			
 	public boolean getSelection(int x, int y){
