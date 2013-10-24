@@ -36,6 +36,15 @@ public class cellComponent extends JComponent
 	int hly = 0;
 	int hlc = 0;
 	boolean hiliteflag = false;
+	int rectx;
+	int recty;
+	int rectxb;
+	int rectyb;
+	int rectxc;
+	int rectyc;
+	boolean rectflag;
+	boolean rectstateb;
+	
 	
 	public cellComponent(){
 		xdim = 500;
@@ -80,6 +89,21 @@ public class cellComponent extends JComponent
 	public void setSelect(boolean a){
 		selectionflag = a;}
 		
+	// begin rectangle selection
+	public void beginRect(int x, int y, boolean b){
+		rectx = x; recty = y; rectstateb = b;}
+	
+	//finish rectangle	
+	public void finishRect(int x, int y){	selectionflag = true;
+		if(x<0){x = 0;} if(y<0){y=0;}if(x>xdim-1){x = xdim-1;} if(y>ydim-1){y = ydim-1;} 
+		if(rectx > x){rectxc = rectx; rectxb = x;}else{rectxc = x; rectxb = rectx;}
+		if(recty > y){rectyc = recty; rectyb = y;}else{rectyc = y; rectyb = recty;}
+		for (int a = rectyb; a <= rectyc; a++){
+			for(int b = rectxb; b <= rectxc; b++){
+				setSelection(b,a,rectstateb); }}
+		 repaint();}
+		
+	
 		
 	public void setMode(int a){
 		mode = a; repaint();
@@ -202,6 +226,8 @@ public void paintComponent( Graphics g){
 											 g.setColor(Color.cyan);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									case 17:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
 											 g.setColor(Color.yellow);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
+									case 18:  g.setColor(Color.gray);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify);
+											 g.setColor(Color.pink);g.fillRect(x*magnify+2,y*magnify+2,schmagnify-2,schmagnify-2); break;
 									default: g.setColor(Color.black);g.fillRect(x*magnify,y*magnify,schmagnify,schmagnify); break;
 								}
 								//outline each cell according to its maturity setting
@@ -259,5 +285,8 @@ public void paintComponent( Graphics g){
 							
 								
 						}}
+						
+						
+						
 						}
 }
