@@ -28,15 +28,19 @@ class controlComponent extends JComponent implements ActionListener, ChangeListe
 JButton newc;
 JButton ss;
 JButton step;
+
 // state editing 
 JButton eds;
 JButton stf;
 JButton clear;
+JButton invstate;
+
 // cell editing 
 JButton celledit;
 JButton edc;
 JButton cf;
 JButton cellborder;
+
 //cellediting parameters
 int celleditoption =1;
 
@@ -50,10 +54,6 @@ cellMenuComponent selcomp;
 
 // other buttons
 JButton about;
-
-//cell/state editing
-Checkbox ccd = new Checkbox("Checkerboard");
-Checkbox rnd = new Checkbox("Random");
 
 // Brush selection
 
@@ -69,19 +69,23 @@ JButton selcel;
 JButton desel;
 JButton invsel;
 Checkbox hidsel = new Checkbox("Hide Selection");
+JButton rectsel;
 
 // cell editing
 Checkbox ccdcd = new Checkbox("Check");
 Checkbox ccdcf = new Checkbox("Check");
 Checkbox rndcd = new Checkbox("Rand");
 Checkbox rndcf = new Checkbox("Rand");
+
 // state editing
 Checkbox interact = new Checkbox("Interactive");
+Checkbox ccd = new Checkbox("Checkerboard");
+Checkbox rnd = new Checkbox("Random");
 
  // cell type selection
 String[] cells = new String[]{"Cell", "offCell", "onCell", "BlinkCell", //"sequenceCell",
 "randomCell", "Life", "Seeds", "ParityCell", "Conveyor", "Wolfram","Symmetrical","Mirror",
- "Majority", "Gnarl", "Amoeba", "HighLife", "Prime"};
+ "Majority", "Gnarl", "Amoeba", "HighLife", "Prime", "Day and Night"};
 SpinnerListModel modelA = new SpinnerListModel(cells);
 JSpinner cellpicker = new JSpinner( modelA);
 SpinnerListModel modelAA = new SpinnerListModel(cells);
@@ -157,6 +161,7 @@ public controlComponent(){
 	step = new JButton("Step");
 	eds= new JButton("Edit State");
 	stf = new JButton ("State Fill");
+	invstate = new JButton("Invert State");
 	celledit = new JButton("Cell Editor");
 	clear = new JButton("Clear");
 	selwin = new JButton("Selection menu");
@@ -170,6 +175,7 @@ public controlComponent(){
 	add(step);
 	add(eds);
 	add(stf);
+	add(invstate);
 	add(celledit);
 	add(clear);
 	add(rnd);
@@ -196,6 +202,7 @@ public controlComponent(){
 	newc.addActionListener(this);
 	eds.addActionListener(this);
 	stf.addActionListener(this);
+	invstate.addActionListener(this);
 	celledit.addActionListener(this);
 	clear.addActionListener(this);
 	rnd.addItemListener(this);
@@ -271,6 +278,9 @@ public void actionPerformed(ActionEvent e){
 	//invert selection
 	if(e.getSource() == invsel){tray.harry.invertSel();tray.refreshSel();}
 	
+	//select rectangle
+	if(e.getSource() == rectsel){tray.setSelection(3); tray.merlin.setMAction("SRect");}
+	
 	//rules
 	// Fade
 	if(e.getSource() == fade){tray.boolFill("Fade",true);}
@@ -294,6 +304,11 @@ public void actionPerformed(ActionEvent e){
 				case 4: if(tray.paused){tray.stateCheckFilltbt();}else{tray.sfflag = true; tray.sfopt = 5;} break;
 				case 5: if(tray.paused){tray.stateCheckFill2x2();}else{tray.sfflag = true; tray.sfopt = 6;} break;
 				default:if(tray.paused){tray.stateCheckFill();}else{ tray.sfflag = true; tray.sfopt = 3;} break;}}
+				
+	//state inversion button
+	if(e.getSource() == invstate){
+		if(tray.paused){tray.stateInvert();}else{ tray.sfflag = true; tray.sfopt = 7;}
+	}
 		
 	//open the cell editor menu
 	if(e.getSource() == celledit){if(cedit == null){makeMenu("CE");}else{ceframe.setVisible(true);}}
@@ -434,6 +449,7 @@ public void setWC(){
 		if(modelA.getValue()=="Amoeba"){selVal = 15; recA.setState(false);}
 		if(modelA.getValue()=="HighLife"){selVal = 16; recA.setState(false);}
 		if(modelA.getValue()=="Prime"){selVal = 17; recA.setState(false);}
+		if(modelA.getValue()=="Day and Night"){selVal = 18; recA.setState(false);}
 		
 	tray.castor.setCT(selVal);
 	selCelOpt(selVal,true);
@@ -459,6 +475,7 @@ public void setWCB(){
 		if(modelAA.getValue()=="Amoeba"){selVal = 15; recB.setState(false);}
 		if(modelAA.getValue()=="HighLife"){selVal = 16; recB.setState(false);}
 		if(modelAA.getValue()=="Prime"){selVal = 17; recB.setState(false);}
+		if(modelAA.getValue()=="Day and Night"){selVal = 18; recB.setState(false);}
 		
 	tray.pollux.setCT(selVal);
 	selCelOpt(selVal, false);
@@ -706,11 +723,13 @@ public void makeMenu(String a){
 			selcel = new JButton("Select");
 			desel = new JButton("Deselect");
 			invsel = new JButton("Invert Selection");
+			rectsel = new JButton("Select Rectangle");
 			selall.addActionListener(this);
 			selcel.addActionListener(this);
 			desel.addActionListener(this);
 			invsel.addActionListener(this);
 			hidsel.addItemListener(this);
+			rectsel.addActionListener(this);
 			//make the menu
 			selcomp = new cellMenuComponent();
 			selcomp.setLayout(new FlowLayout());
@@ -719,6 +738,7 @@ public void makeMenu(String a){
 			selcomp.add(desel);
 			selcomp.add(invsel);
 			selcomp.add(hidsel);
+			selcomp.add(rectsel);
 			//set up window
 			selframe.getContentPane().add(selcomp);
 			selframe.setSize(675,165);
