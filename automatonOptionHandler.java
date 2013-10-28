@@ -72,8 +72,22 @@ public void setMAction(String a){
 	 * "SSel" select single cell
 	 * "CDraw" cell draw
 	 * "SDraw" state draw
+	 * "SRect" select rectangle
+	 * "Mirsel" select mirror cell target
 	 * "None" none
 	 */ }
+	 
+// does the current mouse action use a brush?
+public boolean isMouseUsed(){
+	if (maction == "SSel"){return true;}
+	if (maction == "CDraw"){return true;}
+	if (maction == "SDraw"){return true;}
+	if (maction == "SRect"){return false;}
+	if (maction == "Mirsel"){return false;}
+	if (maction == "None"){return false;}
+	return false;
+}
+	
 
 // drawing brush
 public void setBrush(int a){
