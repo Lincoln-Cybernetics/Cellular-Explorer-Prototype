@@ -295,14 +295,12 @@ public void actionPerformed(ActionEvent e){
 	
 	// State Fill button set the on/off state of all cells
 	if(e.getSource() == stf){int option = 1; if(ccd.getState()){option = 2;} if(rnd.getState()){option = 3;} 
-	if(ccd.getState() && tray.merlin.getBrush() == 3){option = 4;}
-	if(ccd.getState() && tray.merlin.getBrush() == 2){option = 5;}
+	if(ccd.getState() && rnd.getState()){option = 4;}
 			switch(option){
 				case 1: if(tray.paused){tray.stateFill();}else{ tray.sfflag = true; tray.sfopt = 1;} break;
 				case 2: if(tray.paused){tray.stateCheckFill();}else{tray.sfflag =true; tray.sfopt =3;} break;
 				case 3: if(tray.paused){tray.stateRandFill();}else{tray.sfflag = true; tray.sfopt = 4;} break;
-				case 4: if(tray.paused){tray.stateCheckFilltbt();}else{tray.sfflag = true; tray.sfopt = 5;} break;
-				case 5: if(tray.paused){tray.stateCheckFill2x2();}else{tray.sfflag = true; tray.sfopt = 6;} break;
+				case 4: if(tray.paused){tray.stateRCFill();}else{tray.sfflag = true; tray.sfopt = 8;} break;
 				default:if(tray.paused){tray.stateCheckFill();}else{ tray.sfflag = true; tray.sfopt = 3;} break;}}
 				
 	//state inversion button
@@ -323,20 +321,13 @@ public void actionPerformed(ActionEvent e){
 	if(e.getSource() == cf){celleditoption = 1; 
 		if(tray.merlin.getCFO("Check")){celleditoption = 2;} 
 		if (tray.merlin.getCFO("Rand")){ celleditoption = 3;} 
-		if(tray.merlin.getCFO("Check") && tray.merlin.getCFO("Rand") == false && tray.merlin.getBrush() == 3){celleditoption = 4;} 
-		if(tray.merlin.getCFO("Rand") && tray.merlin.getCFO("Check")){celleditoption = 5;} 
-		if(tray.merlin.getCFO("Rand") && tray.merlin.getCFO("Check") && tray.merlin.getBrush() == 3){celleditoption = 6;}
-		if(tray.merlin.getCFO("Check") && tray.merlin.getCFO("Rand") == false && tray.merlin.getBrush() == 2){celleditoption = 7;}
-		if(tray.merlin.getCFO("Check") && tray.merlin.getCFO("Rand") && tray.merlin.getBrush() == 2){celleditoption = 8;}
+		if(tray.merlin.getCFO("Rand") && tray.merlin.getCFO("Check")){celleditoption = 4;} 
+		
 			switch (celleditoption){
 				case 1: tray.cellFill(); break;
 				case 2: tray.cellCheckFill(); break;
 				case 3: tray.cellRandFill(); break;
-				case 4: tray.cellCheckFilltbt(1,2); break;
-				case 5: tray.cellRCFill(); break;
-				case 6: tray.cellCheckFilltbt(1,4); break;
-				case 7: tray.cellCheckFill2x2(1,2); break;
-				case 8: tray.cellCheckFill2x2(1,4); break;
+				case 4: tray.cellRCFill(); break;
 				default: tray.cellFill(); break; }}
 	
 	// the Set Border button sets the cells at the edge of the automaton
