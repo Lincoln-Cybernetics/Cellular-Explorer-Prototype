@@ -136,16 +136,7 @@ public class cellComponent extends JComponent
 		if(age[x][y] == 64){ageclass[x][y] = 7;}
 	}
 	if (mode == 5){
-		//if(age[x][y] == 0){ageclass[x][y] = 0;}
-		//else{//if(age[x][y] == 1){ageclass[x][y] = 255;}
-				//if(age[x][y] == 33){ageclass[x][y] = 223;}
-				//if(age[x][y] == 65){ageclass[x][y] = 191;}
-				//if(age[x][y] == 97){ageclass[x][y] = 159;}
-				//if(age[x][y] == 129){ageclass[x][y] = 127;}
-				//if(age[x][y] == 161){ageclass[x][y] = 95;}
-				//if(age[x][y] == 193){ageclass[x][y] = 63;}
-				//if(age[x][y] == 225){ageclass[x][y] = 31;}
-				//}
+		
 	}
 	}
 	
@@ -246,6 +237,8 @@ public void paintComponent( Graphics g){
 							
 							//multicolor rendering
 							if (mode == 4){
+								if(cstate[x][y] && ageclass[x][y] == 0){ageclass[x][y] = 1;}
+								if(cstate[x][y] == false && ageclass[x][y] != 0){ageclass[x][y] = 0;}
 								switch(ageclass[x][y]){
 									case 0: g.setColor(Color.black);break;
 									case 1: g.setColor(Color.white);break;
