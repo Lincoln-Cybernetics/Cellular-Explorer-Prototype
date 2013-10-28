@@ -27,6 +27,7 @@ class randCell extends cell{
 		
 	public void setInt(String a, int b){
 		if(a == "Mat"){ maturity = b;}
+		if(a == "FadeRate"){faderate = b;}
 	}
 	// get settable parameters
 	public static String getControl(){
@@ -40,6 +41,8 @@ class randCell extends cell{
 	
 	protected boolean calculate(){
 		return attractor.nextBoolean();}
+		
+	public int getAge(){if(active){return attractor.nextInt(faderate)+1;}else{return 0;}}
 }
 
 class conway extends cell{
@@ -53,11 +56,13 @@ class conway extends cell{
 		
 	public void setInt( String a, int b){
 		if (a == "Mat"){maturity = b;}
+		if(a == "FadeRate"){faderate = b;}
 	}
 	
 	public void setBool( String a, boolean b){
 		if(a == "Inv"){ invert = b;}
 		if(a == "Rec"){ recursive = b;}
+		if(a == "Fade"){ fade = b;}
 	}
 	
 		// get settable parameters
@@ -94,11 +99,13 @@ class seeds extends cell{
 		}
 		
 		public void setInt( String a, int b){
+		if(a == "FadeRate"){faderate = b;}	
 		if (a == "Mat"){maturity = b;}
 	}
 		public void setBool( String a, boolean b){
 			if(a == "Inv"){ invert = b;}
 			if(a == "Rec"){ recursive = b;}
+			if(a == "Fade"){fade = b;}
 		}
 		
 		// get settable parameters
@@ -143,10 +150,12 @@ class parityCell extends cell{
 		if(a == "Par"){parity = b;}
 		if(a == "Rec"){recursive = b;}
 		if(a == "Inv"){invert = b;}
+		if(a == "Fade"){fade = b;}
 	}
 	
 	public void setInt( String a, int b){
 		if (a == "Mat"){maturity = b;}
+		if(a == "FadeRate"){faderate = b;}
 	}
 	
 	// get settable parameters
@@ -193,10 +202,12 @@ class conveyorCell extends cell{
 	public void setInt( String a, int b){
 		if(a == "Mat"){ maturity = b;}
 		if(a == "Dir"){ direction = b;}
+		if(a == "FadeRate"){ faderate = b;}
 	}
 	
 	public void setBool( String a, boolean b){
 		if(a == "Inv"){invert = b;}
+		if(a == "Fade"){fade = b;}
 	}
 	
 	protected boolean calculate(){
