@@ -43,16 +43,11 @@ boolean sdrand = false;
 int sfo;
 boolean sfcheck = false;
 boolean sfrand = false;
-// cell control options
-int cellcount = 19;
-int controlcount = 6;
-String[] conts = new String[]{"Mat","Dir","Inv", "Mir", "Par", "Rec"};
-boolean[][] cellopts = new boolean[cellcount][controlcount];
-// display options
+
 int dispopt = 1;
 
 public automatonOptionHandler(){
-	setCellOpts();
+
 }
 //option setting methods
 
@@ -121,30 +116,7 @@ public void setSFO(String a, boolean b){
 	if(a == "Rand"){if(b){sfrand = true;}else{sfrand = false;}}
 }
 
-// cell control options
-public void setCellOpts(){
-	for (int a = 0; a < controlcount; a++){
-		if(cell.getControl() == conts[a]){cellopts[0][a] = true; cell.incControl();}else{cellopts[0][a] = false;}
-		if(offCell.getControl() == conts[a]){cellopts[1][a] = true; offCell.incControl();}else{cellopts[1][a] = false;}
-		if(onCell.getControl() == conts[a]){cellopts[2][a] = true; onCell.incControl();}else{cellopts[2][a] = false;}
-		if(blinkCell.getControl() == conts[a]){cellopts[3][a] = true; blinkCell.incControl();}else{cellopts[3][a] = false;}
-		if(seqCell.getControl() == conts[a]){cellopts[4][a] = true; seqCell.incControl();}else{cellopts[4][a] = false;}
-		if(randCell.getControl() == conts[a]){cellopts[5][a] = true; randCell.incControl();}else{cellopts[5][a] = false;}
-		if(conway.getControl() == conts[a]){cellopts[6][a] = true; conway.incControl();}else{cellopts[6][a] = false;}
-		if(seeds.getControl() == conts[a]){cellopts[7][a] = true; seeds.incControl();}else{cellopts[7][a] = false;}
-		if(parityCell.getControl() == conts[a]){cellopts[8][a] = true; parityCell.incControl();}else{cellopts[8][a] = false;}
-		if(conveyorCell.getControl() == conts[a]){cellopts[9][a] = true; conveyorCell.incControl();}else{cellopts[9][a] = false;}
-		if(wolfram.getControl() == conts[a]){cellopts[10][a] = true; wolfram.incControl();}else{cellopts[10][a] = false;}
-		if(symmetriCell.getControl() == conts[a]){cellopts[11][a] = true; symmetriCell.incControl();}else{cellopts[11][a] = false;}
-		if(mirrorCell.getControl() == conts[a]){cellopts[12][a] = true; mirrorCell.incControl();}else{cellopts[12][a] = false;}
-		if(majorityCell.getControl() == conts[a]){cellopts[13][a] = true; majorityCell.incControl();}else{cellopts[13][a] = false;}
-		if(gnarl.getControl() == conts[a]){cellopts[14][a] = true; gnarl.incControl();}else{cellopts[14][a] = false;}
-		if(amoeba.getControl() == conts[a]){cellopts[15][a] = true; amoeba.incControl();}else{cellopts[15][a] = false;}
-		if(highlife.getControl() == conts[a]){cellopts[16][a] = true; highlife.incControl();}else{cellopts[16][a] = false;}
-		if(prime.getControl() == conts[a]){cellopts[17][a] = true; prime.incControl();}else{cellopts[17][a] = false;}
-		if(dayNight.getControl() == conts[a]){cellopts[18][a] = true; dayNight.incControl();}else{cellopts[18][a] = false;}
-	}
-}
+
 
 // set general boolean options
 public void setBool(String a, boolean b){
@@ -204,17 +176,14 @@ public boolean getSFO(String a){
 	return false;
 	}
 
-//cell controll options
-public boolean getCellOpt(int a, int b){
-	return cellopts[a][b];
-}
+
 
 // display options
 //display mode
 public int getDisp(){
 	return dispopt;}
 	
-// get general booleans
+// get booleans
 public boolean getBool(String a){
 	if(a == "Fade"){return fadeflag;}
 	return false;
