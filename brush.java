@@ -23,6 +23,8 @@ public class brush{
 	int xcount = 0;
 	int ycount = 0;
 	int bristles;
+	boolean wrapx = false;
+	boolean wrapy = false;
 	public brush(){}
 	public brush(int x, int y){
 		xsiz = x;
@@ -36,13 +38,17 @@ public class brush{
 			xloc = x;
 			yloc = y;}
 			
+		public void setWrap(boolean xw, boolean yw){
+			wrapx = xw;
+			wrapy = yw;}
+			
 		public int getNextX(){
 			int currentx;
 			xcount += 1;
 			currentx = calculateX();
 			if(xcount >= bristles){xcount = 0;}
-			if(currentx < 0){currentx=0;} 
-			if(currentx > xsiz-1){currentx = xsiz-1;}
+			if(currentx < 0){if(wrapx){currentx = currentx+xsiz;}else{currentx=0;}} 
+			if(currentx > xsiz-1){if(wrapx){currentx = currentx-(xsiz-1);}else{currentx = xsiz-1;}}
 			return currentx;
 		}
 		
@@ -59,8 +65,8 @@ public class brush{
 			ycount += 1;
 			currenty = calculateY();
 			if(ycount >= bristles){ycount = 0;}
-			if(currenty < 0){currenty = 0;}
-			if(currenty > ysiz-1){currenty = ysiz-1;}
+			if(currenty < 0){if(wrapy){currenty = ysiz+currenty;}else{currenty = 0;}}
+			if(currenty > ysiz-1){if(wrapy){currenty = currenty-(ysiz-1);}else{currenty = ysiz-1;}}
 			return currenty;
 		}
 		
