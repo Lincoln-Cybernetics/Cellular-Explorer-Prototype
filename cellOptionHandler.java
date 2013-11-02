@@ -24,6 +24,8 @@ boolean parity = false;
 boolean recursive = false;
 int mirrorx = 0;
 int mirrory = 0;
+boolean[] rule = new boolean[8];
+boolean[] sequence = new boolean[8];
 public cellOptionHandler(){
 }
 
@@ -50,6 +52,11 @@ public void setBool(String a, boolean b){
 	if(a == "Rec"){recursive = b;}
 }
 
+public void setBoola( String a, boolean[] b){
+	if(a == "Seq"){sequence = b;}
+	if(a == "Rule"){rule = b;}
+}
+
 //option getting methods
 public int getCT(){ return celltype;}
 
@@ -70,6 +77,11 @@ public boolean getBool(String a){
 	if (a == "Rec"){return recursive;}
 	return false;
 }
+
+public boolean getBoola(String a, int h){
+	if(a == "Seq"){return sequence[h];}
+	if(a == "Rule"){return rule[h];}
+	return rule[h];}
 
 }
 
