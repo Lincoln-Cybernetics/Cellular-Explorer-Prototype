@@ -32,6 +32,8 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	int ylocal;
 	// editing brush
 	brush sigmund;
+	// moore neighborhood brush
+	threebrush ariadne;
 	//changestate flag 
 	boolean pauseflag = false;
 	boolean paused = true;
@@ -78,6 +80,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
+		ariadne = new threebrush(xsiz, ysiz);
 		bigboard = new cellComponent(xsiz, ysiz);
 		bigboard.addMouseMotionListener(this);
 		bigboard.addMouseListener(this);
@@ -110,6 +113,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
+		ariadne = new threebrush(xsiz, ysiz);
 		bigboard = new cellComponent(xsiz, ysiz);
 		bigboard.addMouseMotionListener(this);
 		bigboard.addMouseListener(this);
@@ -201,6 +205,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						case 4: culture[a][b] = new seqCell();
 								culture[a][b].setInt("Mat", decider.getMaturity());
 								culture[a][b].setBool("Inv", decider.getInvert());
+								for(int g = 0; g <= 7; g++){
+								culture[a][b].setBoola("Seq", g, decider.getBoola("Seq", g));
+								}
 								break;
 						case 5: culture[a][b] = new randCell();
 								culture[a][b].setInt("Mat", decider.getMaturity());
@@ -228,6 +235,9 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 								culture[a][b].setInt("Mat", decider.getMaturity());
 								culture[a][b].setInt("Dir", decider.getDirection());
 								culture[a][b].setBool("Inv", decider.getInvert());
+								for(int g = 0; g <= 7; g++){
+								culture[a][b].setBoola("Rule", g, decider.getBoola("Rule", g));
+								}
 								break;
 						case 11: culture[a][b] = new symmetriCell();
 								culture[a][b].setInt("Mat", decider.getMaturity());
@@ -405,7 +415,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 				public void stateClearFill(){
 					for(int y=0;y<=ysiz-1;y++){
 					for(int x=0;x<=xsiz-1;x++){
-						current[x][y] = false;}}
+						current[x][y] = false;culture[x][y].purgeState();}}
 						if(bigboard.getMode() != 3){bigboard.setState(current);bigboard.repaint();}
 						}
 						
@@ -472,76 +482,11 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					// returns the states of a cell's Moore Neighborhood
 					public boolean[][] getMoore(int x, int y){
 					boolean[][] neighbors = new boolean[3][3];
-						//init neighbors WITHOUT resetting x and y
-					neighbors[0][0]=false;neighbors[0][1]=false;neighbors[0][2]=false;
-					neighbors[1][0]=false;neighbors[1][1]=current[x][y];neighbors[1][2]=false;
-					neighbors[2][0]=false;neighbors[2][1]=false;neighbors[2][2]=false;
-						
-						
-						// if the cell is on the border ignore outside, otherwise test neighbors
-							//upper-left neighbor
-							if(x==0 || y==0){
-							// normal borders	
-							neighbors[0][0] = false;
-							//wraparound borders
-							if(merlin.getWrap("X") ){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}
-							else{neighbors[0][0] = false;}}
-							if( merlin.getWrap("Y")){if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];} else{neighbors[0][0] = false;}}
-							if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x==0 && y != 0){neighbors[0][0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){neighbors[0][0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){neighbors[0][0] = current[xsiz-1][ysiz-1];}}}
-							//non-border
-							else{ if(current[x-1][y-1]== true){neighbors[0][0]=true;}}
-							
-							//Left-center neighbor
-							if(x==0){neighbors[0][1] = false; if(merlin.getWrap("X") ){neighbors[0][1] = current[xsiz-1][y];}}
-							else{if(current[x-1][y] == true){neighbors[0][1] = true;}}
-							
-							//Lower-Left neighbor
-							if(x==0 || y==ysiz-1){
-							// normal border
-							neighbors[0][2] = false;
-							//wraparound borders 
-							if(merlin.getWrap("X") ){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];} else{neighbors[0][2] = false;}}
-							if( merlin.getWrap("Y")){if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}else{neighbors[0][2] = false;}}
-							if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x == 0 && y != ysiz-1){neighbors[0][2] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){neighbors[0][2] = current[x-1][0];}if(x == 0 && y == ysiz-1){neighbors[0][2] = current[xsiz-1][0];}}}
-							//non-border
-							else{if(current[x-1][y+1] == true) {neighbors[0][2] = true;}}
-							
-							//upper-center neighbor
-							if(y==0){neighbors[1][0] = false;if( merlin.getWrap("Y")){neighbors[1][0] = current[x][ysiz-1];}}
-							else{if(current[x][y-1]==true){ neighbors[1][0] = true;}}
-							
-							//lower-center neighbor
-							if(y==ysiz-1){neighbors[1][2] = false;if( merlin.getWrap("Y")){neighbors[1][2] = current[x][0];}}
-							else{if(current[x][y+1]==true){ neighbors[1][2] = true;}}
-							
-							//upper-right neighbor
-							if(x==xsiz-1 || y==0){
-							//normal border	
-							neighbors[2][0] = false;
-							//wraparound border
-							if(merlin.getWrap("X") ){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}else{neighbors[2][0] = false;}}
-							if( merlin.getWrap("Y")){if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}else{neighbors[2][0] = false;}}
-							if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != 0){neighbors[2][0] = current[0][y-1];}if(y == 0 && x != xsiz-1){neighbors[2][0] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){neighbors[2][0] = current[0][ysiz-1];}}}
-							//non-border
-							else{if(current[x+1][y-1]== true){neighbors[2][0] = true;}}
-							
-							//center-right neighbor
-							if(x==xsiz-1){neighbors[2][1] = false; if(merlin.getWrap("X") ){neighbors[2][1] = current[0][y];}if (merlin.getWrap("X") && merlin.getWrap("Y")){neighbors[2][1] = current[0][y];}}
-							else{if(current[x+1][y]==true){neighbors[2][1] = true;}}
-							
-							//lower-right neighbor
-							if(x==xsiz-1 || y==ysiz-1){
-							// normal border	
-							neighbors[2][2] = false;
-							//wraparound border
-							if(merlin.getWrap("X")){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} else {neighbors[2][2] = false;}}
-							if( merlin.getWrap("Y")){if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}else{neighbors[2][2] = false;}}
-							if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != ysiz-1){neighbors[2][2] = current[0][y+1];} if(y == ysiz-1 && x != xsiz-1){neighbors[2][2] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){neighbors[2][2] = current[0][0];}}
-							}
-							//non-border
-							else{if(current[x+1][y+1] == true){neighbors[2][2] = true;}}
-						return neighbors;
-		}
+					ariadne.locate(x,y);
+					for(int v = 0; v<=2; v++){
+					for(int h = 0; h<=2; h++){
+						neighbors[h][v] = current[ariadne.getNextX()][ariadne.getNextY()];}}
+						return neighbors;}
 		
 		
 		// neighborhood for one dimensional, horizontal cells
@@ -749,19 +694,21 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						sigmund.locate(xlocal, ylocal);
 						int reps = sigmund.getBrushLength();
 						for (int a = 0; a <= reps; a++){
-						
+						int thisx = sigmund.getNextX();
+						int thisy = sigmund.getNextY();
 						//edit state
 						if(merlin.getMAction() == "SDraw"){
 						if(editflag == true || merlin.getInter()){
-							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getSDO("Check")){option = 3;} if(merlin.getSDO("Rand")){option = 4;}
+							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getSDO("Check")){option = 3;}
+							 if(merlin.getSDO("Rand")){if(e.isMetaDown()){option = 2;}else{option = 4;}}
 							if (merlin.getSDO("Check") && e.isMetaDown()){option = 5;}
 							switch(option){
-								case 1: stateDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-								case 2: stateAltDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-								case 3: stateCheckDraw(sigmund.getNextX(), sigmund.getNextY(), true); break;
-								case 4: stateRandDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-								case 5: stateCheckDraw(sigmund.getNextX(), sigmund.getNextY(), false); break;
-								default: stateDraw(sigmund.getNextX(), sigmund.getNextY()); break;}}
+								case 1: stateDraw(thisx,thisy); break;
+								case 2: stateAltDraw(thisx,thisy); break;
+								case 3: stateCheckDraw(thisx,thisy, true); break;
+								case 4: stateRandDraw(thisx,thisy); break;
+								case 5: stateCheckDraw(thisx,thisy, false); break;
+								default: stateDraw(thisx,thisy); break;}}
 							}
 						
 						//editcell
@@ -771,20 +718,20 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							if(merlin.getCDO("Rand")){option = 4;} if(merlin.getCDO("Check") && merlin.getCDO("Rand")){option = 5;}
 							
 							switch(option){
-							case 1: cellDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 2: cellAltDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 3: cellCheckDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 4: cellRandDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 5: cellRCDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							default: cellDraw(sigmund.getNextX(), sigmund.getNextY()); break;
+							case 1: cellDraw(thisx,thisy); break;
+							case 2: cellAltDraw(thisx,thisy); break;
+							case 3: cellCheckDraw(thisx,thisy); break;
+							case 4: cellRandDraw(thisx,thisy); break;
+							case 5: cellRCDraw(thisx,thisy); break;
+							default: cellDraw(thisx,thisy); break;
 							}}
 							}
 							
 							// cell selection
 						if(merlin.getMAction() == "SSel"){
 						if(singleselflag){
-							 if(e.isMetaDown()){harry.removeCell(sigmund.getNextX(), sigmund.getNextY());}
-							 else{harry.selectCell(sigmund.getNextX(), sigmund.getNextY());}
+							 if(e.isMetaDown()){harry.removeCell(thisx,thisy);}
+							 else{harry.selectCell(thisx,thisy);}
 							}
 						}
 						
@@ -883,20 +830,22 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						sigmund.locate(xlocal, ylocal);
 						int reps = sigmund.getBrushLength();
 						for (int a = 0; a <= reps; a++){
-						
+						int thisx = sigmund.getNextX();
+						int thisy = sigmund.getNextY();
 						
 						//edit state
 						if(merlin.getMAction() == "SDraw"){
 						if(editflag == true || merlin.getInter()){
-							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getSDO("Check")){option = 3;} if(merlin.getSDO("Rand")){option = 4;}
+							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getSDO("Check")){option = 3;} 
+							if(merlin.getSDO("Rand")){if(e.isMetaDown()){option = 2;}else{option = 4;}}
 							if (merlin.getSDO("Check") && e.isMetaDown()){option = 5;}
 							switch(option){
-								case 1: stateDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-								case 2: stateAltDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-								case 3: stateCheckDraw(sigmund.getNextX(), sigmund.getNextY(), true); break;
-								case 4: stateRandDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-								case 5: stateCheckDraw(sigmund.getNextX(), sigmund.getNextY(), false); break;
-								default: stateDraw(sigmund.getNextX(), sigmund.getNextY()); break;}}
+								case 1: stateDraw(thisx,thisy); break;
+								case 2: stateAltDraw(thisx,thisy); break;
+								case 3: stateCheckDraw(thisx,thisy, true); break;
+								case 4: stateRandDraw(thisx,thisy); break;
+								case 5: stateCheckDraw(thisx,thisy, false); break;
+								default: stateDraw(thisx,thisy); break;}}
 						 }
 						 
 						//edit cells
@@ -905,12 +854,12 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							int option = 1;if(e.isMetaDown()){option = 2;} if (merlin.getCDO("Check")){option = 3;}
 							if(merlin.getCDO("Rand")){option = 4;} if(merlin.getCDO("Check") && merlin.getCDO("Rand")){option = 5;}
 							switch(option){
-							case 1: cellDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 2: cellAltDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 3: cellCheckDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 4: cellRandDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							case 5: cellRCDraw(sigmund.getNextX(), sigmund.getNextY()); break;
-							default: cellDraw(sigmund.getNextX(), sigmund.getNextY()); break;
+							case 1: cellDraw(thisx,thisy); break;
+							case 2: cellAltDraw(thisx,thisy); break;
+							case 3: cellCheckDraw(thisx,thisy); break;
+							case 4: cellRandDraw(thisx,thisy); break;
+							case 5: cellRCDraw(thisx,thisy); break;
+							default: cellDraw(thisx,thisy); break;
 							}} 
 							}
 							
@@ -919,8 +868,8 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						// cell selection
 						if(merlin.getMAction() == "SSel"){
 						if(singleselflag){
-							if(e.isMetaDown()){harry.removeCell(sigmund.getNextX(), sigmund.getNextY());}
-							else{harry.selectCell(sigmund.getNextX(), sigmund.getNextY());}	
+							if(e.isMetaDown()){harry.removeCell(thisx,thisy);}
+							else{harry.selectCell(thisx,thisy);}	
 						}}
 					}
 						
