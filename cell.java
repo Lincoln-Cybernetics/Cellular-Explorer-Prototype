@@ -69,7 +69,7 @@ public class cell{
 	// set parameters
 	public void setBool( String a, boolean b){
 		if(a == "Fade"){fade = b;}}
-	public void setBoola( String a, boolean b[]){}
+	public void setBoola( String a, int v, boolean b){}
 	public void setInt( String a, int b){
 		if(a == "FadeRate"){faderate = b;}}
 	
@@ -94,6 +94,12 @@ public class cell{
 			
 		if(hood == "Mirror"){neighbors[0][0] = nhood[0][0];}
 		}
+		
+	//clears the state of the cell
+	public void purgeState(){
+		active = false;
+		age = 0;
+	}
 		
 	//iterate
 	public boolean iterate(){
@@ -169,11 +175,11 @@ class blinkCell extends cell{
 
 class seqCell extends cell{
 	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat", "Inv"};
+	static String[] controls = new String[]{"Mat", "Inv", "Rule"};
 	static int ccount = 0;
 	//the array holds the sequence of states, the counter indexes the array
 	boolean[] seq;
-	int seqlen;
+	//int seqlen;
 	int seqcounter;
 	
 	// constructs the cell with a default sequence length of 8
@@ -181,8 +187,8 @@ class seqCell extends cell{
 		seqcounter = 0;
 		hood = "Self";
 		neighbors = new boolean[1][1];
-		seq = new boolean[8];
-		seqlen = 8;
+		//seq = new boolean[8];
+		//seqlen = 8;
 		maturity = 1;}
 	
 	// defines the length of the state sequence in the constructor	
@@ -190,15 +196,13 @@ class seqCell extends cell{
 		seqcounter = 0;
 		hood = "Self";
 		neighbors = new boolean[1][1];
-		seq = new boolean[a];
-		seqlen = a;
+		//seq = new boolean[a];
+		//seqlen = a;
 		maturity = 1;}
 
 	// define the sequence its self
-	public void setBoola(String a, boolean b[]){
-		for (int c = 0; c<=seqlen-1; c++){
-			if(b.length<= c){
-		seq[c] = b[c];}}
+	public void setBoola(String a, int v, boolean b){
+		if(a == "Seq"){seq[v] = b;}
 	}
 	// set ints
 	public void setInt( String a, int b){
