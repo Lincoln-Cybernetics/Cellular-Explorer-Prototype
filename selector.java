@@ -60,24 +60,7 @@ class selector{
 		isselected = true;
 		selection[x][y] = true;}
 		
-	public void seltwoby(int x, int y, boolean b){
-			if(b){selectCell(x,y);}else{removeCell(x,y);}
-			if(x == xsiz-1){}else{if(b){selectCell(x+1,y);}else{removeCell(x+1,y);}}
-			if(y == ysiz-1){}else{if(b){selectCell(x,y+1);}else{removeCell(x,y+1);}} 
-			if(x == xsiz-1 || y == ysiz-1){}else{if(b){selectCell(x+1,y+1);}else{removeCell(x+1,y+1);}}
-			}
-		
-	public void selthreeby(int x, int y, boolean b){	
-			if(b){selectCell(x,y);}else{removeCell(x,y);}
-			if(x == xsiz-1){}else{if(b){selectCell(x+1,y);}else{removeCell(x+1,y);}}
-			if(y == ysiz-1){}else{if(b){selectCell(x,y+1);}else{removeCell(x,y+1);}} 
-			if(x == xsiz-1 || y == ysiz-1){}else{if(b){selectCell(x+1,y+1);}else{removeCell(x+1,y+1);}}
-			if(x == 0 || y == 0){}else{if(b){selectCell(x-1,y-1);}else{removeCell(x-1,y-1);}}
-			if(x == 0){}else{if(b){selectCell(x-1,y);}else{removeCell(x-1,y);}}
-			if(y == 0){}else{if(b){selectCell(x,y-1);}else{removeCell(x,y-1);}}
-			if(x == 0 || y == ysiz-1){}else{if(b){selectCell(x-1,y+1);}else{removeCell(x-1,y+1);}}
-			if(x == xsiz-1 || y == 0){}else{if(b){selectCell(x+1,y-1);}else{removeCell(x+1,y-1);}}
-			}
+	
 			
 	public void startRect(int x, int y, boolean b ){
 		xl = x; yt = y; rectstate = b;}
