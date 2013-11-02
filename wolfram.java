@@ -16,10 +16,10 @@
 */
 class wolfram extends cell{
 	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat", "Dir"};
+	static String[] controls = new String[]{"Mat", "Dir", "Rule"};
 	static int ccount = 0;
 	//parameter for which Wolfram rule to apply
-	boolean[] rule = new boolean[]{false,true,true,true,false,true,true,false};
+	boolean[] rule = new boolean[8];//{false,true,true,true,false,true,true,false};
 	
 	public wolfram(){
 		neighbors = new boolean[3][1];
@@ -38,9 +38,10 @@ class wolfram extends cell{
 		if(a == "Fade"){fade = b;}
 	} 
 		
-	public void setBoola( String a, boolean b[]){
-		if (a == "Rule"){for(int c = 0; c<=7; c++){
-			rule[c] = b[c];}}
+	public void setBoola( String a, int v, boolean b){
+		if (a == "Rule"){
+			
+			rule[v] = b;}
 		}
 	protected void setDirHood(){
 		if(direction == 0 || direction == 4){hood = "WolframV";}
