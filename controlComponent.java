@@ -60,6 +60,7 @@ JButton about;
 JRadioButton oneby = new JRadioButton("1x1", true);
 JRadioButton twoby = new JRadioButton("2x2", false);
 JRadioButton threeby = new JRadioButton("3x3", false);
+JRadioButton gliderb = new JRadioButton("Glider", false);
 ButtonGroup brushes = new ButtonGroup();
 
 // selection tools
@@ -196,6 +197,7 @@ public controlComponent(){
 	add(oneby);
 	add(twoby);
 	add(threeby);
+	add(gliderb);
 	add(selwin);
 	add(interact);
 	add(hwrap);
@@ -208,6 +210,7 @@ public controlComponent(){
 	brushes.add(oneby);
 	brushes.add(twoby);
 	brushes.add(threeby);
+	brushes.add(gliderb);
 	
 	scon.addChangeListener(this);
 	ss.addActionListener(this);
@@ -223,6 +226,7 @@ public controlComponent(){
 	oneby.addActionListener(this);
 	twoby.addActionListener(this);
 	threeby.addActionListener(this);
+	gliderb.addActionListener(this);
 	selwin.addActionListener(this);
 	interact.addItemListener(this);
 	hwrap.addItemListener(this);
@@ -268,11 +272,13 @@ public void actionPerformed(ActionEvent e){
 	
 	//brush selection
 	//basic 1x1
-	if(e.getSource() == oneby){ tray.merlin.setBrush(1);}
+	if(e.getSource() == oneby){ tray.merlin.setBrush(1); tray.setEditBrush();}
 	// 2x2 brush
-	if(e.getSource() == twoby){ tray.merlin.setBrush(2);}
+	if(e.getSource() == twoby){ tray.merlin.setBrush(2); tray.setEditBrush();}
 	//3x3 brush
-	if(e.getSource() == threeby){ tray.merlin.setBrush(3);}
+	if(e.getSource() == threeby){ tray.merlin.setBrush(3); tray.setEditBrush();}
+	//Glider brush
+	if(e.getSource() == gliderb){ tray.merlin.setBrush(4); tray.setEditBrush();}
 	
 	// selection tools
 	
@@ -403,10 +409,12 @@ public void itemStateChanged(ItemEvent e){
 	else{tray.merlin.setSDO("Interactive", false);tray.merlin.setMAction("None");}}
 	
 	if(e.getItemSelectable() == hwrap){if(hwrap.getState()){tray.merlin.setWrap("X", true);}
-	else{tray.merlin.setWrap("X", false);} tray.ariadne.setWrap(hwrap.getState(),vwrap.getState());}
+	else{tray.merlin.setWrap("X", false);} tray.ariadne.setWrap(hwrap.getState(),vwrap.getState());
+	tray.andromeda.setWrap(hwrap.getState(),vwrap.getState());}
 	
 	if(e.getItemSelectable() == vwrap){if(vwrap.getState()){tray.merlin.setWrap("Y", true);}
-	else{tray.merlin.setWrap("Y", false);}tray.ariadne.setWrap(hwrap.getState(),vwrap.getState());}
+	else{tray.merlin.setWrap("Y", false);}tray.ariadne.setWrap(hwrap.getState(),vwrap.getState());
+	tray.andromeda.setWrap(hwrap.getState(),vwrap.getState());}
 	
 	if(e.getItemSelectable() == multiC){if(multiC.getState()){tray.merlin.setDisp(4);if(tray.bigboard.getMode() == 1 || tray.bigboard.getMode() == 5){tray.bigboard.setMode(4);}}
 	else{tray.merlin.setDisp(1);if(tray.bigboard.getMode() == 4){tray.bigboard.setMode(1);}}}
