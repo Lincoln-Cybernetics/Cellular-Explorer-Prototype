@@ -109,4 +109,7 @@ class randcellOptionHandler extends cellOptionHandler{
 		if(a == "MirrX"){return shovel.nextInt(xsiz);}
 		if(a == "MirrY"){return shovel.nextInt(ysiz);}
 		return 0;}
+	public boolean getBoola(String a, int h){
+	return shovel.nextBoolean();}
+
 }
