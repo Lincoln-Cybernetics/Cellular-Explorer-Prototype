@@ -23,8 +23,10 @@ public class brush{
 	int xcount = 0;
 	int ycount = 0;
 	int bristles;
+	int orientation = 0;
 	boolean wrapx = false;
 	boolean wrapy = false;
+	boolean hoodbrush = false;
 	public brush(){}
 	public brush(int x, int y){
 		xsiz = x;
@@ -42,13 +44,21 @@ public class brush{
 			wrapx = xw;
 			wrapy = yw;}
 			
+		public void setType(boolean b){
+			hoodbrush = b;}
+			
+		public void setOrientation(int a){
+			orientation = a;}
+			
 		public int getNextX(){
 			int currentx;
 			xcount += 1;
 			currentx = calculateX();
 			if(xcount >= bristles){xcount = 0;}
-			if(currentx < 0){if(wrapx){currentx = currentx+xsiz;}else{currentx=0;}} 
-			if(currentx > xsiz-1){if(wrapx){currentx = currentx-(xsiz-1);}else{currentx = xsiz-1;}}
+			if(currentx < 0){if(hoodbrush){if(wrapx){currentx = currentx+xsiz;}else{currentx = -1;}}
+				else{if(wrapx){currentx = currentx+xsiz;}else{currentx=0;}}} 
+			if(currentx > xsiz-1){if(hoodbrush){if(wrapx){currentx = currentx-(xsiz-1);}else{currentx = -1;}}
+				else{if(wrapx){currentx = currentx-(xsiz-1);}else{currentx = xsiz-1;}}}
 			return currentx;
 		}
 		
@@ -65,8 +75,10 @@ public class brush{
 			ycount += 1;
 			currenty = calculateY();
 			if(ycount >= bristles){ycount = 0;}
-			if(currenty < 0){if(wrapy){currenty = ysiz+currenty;}else{currenty = 0;}}
-			if(currenty > ysiz-1){if(wrapy){currenty = currenty-(ysiz-1);}else{currenty = ysiz-1;}}
+			if(currenty < 0){if(hoodbrush){if(wrapy){currenty = ysiz+currenty;}else{currenty = -1;}}
+			else{if(wrapy){currenty = ysiz+currenty;}else{currenty = 0;}}}
+			if(currenty > ysiz-1){if(hoodbrush){if(wrapy){currenty = currenty - (ysiz-1);}else{currenty = -1;}}
+				else{if(wrapy){currenty = currenty-(ysiz-1);}else{currenty = ysiz-1;}}}
 			return currenty;
 		}
 		
@@ -147,3 +159,66 @@ class threebrush extends brush{
 				return y;}
 }
 		
+class gliderbrush extends brush{
+	
+	public gliderbrush(int x, int y){
+		xsiz = x;
+		ysiz = y;
+		bristles = 5;}
+	
+	protected int calculateX(){
+		int x = xloc;
+		switch (xcount){
+			case 1: x = xloc; break;
+			case 2:if(orientation<4){if(orientation == 0 || orientation == 2){x = xloc-1;}else{x = xloc+1;}}else{x=xloc;} break;
+			case 3:if(orientation<4){if(orientation == 0 || orientation == 2){x = xloc-2;}else{x = xloc+2;}}else{x=xloc;} break;
+			case 4:if(orientation<4){x = xloc;}else{if(orientation == 4 || orientation == 6){x = xloc-1;}else{x=xloc+1;}} break; 
+			case 5:if(orientation == 0 || orientation == 2){x=xloc-1;}if(orientation == 1 || orientation == 3){x = xloc+1;}
+				    if(orientation == 4 || orientation == 6){x=xloc-2;} if (orientation == 5 || orientation == 7){x=xloc+2;} break;
+			default: x = xloc; break;}
+			return x;
+		}
+	
+	protected int calculateY(){
+		int y = yloc;
+		switch(ycount){
+			case 1:y = yloc; break;
+			case 2:if(orientation<4){y=yloc;}else{if(orientation == 4 || orientation == 5){y=yloc-1;}else{y=yloc+1;}} break;
+			case 3:if(orientation<4){y=yloc;}else{if(orientation == 4 || orientation == 5){y=yloc-2;}else{y=yloc+2;}} break;
+			case 4:if(orientation<2){y=yloc-1;}else{if(orientation<4){y=yloc+1;}else{y=yloc;}} break;
+			case 5:if(orientation<2){y=yloc-2;}else{if(orientation<4){y=yloc+2;}else{if(orientation<6){y=yloc-1;}else{y=yloc+1;}}} break;
+			default: y = yloc; break;}
+			return y;
+			}
+}
+
+class spinbrush extends brush{
+	//orientation only goes 0-3
+	//0 = horizontal
+	//1 = vertical
+	//2 = starts upper-left
+	//3 = starts lower-left
+	public spinbrush(int x, int y){
+		xsiz = x;
+		ysiz = y;
+		bristles = 3;}
+		
+	protected int calculateX(){
+		int x = xloc;
+		switch(xcount){
+			case 1: if(orientation == 1){x = xloc;}else{x = xloc-1;} break;
+			case 2: x = xloc;
+			case 3: if(orientation == 1){x = xloc;}else{x = xloc+1;} break;
+			default: x = xloc;}
+			return x;}
+			
+	protected int calculateY(){
+		int y = yloc;
+		switch(ycount){
+			case 1: y = yloc; if(orientation == 1 || orientation == 2){ y = yloc-1;} if(orientation == 3){y = yloc+1;} break;
+			case 2: y = yloc; break;
+			case 3: y = yloc; if(orientation == 1 || orientation == 2){ y = yloc+1;} if(orientation == 3){y = yloc-1;} break;
+			default: y = yloc;}
+			return y;}
+			
+}
