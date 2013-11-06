@@ -24,7 +24,8 @@ boolean fadeflag = false;
 //mouse actions
 String maction = "SDraw";
 // brush options	
-int brush = 1;
+int Brush = 1;
+int brushor = 0;
 // cell drawing options
 int cdo;
 boolean cdcheck = false;
@@ -86,12 +87,17 @@ public boolean isMouseUsed(){
 
 // drawing brush
 public void setBrush(int a){
-	brush = a;
+	Brush = a;
 	/*brushes
 	 * 1 = 1x1
 	 * 2 = 2x2
 	 * 3 = 3x3
+	 * 4 = glider brush
 	 * */}
+	 
+public void setBrushDir(int a){
+	brushor = a;
+}
 	
 //celldrawing	
 public void setCDO(String a, boolean b){
@@ -146,7 +152,11 @@ public String getMAction(){
 
 // brush
 public int getBrush(){
-	return brush;}
+	return Brush;}
+	
+public int getBrushDir(){
+	return brushor;}
+	
 //cell drawing
 public boolean getCDO(String a){
 	if(a == "Check"){return cdcheck;}
