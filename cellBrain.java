@@ -34,6 +34,7 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 	brush sigmund;
 	// moore neighborhood brush
 	threebrush ariadne;
+	spinbrush andromeda;
 	//changestate flag 
 	boolean pauseflag = false;
 	boolean paused = true;
@@ -81,11 +82,15 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
 		ariadne = new threebrush(xsiz, ysiz);
+		ariadne.setType(true);
+		andromeda = new spinbrush(xsiz, ysiz);
+		andromeda.setType(true);
 		bigboard = new cellComponent(xsiz, ysiz);
 		bigboard.addMouseMotionListener(this);
 		bigboard.addMouseListener(this);
 		makeWindow();
 		//initialize the board
+		setEditBrush();
 		int cs = castor.getCT();
 		int ms = castor.getMaturity();
 		castor.setCT(6);
@@ -114,11 +119,15 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 		newstate = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
 		ariadne = new threebrush(xsiz, ysiz);
+		ariadne.setType(true);
+		andromeda = new spinbrush(xsiz, ysiz);
+		andromeda.setType(true);
 		bigboard = new cellComponent(xsiz, ysiz);
 		bigboard.addMouseMotionListener(this);
 		bigboard.addMouseListener(this);
 		makeWindow();
 		//initialize the board
+		setEditBrush();
 		int cs = castor.getCT();
 		int ms = castor.getMaturity();
 		castor.setCT(6);
@@ -156,6 +165,16 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					pauseflag = a;}
 					
 					// general editing methods
+					
+					// brush setting method
+					public void setEditBrush(){
+						switch(merlin.getBrush()){
+						case 1: sigmund = new brush(xsiz, ysiz); break;
+						case 2: sigmund = new twobrush(xsiz, ysiz); break;
+						case 3: sigmund = new threebrush(xsiz,ysiz); break;
+						case 4: sigmund = new gliderbrush(xsiz, ysiz); sigmund.setOrientation(merlin.getBrushDir()); break;
+						default : sigmund = new brush(xsiz, ysiz); break;}
+					}
 					
 					//selection methods
 					//tells the brain a selection is being made
@@ -485,79 +504,27 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 					ariadne.locate(x,y);
 					for(int v = 0; v<=2; v++){
 					for(int h = 0; h<=2; h++){
-						neighbors[h][v] = current[ariadne.getNextX()][ariadne.getNextY()];}}
+						int tempx = ariadne.getNextX();
+						int tempy = ariadne.getNextY();
+						if(tempx == -1 || tempy == -1){neighbors[h][v] = false;}
+						else{ neighbors[h][v] = current[tempx][tempy];}}}
 						return neighbors;}
 		
 		
-		// neighborhood for one dimensional, horizontal cells
-		public boolean[][] getWolfram(int x, int y){
+		// neighborhood for one dimensional cells with one neighbor on each side
+		public boolean[][] getWolfram(int x, int y, int o){
 			boolean[][] wolfhood = new boolean[3][1];
-			if (x == 0){wolfhood[0][0] = false; if(merlin.getWrap("X") ){wolfhood[0][0] = current[xsiz-1][y];}} else{wolfhood[0][0] = current[x-1][y];}
-			wolfhood[1][0] = current[x][y];
-			if(x == xsiz-1){wolfhood[2][0] = false;if(merlin.getWrap("X") ){wolfhood[2][0] = current[0][y];}} else{wolfhood[2][0] = current[x+1][y];}
-			return wolfhood;}
+			andromeda.locate(x,y);
+			andromeda.setOrientation(o);
+			for(int v = 0; v<=2; v++){
+				int tempx = andromeda.getNextX();
+				int tempy = andromeda.getNextY();
+				if(tempx == -1 || tempy == -1){wolfhood[v][0] = false;}
+				else{wolfhood[v][0] = current[tempx][tempy];}}
+				return wolfhood;
+			}
 		
-		// neighborhood for one dimensional, vertical cells	
-		public boolean[][] getWolframV(int x, int y){
-			boolean[][] wolfhood = new boolean[3][1];
-			if(y == 0){wolfhood[0][0] = false;if( merlin.getWrap("Y")){wolfhood[0][0] = current[x][ysiz-1];}} else{wolfhood[0][0] = current[x][y-1];}
-			wolfhood[1][0] = current[x][y];
-			if(y == ysiz-1){wolfhood[2][0] = false;if( merlin.getWrap("Y")){wolfhood[2][0] = current[x][0];}} else{wolfhood[2][0] = current[x][y+1];}
-			return wolfhood;}
-			
-		// neighborhood for one dimensional cells starting with upper left
-		public boolean[][] getWolframUL(int x, int y){
-			boolean[][] wolfhood = new boolean[3][1];
-			if (x == 0 || y == 0){ 
-				//normal border
-				wolfhood[0][0] = false;
-				//wraparound border
-				if(merlin.getWrap("X") ){if(x == 0 && y != 0){wolfhood[0][0] = current[xsiz-1][y-1];}else{wolfhood[0][0] = false;}}
-			if ( merlin.getWrap("Y")){if(y == 0 && x != 0){wolfhood[0][0] = current[x-1][ysiz-1];} else{wolfhood[0][0] = false;}}
-			if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x == 0 && y != 0){wolfhood[0][0] = current[xsiz-1][y-1];}if(y == 0 && x != 0){wolfhood[0][0] = current[x-1][ysiz-1];}if(x == 0 && y == 0){wolfhood[0][0] = current[xsiz-1][ysiz-1];}}}
-			//non-border
-			 else{ wolfhood[0][0] = current[x-1][y-1];}
-			 
-			 // center cell
-			wolfhood[1][0] = current[x][y];
-			
-			if (x == xsiz-1 || y == ysiz-1){ 
-				// normal border
-				wolfhood[2][0] = false;
-				//wraparound border
-				if(merlin.getWrap("X") ){if (x == xsiz-1 && y != ysiz-1){wolfhood[2][0] = current[0][y+1];} else {wolfhood[2][0] = false;}}
-				if( merlin.getWrap("Y")){if(y == ysiz-1 && x != xsiz-1){wolfhood[2][0] = current[x+1][0];}else{wolfhood[2][0] = false;}}
-				if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != ysiz-1){wolfhood[2][0] = current[0][y+1];}if(y == ysiz-1 && x != xsiz-1){wolfhood[2][0] = current[x+1][0];}if(x == xsiz-1 && y == ysiz-1){wolfhood[2][0] = current[0][0];}}} 
-				//non-border
-				else{wolfhood[2][0] = current[x+1][y+1];}
-			return wolfhood;}
-			
-		// neighborhood for one dimensional cells starting in lower left
-		public boolean[][] getWolframLL(int x, int y){
-			boolean[][] wolfhood = new boolean[3][1];
-			if(x==0 || y== ysiz-1){
-				// normal border
-				wolfhood[0][0] = false;
-				//wraparound borders 
-				if(merlin.getWrap("X")){if(x == 0 && y != ysiz-1){wolfhood[0][0] = current[xsiz-1][y+1];} else{wolfhood[0][0] = false;}}
-				if(merlin.getWrap("Y")){if(y == ysiz-1 && x!= 0){wolfhood[0][0] = current[x-1][0];}else{wolfhood[0][0] = false;}}
-				if(merlin.getWrap("X") && merlin.getWrap("Y")){if(x == 0 && y != ysiz-1){wolfhood[0][0] = current[xsiz-1][y+1];}if(y == ysiz-1 && x!= 0){wolfhood[0][0] = current[x-1][0];}if(x == 0 && y == ysiz-1){wolfhood[0][0] = current[xsiz-1][0];}}}
-			//non-border
-			else{wolfhood[0][0] = current[x-1][y+1];}
-			
-			// center cell
-			wolfhood[1][0] = current[x][y];
-			
-			if(x == xsiz-1 || y == 0){
-				// normal border
-				wolfhood[2][0] = false;
-				//wraparound border
-				if(merlin.getWrap("X")){if (x == xsiz-1 && y != 0){wolfhood[2][0] = current[0][y-1];}else{wolfhood[2][0] = false;}}
-				if(merlin.getWrap("Y")){if(y == 0 && x != xsiz-1){wolfhood[2][0] = current[x+1][ysiz-1];}else{wolfhood[2][0] = false;}}
-				if(merlin.getWrap("X") && merlin.getWrap("Y")){if (x == xsiz-1 && y != 0){wolfhood[2][0] = current[0][y-1];}if(y == 0 && x != xsiz-1){wolfhood[2][0] = current[x+1][ysiz-1];}if(x == xsiz-1 && y == 0){wolfhood[2][0] = current[0][ysiz-1];}}} 
-				//non-border
-				else{wolfhood[2][0] = current[x+1][y-1];}
-			return wolfhood;}
+	
 		
 		//logic methods
 		// iterate the array
@@ -590,19 +557,19 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 							newstate[x][y] = culture[x][y].iterate();}
 							
 						if(culture[x][y].getNeighborhood() == "Wolfram"){
-							culture[x][y].setNeighbors(getWolfram(x,y));
+							culture[x][y].setNeighbors(getWolfram(x,y, 0));
 							newstate[x][y] = culture[x][y].iterate();}
 							
 						if(culture[x][y].getNeighborhood() == "WolframV"){
-							culture[x][y].setNeighbors(getWolframV(x,y));
+							culture[x][y].setNeighbors(getWolfram(x,y, 1));
 							newstate[x][y] = culture[x][y].iterate();}
 							
 						if(culture[x][y].getNeighborhood() == "WolframUL"){
-							culture[x][y].setNeighbors(getWolframUL(x,y));
+							culture[x][y].setNeighbors(getWolfram(x,y, 2));
 							newstate[x][y] = culture[x][y].iterate();}
 							
 						if(culture[x][y].getNeighborhood() == "WolframLL"){
-							culture[x][y].setNeighbors(getWolframLL(x,y));
+							culture[x][y].setNeighbors(getWolfram(x,y, 3));
 							newstate[x][y] = culture[x][y].iterate();}
 							
 						if(culture[x][y].getNeighborhood() == "Mirror"){
@@ -686,16 +653,12 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if (ylocal > ysiz-1){ylocal = ysiz-1;}
 						
 						if(merlin.isMouseUsed()){
-						switch(merlin.getBrush()){
-							case 1: sigmund = new brush(xsiz,ysiz); break;
-							case 2: sigmund = new twobrush(xsiz, ysiz); break;
-							case 3: sigmund = new threebrush(xsiz, ysiz); break;
-							default: sigmund = new brush(xsiz, ysiz); break;}
 						sigmund.locate(xlocal, ylocal);
 						int reps = sigmund.getBrushLength();
 						for (int a = 0; a <= reps; a++){
 						int thisx = sigmund.getNextX();
 						int thisy = sigmund.getNextY();
+						
 						//edit state
 						if(merlin.getMAction() == "SDraw"){
 						if(editflag == true || merlin.getInter()){
@@ -758,11 +721,6 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if (ylocal > ysiz-1){ylocal = ysiz-1;}
 						
 								if(merlin.isMouseUsed()){
-						switch(merlin.getBrush()){
-							case 1: sigmund = new brush(xsiz,ysiz); break;
-							case 2: sigmund = new twobrush(xsiz, ysiz); break;
-							case 3: sigmund = new threebrush(xsiz, ysiz); break;
-							default: sigmund = new brush(xsiz, ysiz); break;}
 						sigmund.locate(xlocal, ylocal);
 						int reps = sigmund.getBrushLength();
 						for (int a = 0; a <= reps; a++){
@@ -785,11 +743,6 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if (ylocal > ysiz-1){ylocal = ysiz-1;}
 						
 								if(merlin.isMouseUsed()){
-						switch(merlin.getBrush()){
-							case 1: sigmund = new brush(xsiz,ysiz); break;
-							case 2: sigmund = new twobrush(xsiz, ysiz); break;
-							case 3: sigmund = new threebrush(xsiz, ysiz); break;
-							default: sigmund = new brush(xsiz, ysiz); break;}
 						sigmund.locate(xlocal, ylocal);
 						int reps = sigmund.getBrushLength();
 						for (int a = 0; a <= reps; a++){
@@ -822,11 +775,6 @@ class cellBrain extends JComponent implements Runnable, MouseInputListener
 						if (ylocal > ysiz-1){ylocal = ysiz-1;}
 						
 							if(merlin.isMouseUsed()){
-						switch(merlin.getBrush()){
-							case 1: sigmund = new brush(xsiz,ysiz); break;
-							case 2: sigmund = new twobrush(xsiz, ysiz); break;
-							case 3: sigmund = new threebrush(xsiz, ysiz); break;
-							default: sigmund = new brush(xsiz, ysiz); break;}
 						sigmund.locate(xlocal, ylocal);
 						int reps = sigmund.getBrushLength();
 						for (int a = 0; a <= reps; a++){
