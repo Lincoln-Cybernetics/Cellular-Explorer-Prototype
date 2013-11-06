@@ -187,7 +187,7 @@ class seqCell extends cell{
 		seqcounter = 0;
 		hood = "Self";
 		neighbors = new boolean[1][1];
-		//seq = new boolean[8];
+		seq = new boolean[8];
 		//seqlen = 8;
 		maturity = 1;}
 	
@@ -196,7 +196,7 @@ class seqCell extends cell{
 		seqcounter = 0;
 		hood = "Self";
 		neighbors = new boolean[1][1];
-		//seq = new boolean[a];
+		seq = new boolean[a];
 		//seqlen = a;
 		maturity = 1;}
 
