@@ -19,6 +19,7 @@ public class automatonOptionHandler{
 boolean xwrap = false;
 boolean ywrap = false;
 int ztime = 2000;
+int opMode;
 //automaton rules
 boolean fadeflag = false;
 //mouse actions
@@ -44,8 +45,9 @@ boolean sdrand = false;
 int sfo;
 boolean sfcheck = false;
 boolean sfrand = false;
-
+// display options
 int dispopt = 1;
+int disptype = 1;
 
 public automatonOptionHandler(){
 
@@ -112,9 +114,9 @@ public void setCFO(String a, boolean b){
 }	
 //state drawing	
 public void setSDO(String a, boolean b){
-	if(a == "Check"){if(b){sdcheck = true;}else{sdcheck = false;}}
-	if(a == "Rand"){if(b){sdrand = true;}else{sdrand = false;}}
-	if(a == "Interactive"){if(b){interactive = true;}else{interactive = false;}}
+	if(a == "Check"){sdcheck = b;}
+	if(a == "Rand"){sdrand = b;}
+	if(a == "Interactive"){interactive = b;}
 }
 //state fill
 public void setSFO(String a, boolean b){
@@ -127,6 +129,18 @@ public void setSFO(String a, boolean b){
 // set general boolean options
 public void setBool(String a, boolean b){
 	if(a == "Fade"){fadeflag = b;}
+}
+
+// set general Ints
+public void setInt(String s, int n){
+	if(s == "opM"){opMode = n;
+	switch(n){
+		case 1: setMAction("SDraw"); setDisp(1); disptype = 1; break;// normal running
+		case 2: setMAction("SDraw"); setDisp(2); break;// state editing
+		case 3: setMAction("CDraw"); setDisp(3); break;// cell editing
+		case 4: setMAction("SDraw"); setDisp(4); disptype = 4;break;// multicolor mode
+	}
+	}
 }
 
 // set display options
@@ -175,7 +189,7 @@ public boolean getSDO(String a){
 	if(a == "Rand"){return sdrand;}
 	return false;
 	}
-	
+//interactive	
 public boolean getInter(){
 	return interactive;}
 
@@ -192,10 +206,32 @@ public boolean getSFO(String a){
 //display mode
 public int getDisp(){
 	return dispopt;}
+// type of rendering
+public int getDispType(){
+	/* Display types
+	 * 1 = normal
+	 * 4 = multicolor
+	 * */
+	return disptype;}
 	
 // get booleans
 public boolean getBool(String a){
 	if(a == "Fade"){return fadeflag;}
 	return false;
 }
+
+// get Ints
+public int getInt(String s){
+	if (s == "opM"){return opMode;}
+	return 0;}
+	
+//get operating mode
+public int getOpMode(){
+	return opMode;}
+	
+//checks for situations where the automaton shouldn't iterate
+public boolean mayIterate(){
+	if(opMode == 3 || opMode == 2){return false;}
+	else{return true;}}
+
 }
