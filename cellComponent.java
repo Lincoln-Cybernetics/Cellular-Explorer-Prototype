@@ -81,13 +81,13 @@ public class cellComponent extends JComponent
 	
 	// selects and deselects cells	
 	public void setSelection(int x, int y, boolean z){
-		selection[x][y] = z;}
+		selection[x][y] = z; }
 	
 
 		
 	// 	shows or hides selection hilighting
 	public void setSelect(boolean a){
-		selectionflag = a;}
+		selectionflag = a;repaint();}
 		
 	// begin rectangle selection
 	public void beginRect(int x, int y, boolean b){
