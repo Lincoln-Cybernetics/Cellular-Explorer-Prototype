@@ -18,7 +18,7 @@ import javax.swing.event.*;
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-public class cellComponent extends JComponent 
+public class cellComponent extends JComponent implements updateListener 
 {
 	int xdim;
 	int ydim;
@@ -26,15 +26,15 @@ public class cellComponent extends JComponent
 	int mode = 1;
 	boolean[][] cstate;
 	boolean[][] selection;
-	boolean selectionflag = false;
-	int[][] species;
-	int[][] lifespan;
+	boolean selectionflag = false;// shows, hides selections
+	int[][] species;// colors cells by type
+	int[][] lifespan;// outlines cells based on Maturity setting
 	int[][] age;
-	int[][] ageclass;
+	int[][] ageclass;//determines the color in ulticolor
 	int[][] orientation;
-	int hlx = 0;
-	int hly = 0;
-	int hlc = 0;
+	int hlx = 0;//hilight cell x
+	int hly = 0;// highlight cell y
+	int hlc = 0;//hilight color
 	boolean hiliteflag = false;
 	int rectx;
 	int recty;
@@ -74,6 +74,9 @@ public class cellComponent extends JComponent
 		setPreferredSize(new Dimension(xdim*magnify, ydim*magnify));
 
 	}
+	
+	public void recieveUpdate( updateEvent e){
+		setState(e.getUpdate());}
 	// set variables
 	public void setState(boolean update[][]){
 		cstate = update;
@@ -81,13 +84,13 @@ public class cellComponent extends JComponent
 	
 	// selects and deselects cells	
 	public void setSelection(int x, int y, boolean z){
-		selection[x][y] = z;}
+		selection[x][y] = z; }
 	
 
 		
 	// 	shows or hides selection hilighting
 	public void setSelect(boolean a){
-		selectionflag = a;}
+		selectionflag = a;repaint();}
 		
 	// begin rectangle selection
 	public void beginRect(int x, int y, boolean b){
@@ -105,7 +108,7 @@ public class cellComponent extends JComponent
 		
 	
 		
-	public void setMode(int a){
+	public void setDispMode(int a){
 		mode = a; repaint();
 		/*Mode 1: normal rendering for running the automaton
 		 *Mode 2: state editing mode
