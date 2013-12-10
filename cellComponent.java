@@ -18,7 +18,7 @@ import javax.swing.event.*;
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-public class cellComponent extends JComponent implements updateListener 
+public class cellComponent extends JComponent  
 {
 	int xdim;
 	int ydim;
@@ -75,8 +75,7 @@ public class cellComponent extends JComponent implements updateListener
 
 	}
 	
-	public void recieveUpdate( updateEvent e){
-		setState(e.getUpdate());}
+	
 	// set variables
 	public void setState(boolean update[][]){
 		cstate = update;
