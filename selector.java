@@ -18,8 +18,7 @@ class selector{
 	int xsiz;
 	int ysiz;
 	boolean[][] selection;
-	boolean isselected = false;
-	boolean allsel = false;
+	
 	int xl;
 	int yt;
 	boolean rectstate;
@@ -34,30 +33,27 @@ class selector{
 		selection = new boolean[xsiz][ysiz];
 	}
 	public void deselect(){
-		isselected = false;
+		
 		for(int y = 0; y<= ysiz-1; y++){
 			for(int x = 0; x<= xsiz-1; x++){
 				selection[x][y] = false;}}
 			}
 				
 	public void selectAll(){
-		isselected = true; allsel = true;
+		
 		for(int y = 0; y<= ysiz-1; y++){
 			for(int x = 0; x<= xsiz-1; x++){
 				selection[x][y] = true;}}
 			}
 			
 	public void invertSel(){
-		boolean isl = isselected;
-		if(allsel){isselected = false;}
-		if(isl){allsel = false;}
+
 		for(int y = 0; y<= ysiz-1; y++){
 			for(int x = 0; x<= xsiz-1; x++){
 				selection[x][y] = !selection[x][y];}}
 			}
 			
 	public void selectCell(int x, int y){
-		isselected = true;
 		selection[x][y] = true;}
 		
 	
@@ -77,7 +73,7 @@ class selector{
 			}		
 			
 	public void removeCell(int x, int y){
-		allsel = false;
+		
 		selection[x][y] = false;}
 			
 	public boolean getSelection(int x, int y){
@@ -85,5 +81,10 @@ class selector{
 		else{return false;}
 	}
 	public boolean getSelected(){
-		return isselected;}
+		for(int y = 0; y <= ysiz-1; y++){
+			for(int x = 0; x <= xsiz-1; x++){
+				if(selection[x][y]){return true;}
+			}}
+			return false;
+		}
 }
