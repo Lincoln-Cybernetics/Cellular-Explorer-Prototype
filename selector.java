@@ -18,7 +18,7 @@ class selector{
 	int xsiz;
 	int ysiz;
 	boolean[][] selection;
-	
+	boolean isselected = false;
 	int xl;
 	int yt;
 	boolean rectstate;
@@ -80,11 +80,14 @@ class selector{
 		if(selection[x][y]){return true;}
 		else{return false;}
 	}
-	public boolean getSelected(){
+	public void detectSelection(){
+		isselected = false;
 		for(int y = 0; y <= ysiz-1; y++){
 			for(int x = 0; x <= xsiz-1; x++){
-				if(selection[x][y]){return true;}
+				if(selection[x][y]){isselected = true;break;}
 			}}
-			return false;
+			
 		}
+		
+	public boolean getSelected(){ return isselected;}
 }
