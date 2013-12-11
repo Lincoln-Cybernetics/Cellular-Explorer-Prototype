@@ -71,7 +71,7 @@ public void handleControl(ucEvent e){}
 			pistons[0][0].iterate();}
 		}
 
-	public void iterateInterrupt(int a){if (a == 1){stateFillSelect(sfo);}}
+	public void iterateInterrupt(int a){if (a == 1){stateFillSelect();}}
 	
 	//speed settings
 	public void setMasterSpeed(int a){
@@ -167,6 +167,7 @@ public void handleControl(ucEvent e){}
 
 	// refreshes the selection in the display
 					public void refreshSel(){
+						sedna.detectSelection();
 						for(int y=0;y<= pistons[0][0].ysiz-1;y++){
 						for(int x=0;x<= pistons[0][0].xsiz-1;x++){
 							outputs[0][0].setSelection(x,y,sedna.getSelection(x,y));
@@ -485,13 +486,13 @@ public void handleControl(ucEvent e){}
 				
 				//gateway method
 				public void fillState(){
-					if(pistons[0][0].paused){stateFillSelect(sfo);}
+					if(pistons[0][0].paused){stateFillSelect();}
 					else{pistons[0][0].myopt = 1; pistons[0][0].sfflag = true;}
 					}
 				
 					
 					//selects the right state fill to do
-					public void stateFillSelect(int sfopt){
+					public void stateFillSelect(){
 						/* State Fill Option
 						* 0 = Regular fill 
 						* 1 = Checker Board pattern
@@ -712,7 +713,7 @@ public void handleControl(ucEvent e){}
 							for(int y = 0; y<= pistons[0][0].ysiz-1; y++){
 							for(int x = 0; x<= pistons[0][0].xsiz-1; x++){
 								outputs[0][0].setSelection(x,y,sedna.getSelection(x,y));}}
-								outputs[0][0].repaint();
+								outputs[0][0].repaint(); sedna.detectSelection();
 								switch(mode){
 									case 1: if(interactflag){setMouseAction("SDraw");}else{setMouseAction("None");}break;
 									case 2: setMouseAction("SDraw"); break;
@@ -780,7 +781,7 @@ public void handleControl(ucEvent e){}
 							for(int y = 0; y<= pistons[0][0].ysiz-1; y++){
 							for(int x = 0; x<= pistons[0][0].xsiz-1; x++){
 								outputs[0][0].setSelection(x,y,sedna.getSelection(x,y));}}
-								outputs[0][0].repaint();
+								outputs[0][0].repaint(); sedna.detectSelection();
 								switch(mode){
 									case 1: if(interactflag){setMouseAction("SDraw");}else{setMouseAction("None");}break;
 									case 2: setMouseAction("SDraw"); break;
