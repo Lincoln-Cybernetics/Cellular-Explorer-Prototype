@@ -84,6 +84,8 @@ class cellBrain extends JComponent implements Runnable{
 	 * 3 = cell editing
 	 * */
 	int dt = 1;//display type
+	boolean xwrap = false;//edge wrapping x-axis
+	boolean ywrap = false;// edge wrapping y-axis
 	Thread t = new Thread(this);
 	
 	
@@ -94,24 +96,19 @@ class cellBrain extends JComponent implements Runnable{
 		controller = new logicEngine();
 		xsiz = 400;
 		ysiz = 150;
-		
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
-		
 		culture = new cell[xsiz][ysiz];
 		ariadne = new threebrush(xsiz, ysiz);
 		ariadne.setType(true);
 		andromeda = new spinbrush(xsiz, ysiz);
 		andromeda.setType(true);
+		setXYwrap(false,false);
 		ztime = controller.getMasterSpeed();
 		//initialize the board
-		
-		
 		for(int y=0;y<= ysiz-1;y++){
 		for(int x=0;x<= xsiz-1;x++){
-				addCell(x,y, new conway());}}
-		
-			 
+				addCell(x,y, new conway());}} 
 			//display.setState(current);	
 			//fireupdateEvent();
 			
@@ -122,24 +119,19 @@ class cellBrain extends JComponent implements Runnable{
 		controller = vostok;
 		xsiz = a;
 		ysiz = b;
-		
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
-		
 		culture = new cell[xsiz][ysiz];
 		ariadne = new threebrush(xsiz, ysiz);
 		ariadne.setType(true);
 		andromeda = new spinbrush(xsiz, ysiz);
 		andromeda.setType(true);
-		
+		setXYwrap(false,false);
 		ztime = controller.getMasterSpeed();
 		//initialize the board
-		
-		
 		for(int y=0;y<= ysiz-1;y++){
 		for(int x=0;x<= xsiz-1;x++){
 				addCell(x,y, new conway());}}
-		
 			//display.setState(current);	
 			//fireupdateEvent();	
 			
@@ -150,42 +142,32 @@ class cellBrain extends JComponent implements Runnable{
 			controller = new logicEngine();
 		xsiz = 400;
 		ysiz = 150;
-		
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
-		
 		culture = new cell[xsiz][ysiz];
 		ariadne = new threebrush(xsiz, ysiz);
 		ariadne.setType(true);
 		andromeda = new spinbrush(xsiz, ysiz);
 		andromeda.setType(true);
-		
+		setXYwrap(false,false);
 		ztime = controller.getMasterSpeed();
 		//initialize the board
-		
-		
-		if (option == "Rnd"){ 
-			
+		if (option == "Rnd"){ 	
 		for(int y=0;y<= ysiz-1;y++){
 		for(int x=0;x<= xsiz-1;x++){
 				addCell(x,y, new randCell());}}}
 		else{for(int y=0;y<= ysiz-1;y++){
 		for(int x=0;x<= xsiz-1;x++){
 				addCell(x,y, new conway());}} }
-		
-			 
-				
-		
-			
 			}
 			
 		
-			// sets display	
+			// sets display	object
 		public void setDisplay(cellComponent bigboard){
 			display = bigboard;
 			display.setState(current);
 			}
-			
+			// sets iteration Speed
 			public void setZT(int z){
 				ztime = z;}
 			
@@ -221,6 +203,11 @@ class cellBrain extends JComponent implements Runnable{
 					if(opmode == 2 || opmode == 3){return false;}
 					else{return true;}
 				}
+				
+				// set edge-wrapping
+				public void setXYwrap(boolean xwr, boolean ywr){xwrap = xwr; ywrap = ywr; 
+				 ariadne.setWrap(xwrap,ywrap); andromeda.setWrap(xwrap, ywrap);}
+				
 				
 				//stores the type of display while editing	
 				public int getDispType(){
@@ -361,8 +348,8 @@ class cellBrain extends JComponent implements Runnable{
 					// cycles new values into current state
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
-								// set age
-						//display.setAge(x,y,culture[x][y].getAge());
+								// set age for multicolor
+						if(opmode == 4){display.setAge(x,y,culture[x][y].getAge());}
 				
 						current[x][y] = newstate[x][y]; 
 						}}
