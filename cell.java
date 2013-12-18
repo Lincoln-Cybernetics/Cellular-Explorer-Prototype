@@ -1,235 +1,137 @@
 
+/*Cellular Explorer Prototype proof of concept
+ * Copyright(C) 02013 Matt Ahlschwede
+ *  This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 public class cell{
-	// main calculation variables
+	// describe the cell's neighborhood
+	int dim;//dimensionality
+	int radius;
+	
+	// describe the current state of the cell
 	boolean active;
-	int cellstate;
-	int counter;
-	boolean[][] neighbors;
+	int state;
+	String name;
+	
+	//neighborhood location variables
+	int hoodx;
+	int hoody;
+	
+	// neighborhood variables
 	boolean self;
-	boolean recursive;
-	boolean invert;
-	int age = 0;
-	// parameter variables
-	int maturity;
-	int direction;
-	String hood;
-	boolean fade = false;
-	int faderate = 255;
-	// array that determines what parameters can be set for this type of cell
-	// order:  maturity, direction, mirrorX, mirrorY, invert
-	static String[] controls = new String[]{"None"};
-	static int ccount = 0;
-	//constructors
+	boolean[] neighbors;
+	boolean[][] neighborhood;
+	boolean[][][] environment;
+	
+	int mystate;
+	int[] neighborstate;
+	int[][] hoodstate;
+	int[][][] envirostate;
+	
+	//age and fade rule variables
+	int age;
+	boolean ages;
+	int fade;
+	boolean fades;
+	
+	//constructor
 	public cell(){
-		hood = "Self";
-		maturity = 1;
-		invert = false;
-		neighbors = new boolean[1][1];
-	}
-	
-	public cell(int a){
-		hood = "Self";
-		maturity = 1;
-		invert = false;
-		neighbors = new boolean[1][1];
-	}
-	
-	public cell(int a, int b){
-		hood = "Self";
-		maturity = 1;
-		invert = false;
-		neighbors = new boolean[1][1];
-	}
-	
-	// get settable parameters
-	
-	
-	public int getMat(){return maturity;}
-	
-	public int getDir(){return direction;}
-	
-	public int getInt( String a ){return counter;}
-	
-	public int getAge(){return age;}
-	
-	public boolean getBool( String a){return self;}
-	
-	// get settable parameters
-	public static String getControl(){
-		return controls[ccount];
-		}
-		
-	public static  void incControl(){
-		ccount += 1;
-		if(ccount == controls.length){ccount = 0;}
-	}
-	// get neighborhood
-	public String getNeighborhood(){ return hood;}
-	
-	// set parameters
-	public void setBool( String a, boolean b){
-		if(a == "Fade"){fade = b;}}
-	public void setBoola( String a, int v, boolean b){}
-	public void setInt( String a, int b){
-		if(a == "FadeRate"){faderate = b;}}
-	
-	
-		
-	// set neighbors
-	public void setNeighbors(boolean nhood[][]){ 
-		if (hood == "None"){self = nhood[0][0];}
-		
-		if (hood == "Self"){
-		neighbors[0][0] = nhood[0][0]; self = nhood[0][0];}
-		
-		if (hood == "Moore"){ 
-			for(int y = 0; y <= 2; y++){
-			for(int x = 0; x <= 2; x++){
-				neighbors[x][y] = nhood[x][y];}}
-				self = neighbors[1][1];}
-				
-		if(hood == "Wolfram" || hood == "WolframV" || hood == "WolframLL" || hood == "WolframUL"){
-			neighbors[0][0] = nhood[0][0]; neighbors[1][0] = nhood[1][0]; neighbors[2][0] = nhood[2][0];
-			self = nhood[1][0];}
-			
-		if(hood == "Mirror"){neighbors[0][0] = nhood[0][0];}
-		}
-		
-	//clears the state of the cell
-	public void purgeState(){
+		dim = 0;
+		radius = 0;
 		active = false;
-		age = 0;
-	}
-		
-	//iterate
-	public boolean iterate(){
-		counter+= 1;
-		if(counter == maturity){counter = 0;if(invert){active = !calculate();}else{active = calculate();}}
-		else{active = self;}
-		if(active){age += 1;} 
-		if(active == false){age = 0;}
-		if(fade){if(age >= faderate){age = 0; active = false;}}
-		if(age >= 2000000000){age = 0;}
-		return active;}
-		
-	// if maturity is reached, calculate the new state
-	protected boolean calculate(){
-		return self;}
-}
-
-class offCell extends cell{
-	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"None"};
-	//determines which cells' states are in this cell's neighborhood
-	
-	public offCell(){
-		hood = "None";
-		maturity = 1;
+		state = 0;
+		name = "cell";
+		hoodx = -1;
+		hoody = -1;
 		self = false;
-		}
-	
-	protected boolean calculate(){
-		return false;}
-}
-
-class onCell extends cell{
-	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"None"};
-	public onCell(){
-		hood = "None";
-		maturity = 1;
-		self = true;
-		}
-			
-	protected boolean calculate(){
-		return true;}
-}
-
-class blinkCell extends cell{
-	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat"};
-	public blinkCell(){
-		hood = "None";
-		maturity = 1;
-	}
-	
-	public void setBool(String a, boolean b){
-		if(a == "Self"){self = b;}
-		if(a == "Fade"){fade = b;}
-	}
-	
-	public void setInt(String a, int b){
-		if(a == "Mat"){ maturity = b;}
-		if(a == "FadeRate"){ faderate = b;}
-	}
-	// get settable parameters
-	public static String getControl(){
-		return controls[ccount];
-		}
+		mystate = 0;
+		age = 0;
+		ages = false;
+		fade = -1;
+		fades = false;}
 		
-
-	//logic	
-	protected boolean calculate(){ if(active){return false;}else{return true;}}
-	
-}
-
-class seqCell extends cell{
-	// array that determines what parameters can be set for this type of cell
-	static String[] controls = new String[]{"Mat", "Inv", "Rule"};
-	static int ccount = 0;
-	//the array holds the sequence of states, the counter indexes the array
-	boolean[] seq;
-	//int seqlen;
-	int seqcounter;
-	
-	// constructs the cell with a default sequence length of 8
-	public seqCell(){
-		seqcounter = 0;
-		hood = "Self";
-		neighbors = new boolean[1][1];
-		seq = new boolean[8];
-		//seqlen = 8;
-		maturity = 1;}
-	
-	// defines the length of the state sequence in the constructor	
-	public seqCell(int a){
-		seqcounter = 0;
-		hood = "Self";
-		neighbors = new boolean[1][1];
-		seq = new boolean[a];
-		//seqlen = a;
-		maturity = 1;}
-
-	// define the sequence its self
-	public void setBoola(String a, int v, boolean b){
-		if(a == "Seq"){seq[v] = b;}
-	}
-	// set ints
-	public void setInt( String a, int b){
-		if(a == "Mat"){ maturity = b;}
-		if(a == "FadeRate"){faderate = b;}
-	}
-	// set invert
-	public void setBool(String a, boolean b){
-		if(a == "Inv"){invert = b;}
-		if(a == "Fade"){fade = b;}
-	}	
+		//Get and set controls and options
 		
-	// get settable parameters
-	public static String getControl(){
-		return controls[ccount];
-		}
-	public static  void incControl(){
-		ccount += 1;
-		if(ccount == controls.length){ccount = 0;}
-	}
+		public boolean getControls(String control){
+			if(control == "Age"){ return true;}
+			if(control == "Fade"){ return true;}
+			 return false;}
 		
-
+		public boolean getOption(String opname){ 
+			if(opname == "Ages"){ return ages;}
+			if(opname == "Fades"){ return fades;}
+			return false;}
 		
-	protected boolean calculate(){
-		boolean temp = seq[seqcounter];
-		seqcounter += 1;
-		if(seqcounter == seq.length){seqcounter = 0;}
-		return temp;}
+		public void setOption(String opname, boolean b){
+			if(opname == "Ages"){ages = b;if(b == false){if(active){age = 1;}else{age = 0;}}}
+			if(opname == "Fades"){fades = b; if(b){ages = true;}}
+			}
+		
+		public int getParameter(String paramname){ 
+			if(paramname == "Dim"){ return dim;}
+			if(paramname == "Rad"){ return radius;}
+			if(paramname == "Age"){ return age;}
+			if(paramname == "Fade"){ return fade;}
+			return -1;}
+		
+		public void setParameter(String paramname, int a){
+			if(paramname == "Age"){ age = a;}
+			if(paramname == "Fade"){fade = a;}
+			}
+		
+		public int getHoodX(){ return hoodx;}
+		
+		public int getHoodY(){ return hoody;}
+		
+		//main logic methods
+		
+		public void iterate(){
+			 calculate(); 
+			 if(ages){ if(active){ if(age == 0){age = 1;} else{age += 1;}}else{ age = 0;} state = age;}
+			 if(fades){ if( age >= fade){ purgeState(); age = 0;}}
+			}
+		
+		private void calculate(){if(self){active = true;}else{active = false;}}
+		
+		public void purgeState(){ active = false; state = 0;}
+		
+		// current state returning methods
+		public boolean getActive(){ return active;}
+		
+		public int getState(){ return state;}
+		
+		public String getName(){ return name;}
+		
+		// neighborhood setting methods
+		public void setSelf(boolean b){ self = b;}
+		
+		public void setNeighbors( boolean[] truckdrivin){neighbors = truckdrivin;}
+		
+		public void setNeighborhood( boolean[][] spozak){neighborhood = spozak;}
+		
+		public void setEnvironment( boolean[][][] biome){environment = biome;}
+		
+		public void setState( int a){ state = a;}
+		
+		public void setNeighborState( int[] address){ neighborstate = address;}
+		
+		public void setHoodState( int[][] zipcode){ hoodstate = zipcode;}
+		
+		public void setEnvironmentState( int[][][] planet){envirostate = planet;}
+		
+		
+		
 		
 }
