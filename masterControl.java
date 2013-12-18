@@ -23,10 +23,12 @@ import java.beans.PropertyChangeEvent;
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-public class masterControl extends JComponent implements ActionListener, ChangeListener{
+public class masterControl extends JComponent implements ActionListener, ChangeListener, ucListener{
 	// Main Controls
 	JButton[] buttons = new JButton[9];
 	JSlider throttle;
+	controlBox dispbox;
+	controlBox wrapbox;
 	
 	// relate to sending command events
 	private ArrayList<ucListener> _audience = new ArrayList<ucListener>();
@@ -35,6 +37,10 @@ public class masterControl extends JComponent implements ActionListener, ChangeL
 	//flags
 	//is there an active automaton to control?
 	boolean cflag = false;
+	// sets the display type
+	int disptype = 1;
+	// sets edge wrapping
+	int wraptype = 0;
 	
 	public masterControl(){
 		// create main controls
@@ -48,6 +54,12 @@ public class masterControl extends JComponent implements ActionListener, ChangeL
 		buttons[7] = new JButton("Brushes");
 		buttons[8] = new JButton("About");
 		throttle = new JSlider(0,1000);
+		dispbox = new controlBox(1);
+		wrapbox = new controlBox(2);
+		
+		
+		
+		
 		// set layout
 		setLayout( new FlowLayout() );
 		
@@ -56,6 +68,9 @@ public class masterControl extends JComponent implements ActionListener, ChangeL
 			if(c == 2){add(throttle); throttle.addChangeListener(this);}
 			add(buttons[c]); buttons[c].addActionListener(this);
 		}
+	add(dispbox); dispbox.adducListener(this);
+	add(wrapbox); wrapbox.adducListener(this);
+		
 		
 		}
 	
@@ -74,6 +89,9 @@ public class masterControl extends JComponent implements ActionListener, ChangeL
 			 *  6 = Selection Tools
 			 *  7 = Brushes
 			 *  8 = Set Iteration Speed
+			 *  9 = Set Speed
+			 * 10 = Set Display Type
+			 * 11 = Set Wrap Type
 			 */ 
 			for( int cnum = 1; cnum <= buttons.length-2; cnum++){
 				if(e.getSource() == buttons[cnum]){ cntrl = cnum+1; fireucEvent();}
@@ -88,9 +106,25 @@ public class masterControl extends JComponent implements ActionListener, ChangeL
 		}
 		}
 		
+		public void handleControl(ucEvent e){
+			if(e.getSource() == dispbox){ cntrl = 10; disptype = e.getCommand(); fireucEvent();}
+			if(e.getSource() == wrapbox){ cntrl = 11;
+						switch(e.getCommand()){
+							case 0: wraptype -= 1;  if(wraptype < 0){wraptype = 0;} break;
+							case 1: wraptype += 1;  if(wraptype > 3){wraptype = 3;} break;
+							case 2: wraptype -= 2;  if(wraptype < 0){wraptype = 0;} break;
+							case 3: wraptype += 2;  if(wraptype > 3){wraptype = 3;} break;
+							}fireucEvent();}
+				}
+		
 		// get control values
+		// speed control
 		public int getZTime(){
 			return throttle.getValue();}
+		// display type
+		public int getDispType(){ return disptype;}
+		// automaton edge wrapping
+		public int getWrapType(){ return wraptype;}
 		
 		//control event generation
 		//adds listeners for command events
