@@ -79,7 +79,8 @@ public void handleControl(ucEvent e){}
 		
 	public int getMasterSpeed(){
 		return zt;}
-		
+	
+	// mouse methods	
 	public void setMouseAction(String action){
 		maction = action;
 	/*mouse actions:
@@ -100,6 +101,7 @@ public void handleControl(ucEvent e){}
 		if (maction == "None"){return false;}
 		return true;}
 	
+	// edit options
 	public void setSDO(int u){
 		sdo = u;
 		/* State Drawing Option
@@ -164,6 +166,23 @@ public void handleControl(ucEvent e){}
 		
 		public int getMode(){return mode;}
 		
+		// sets display type
+		public void setDisplayMode(int a){
+			switch(a){
+				case 1: dmode = 1; break;
+				case 4: dmode = 4; break;
+				default: dmode = 1; break;
+			}
+		}
+		
+		public void setWrap(int a){
+			switch(a){
+				case 0: pistons[0][0].setXYwrap(false, false); break;
+				case 1: pistons[0][0].setXYwrap(true, false); break;
+				case 2: pistons[0][0].setXYwrap(false, true); break;
+				case 3: pistons[0][0].setXYwrap(true, true); break;
+			}
+		}
 
 	// refreshes the selection in the display
 					public void refreshSel(){
