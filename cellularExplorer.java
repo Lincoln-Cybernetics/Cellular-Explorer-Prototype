@@ -1,3 +1,6 @@
+
+
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -68,6 +71,8 @@ public class cellularExplorer implements ucListener{
 					case 7: if(Hank == null){makeWin(6);} else{sBox.setVisible(true);}break;// selection tools
 					case 8: if(Inez == null){makeWin(7);} else{brushCup.setVisible(true);}break;// brushes
 					case 9: v1.setMasterSpeed(Alice.getZTime()); break;// speed setting
+					case 10: v1.setDisplayMode(Alice.getDispType());if(v1.getMode() == 2 || v1.getMode() == 3){}else{v1.setMode(0);}//Set Display Type
+					case 11: v1.setWrap(Alice.getWrapType());//set edge wrapping
 					default: break;
 				}
 			}
@@ -96,7 +101,7 @@ public class cellularExplorer implements ucListener{
 					case 8: v1.setSFO(Dan.getSFO()); break;
 				}
 			}
-			
+			//Cell Editor
 			if(e.getSource() == Emily){
 				switch(e.getCommand()){
 					case 0: if(v1.getMode() != 3){v1.setMode(3);}
@@ -109,19 +114,19 @@ public class cellularExplorer implements ucListener{
 					case 6: v1.setCFO(Emily.cfoGet()); break;//cell random fill
 				}
 				}
-				
+				//Primary Cell Picker
 				if(e.getSource() == Fred){
 					switch(e.getCommand()){
 						case 1: v1.castor.setCT(Fred.getCT()); break;// set primary celltype
 					}
 				}
-				
+				//Secondary Cell Picker
 				if(e.getSource() == Gwen){
 					switch(e.getCommand()){
 						case 1: v1.pollux.setCT(Gwen.getCT()); break;// set secondary celltype
 					}
 				}
-				
+				//Selection Controls
 				if(e.getSource() == Hank){
 					switch(e.getCommand()){
 						//select by brush
