@@ -26,8 +26,13 @@ import java.beans.PropertyChangeEvent;
 public class cellPicker extends JComponent implements ActionListener, ItemListener{
 // controlPanel variables
 JComboBox cellpick;
-String[] Cells = new String[]{"Cell", "OffCell", "OnCell", "Blink", "Sequence", "Random", "Life", "Seeds", "Parity", "Conveyor", 
-"Wolfram", "Symmetrical", "Mirror", "Majority", "Gnarl", "Amoeba", "HighLife", "Prime", "Day and Night"};
+String[] Cells = new String[]{"Cell","MBOT"};
+
+JComboBox  MBOTPick;
+String[] MBOTCells = new String[]{"2x2", "3/4 Life", "Amoeba", "Assimilation", "Coagulations", "Coral", "Day and Night", "Diamoeba", "Dot Life",
+"Dry Life", "Fredkin", "Gnarl", "High Life", "Life", "Life without Death", "Live Free or Die", "Long Life", "Maze", "Mazectric",
+"Move", "Pseudo-life", "Replicator", "Seeds", "Serviettes", "Stains", "Vote", "Vote 4/5", "Walled Cities"};
+String MBOTtype = "2x2";
 
 // relate to sending command events
 private ArrayList<ucListener> _audience = new ArrayList<ucListener>();
@@ -36,25 +41,31 @@ int ct = 0;
 
 public cellPicker(){
 	cellpick = new JComboBox(Cells);
-	
+	MBOTPick = new JComboBox(MBOTCells);
 	
 	setLayout(new FlowLayout());
 	add(cellpick);
+	add(MBOTPick);
+	MBOTPick.setVisible(false);
+	MBOTPick.setEnabled(false);
 	
 	cellpick.addActionListener(this);
+	MBOTPick.addActionListener(this);
 
 	}
 
 public void actionPerformed(ActionEvent e){
 	if(e.getSource() == cellpick){command = 1; setCell(); fireucEvent();}
+	if(e.getSource() == MBOTPick){command = 2; MBOTtype = MBOTPick.getSelectedItem().toString(); fireucEvent();}
 	
 	}
 
 public void itemStateChanged(ItemEvent e){}
 
-public void setCell(){
+private void setCell(){
 	for(int cn = 0; cn < Cells.length; cn++){
 		if(cellpick.getSelectedItem() == Cells[cn]){ ct = cn;}
+		if(ct == 1){MBOTPick.setVisible(true); MBOTPick.setEnabled(true);} else{MBOTPick.setVisible(false); MBOTPick.setEnabled(false);}
 	}
 }
 //event generation
@@ -76,5 +87,7 @@ private synchronized void fireucEvent(){
 	}
 	
 public int getCT(){ return ct;}
+
+public String getMBOT(){ return MBOTtype;}
 	
 }
