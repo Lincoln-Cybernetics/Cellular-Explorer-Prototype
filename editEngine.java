@@ -57,6 +57,7 @@ public void initialize(){
 						  eris.setInt("Ysiz", 150);
 						  sedna = new selector(400,150);
 						  setMode(1);
+						  pistons[0][0].initBoard();
 						}
 
 public void handleControl(ucEvent e){}
@@ -220,105 +221,12 @@ public void handleControl(ucEvent e){}
 						case 2: decider = pollux;break;
 						case 3: decider = eris; break;
 						default: decider = castor;break;}
-					switch (decider.getCT()){
-						case 0: ed = new cell();
-								break;
-						case 1: ed = new offCell();
-								break;
-						case 2: ed = new onCell();
-								break;
-						case 3: ed = new blinkCell();
-								ed.setInt("Mat", decider.getMaturity());
-								break;
-						case 4: ed = new seqCell();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								for(int g = 0; g <= 7; g++){
-								ed.setBoola("Seq", g, decider.getBoola("Seq", g));
-								}
-								break;
-						case 5: ed = new randCell();
-								ed.setInt("Mat", decider.getMaturity());
-								break;
-						case 6: ed = new conway();
-								ed.setInt("Mat", decider.getMaturity());
-								break;
-						case 7: ed = new seeds();
-								ed.setInt("Mat", decider.getMaturity());
-								break;
-						case 8: ed = new parityCell();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								ed.setBool("Par", decider.getBool("Par"));
-								ed.setBool("Rec", decider.getBool("Rec"));
-								break;
-						case 9: ed = new conveyorCell();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setInt("Dir", decider.getDirection());
-								ed.setBool("Inv", decider.getInvert());
-								break;
-						case 10: ed = new wolfram();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setInt("Dir", decider.getDirection());
-								ed.setBool("Inv", decider.getInvert());
-								for(int g = 0; g <= 7; g++){
-								ed.setBoola("Rule", g, decider.getBoola("Rule", g));
-								}
-								break;
-						case 11: ed = new symmetriCell();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setInt("Dir", decider.getDirection());
-								ed.setBool("Inv", decider.getInvert());
-								break;		
-						case 12: ed = new mirrorCell();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								ed.setInt("HX", decider.getInt("MirrX"));
-								ed.setInt("HY", decider.getInt("MirrY"));
-								break;	
-						case 13: ed = new majorityCell();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								ed.setBool("Rec", decider.getBool("Rec"));
-								break;
-								
-						case 14: ed = new gnarl();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								
-								break;
-								
-						case 15: ed = new amoeba();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								
-								break;
-								
-						case 16: ed = new highlife();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								
-								break;
-								
-						case 17: ed = new prime();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								ed.setBool("Rec", decider.getBool("Rec"));
-								break;
-								
-						case 18: ed = new dayNight();
-								ed.setInt("Mat", decider.getMaturity());
-								ed.setBool("Inv", decider.getInvert());
-								
-								break;		
-								
-						default: ed = new cell();
-								break;}
-								
+				
+							ed = decider.getCell();	
 								
 								pistons[0][0].addCell(a,b,ed);
 						outputs[0][0].setSpecies(a,b,decider.getCT());
-						outputs[0][0].setLifespan(a,b,decider.getMaturity()); 
+						outputs[0][0].setLifespan(a,b,ed.getParameter("Mat")); 
 						
 					}}
 					
