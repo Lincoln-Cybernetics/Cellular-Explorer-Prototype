@@ -17,6 +17,7 @@ import java.util.Random;
 public class cellOptionHandler{
 
 int celltype = 0;
+String mbotname = "2x2";
 int maturity = 1;
 int direction = 0;
 boolean inver = false;
@@ -32,6 +33,8 @@ public cellOptionHandler(){
 //option setting methods
 public void setCT(int a){
 	celltype = a;}
+	
+public void setMBOT(String nameo){ mbotname = nameo;}	
 	
 public void setMaturity(int a){
 	maturity = a;}
@@ -60,34 +63,26 @@ public void setBoola( String a, boolean[] b){
 //option getting methods
 public int getCT(){ return celltype;}
 
-public int getMaturity(){ return maturity;}
+public cell getCell(){ cell marduk = generateCell(); return marduk;}
 
-public int getDirection(){ return direction;}
 
-public boolean getInvert(){ return inver;}
-
-public int getInt(String a){
-	if(a == "MirrX"){return mirrorx;}
-	if(a == "MirrY"){return mirrory;}
-	return 0;
+private cell generateCell(){
+	cell tiamat;
+	switch(celltype){
+		case 0: tiamat = new cell();break;
+		case 1: tiamat = new mbot(mbotname);break;
+		default: tiamat = new cell();break;}
+ return tiamat;
 }
-
-public boolean getBool(String a){
-	if (a == "Par"){return parity;}
-	if (a == "Rec"){return recursive;}
-	return false;
-}
-
-public boolean getBoola(String a, int h){
-	if(a == "Seq"){return sequence[h];}
-	if(a == "Rule"){return rule[h];}
-	return rule[h];}
 
 }
 
 class randcellOptionHandler extends cellOptionHandler{
 	int xsiz = 1;
 	int ysiz = 1;
+	String[] MBOTCell = new String[]{"2x2", "3/4 Life", "Amoeba", "Assimilation", "Coagulations", "Coral", "Day and Night", "Diamoeba", "Dot Life",
+"Dry Life", "Fredkin", "Gnarl", "High Life", "Life", "Life without Death", "Live Free or Die", "Long Life", "Maze", "Mazectric",
+"Move", "Pseudo-life", "Replicator", "Seeds", "Serviettes", "Stains", "Vote", "Vote 4/5", "Walled Cities"};
 	Random shovel = new Random();
 	//can not set parameters
 	public void setCT(int a){}
@@ -100,7 +95,20 @@ class randcellOptionHandler extends cellOptionHandler{
 	}
 		
 	// generate random cells
-	public int getCT(){ return shovel.nextInt(19);}
+	private cell generateCell(){
+	cell tiamat;
+	switch(celltype){
+		case 0: tiamat = new cell();break;
+		case 1: tiamat = new mbot(mbotname);break;
+		default: tiamat = new cell();break;}
+		return tiamat;
+		}
+		
+	public int getCT(){ return celltype;}
+	
+	public cell getCell(){celltype = shovel.nextInt(2); mbotname = MBOTCell[shovel.nextInt(MBOTCell.length)];
+		cell marduk = generateCell(); return marduk;}
+	
 	public int getMaturity(){int ranmat =  shovel.nextInt(4); ranmat +=1; return ranmat;}
 	public int getDirection(){return shovel.nextInt(8);}
 	public boolean getInvert(){return shovel.nextBoolean();}
