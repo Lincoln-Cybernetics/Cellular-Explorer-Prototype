@@ -33,14 +33,14 @@ class selector{
 		selection = new boolean[xsiz][ysiz];
 	}
 	public void deselect(){
-		
+		isselected = false;
 		for(int y = 0; y<= ysiz-1; y++){
 			for(int x = 0; x<= xsiz-1; x++){
 				selection[x][y] = false;}}
 			}
 				
 	public void selectAll(){
-		
+		isselected = true;
 		for(int y = 0; y<= ysiz-1; y++){
 			for(int x = 0; x<= xsiz-1; x++){
 				selection[x][y] = true;}}
