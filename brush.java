@@ -42,7 +42,8 @@ public class brush{
 			
 		public void setWrap(boolean xw, boolean yw){
 			wrapx = xw;
-			wrapy = yw;}
+			wrapy = yw;
+			}
 			
 		public void setType(boolean b){
 			hoodbrush = b;}
@@ -57,8 +58,8 @@ public class brush{
 			if(xcount >= bristles){xcount = 0;}
 			if(currentx < 0){if(hoodbrush){if(wrapx){currentx = currentx+xsiz;}else{currentx = -1;}}
 				else{if(wrapx){currentx = currentx+xsiz;}else{currentx=0;}}} 
-			if(currentx > xsiz-1){if(hoodbrush){if(wrapx){currentx = currentx-(xsiz-1);}else{currentx = -1;}}
-				else{if(wrapx){currentx = currentx-(xsiz-1);}else{currentx = xsiz-1;}}}
+			if(currentx > xsiz-1){if(hoodbrush){if(wrapx){currentx = currentx-xsiz;}else{currentx = -1;}}
+				else{if(wrapx){currentx = currentx-xsiz;}else{currentx = xsiz-1;}}}
 			return currentx;
 		}
 		
@@ -77,8 +78,8 @@ public class brush{
 			if(ycount >= bristles){ycount = 0;}
 			if(currenty < 0){if(hoodbrush){if(wrapy){currenty = ysiz+currenty;}else{currenty = -1;}}
 			else{if(wrapy){currenty = ysiz+currenty;}else{currenty = 0;}}}
-			if(currenty > ysiz-1){if(hoodbrush){if(wrapy){currenty = currenty - (ysiz-1);}else{currenty = -1;}}
-				else{if(wrapy){currenty = currenty-(ysiz-1);}else{currenty = ysiz-1;}}}
+			if(currenty > ysiz-1){if(hoodbrush){if(wrapy){currenty = currenty - ysiz;}else{currenty = -1;}}
+				else{if(wrapy){currenty = currenty-ysiz;}else{currenty = ysiz-1;}}}
 			return currenty;
 		}
 		
