@@ -118,12 +118,14 @@ public class cellularExplorer implements ucListener{
 				if(e.getSource() == Fred){
 					switch(e.getCommand()){
 						case 1: v1.castor.setCT(Fred.getCT()); break;// set primary celltype
+						case 2: v1.castor.setMBOT(Fred.getMBOT()); break;//set mbot type
 					}
 				}
 				//Secondary Cell Picker
 				if(e.getSource() == Gwen){
 					switch(e.getCommand()){
 						case 1: v1.pollux.setCT(Gwen.getCT()); break;// set secondary celltype
+						case 2: v1.pollux.setMBOT(Gwen.getMBOT());break;//set mbot type
 					}
 				}
 				//Selection Controls
