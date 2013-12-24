@@ -3,6 +3,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.event.*;
+import javax.swing.border.*;
 import java.awt.Checkbox.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
@@ -79,6 +80,7 @@ public cellEditor(){
 				);
 				
 		setLayout(ceLayout);
+		
 		
 	// plug in controls
 	for(int cont = 0; cont <= 3; cont++){
