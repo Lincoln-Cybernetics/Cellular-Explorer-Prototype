@@ -105,13 +105,6 @@ class cellBrain extends JComponent implements Runnable{
 		andromeda.setType(true);
 		setXYwrap(false,false);
 		ztime = controller.getMasterSpeed();
-		//initialize the board
-		for(int y=0;y<= ysiz-1;y++){
-		for(int x=0;x<= xsiz-1;x++){
-				addCell(x,y, new conway());}} 
-			//display.setState(current);	
-			//fireupdateEvent();
-			
 			}
 	
 	//set size		
@@ -127,14 +120,7 @@ class cellBrain extends JComponent implements Runnable{
 		andromeda = new spinbrush(xsiz, ysiz);
 		andromeda.setType(true);
 		setXYwrap(false,false);
-		ztime = controller.getMasterSpeed();
-		//initialize the board
-		for(int y=0;y<= ysiz-1;y++){
-		for(int x=0;x<= xsiz-1;x++){
-				addCell(x,y, new conway());}}
-			//display.setState(current);	
-			//fireupdateEvent();	
-			
+		ztime = controller.getMasterSpeed();	
 			}
 		
 		// use Strings to create	
@@ -151,16 +137,17 @@ class cellBrain extends JComponent implements Runnable{
 		andromeda.setType(true);
 		setXYwrap(false,false);
 		ztime = controller.getMasterSpeed();
-		//initialize the board
-		if (option == "Rnd"){ 	
-		for(int y=0;y<= ysiz-1;y++){
-		for(int x=0;x<= xsiz-1;x++){
-				addCell(x,y, new randCell());}}}
-		else{for(int y=0;y<= ysiz-1;y++){
-		for(int x=0;x<= xsiz-1;x++){
-				addCell(x,y, new conway());}} }
+		
 			}
 			
+		public void initBoard(){
+			//initialize the board
+		for(int y=0;y<= ysiz-1;y++){
+		for(int x=0;x<= xsiz-1;x++){
+				addCell(x,y, new cell());
+			if(display != null){	display.setSpecies(x,y,0);}
+				}} 
+			}
 		
 			// sets display	object
 		public void setDisplay(cellComponent bigboard){
@@ -266,9 +253,9 @@ class cellBrain extends JComponent implements Runnable{
 				
 					
 					//returns the "self" neighborhood
-					public boolean[][] getSelf(int x, int y){
-						boolean[][] selfie =new boolean[1][1];
-						selfie[0][0] = current[x][y];
+					public boolean getSelf(int x, int y){
+						boolean selfie;
+						selfie = current[x][y];
 						return selfie;}
 					
 					// returns the states of a cell's Moore Neighborhood
@@ -285,15 +272,15 @@ class cellBrain extends JComponent implements Runnable{
 		
 		
 		// neighborhood for one dimensional cells with one neighbor on each side
-		public boolean[][] getWolfram(int x, int y, int o){
-			boolean[][] wolfhood = new boolean[3][1];
+		public boolean[] getWolfram(int x, int y, int o){
+			boolean[] wolfhood = new boolean[3];
 			andromeda.locate(x,y);
 			andromeda.setOrientation(o);
 			for(int v = 0; v<=2; v++){
 				int tempx = andromeda.getNextX();
 				int tempy = andromeda.getNextY();
-				if(tempx == -1 || tempy == -1){wolfhood[v][0] = false;}
-				else{wolfhood[v][0] = current[tempx][tempy];}}
+				if(tempx == -1 || tempy == -1){wolfhood[v] = false;}
+				else{wolfhood[v] = current[tempx][tempy];}}
 				return wolfhood;
 			}
 		
@@ -310,47 +297,21 @@ class cellBrain extends JComponent implements Runnable{
 					//gets new values from the cells
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
-						if (culture[x][y].getNeighborhood() == "None"){
-							culture[x][y].setNeighbors(getSelf(x,y));
-							newstate[x][y] = culture[x][y].iterate();}
-					
-						if(culture[x][y].getNeighborhood() == "Moore"){
-							culture[x][y].setNeighbors(getMoore(x,y));
-							newstate[x][y] = culture[x][y].iterate();}
-							
-						if(culture[x][y].getNeighborhood() == "Self"){
-							culture[x][y].setNeighbors(getSelf(x,y));
-							newstate[x][y] = culture[x][y].iterate();}
-							
-						if(culture[x][y].getNeighborhood() == "Wolfram"){
-							culture[x][y].setNeighbors(getWolfram(x,y, 0));
-							newstate[x][y] = culture[x][y].iterate();}
-							
-						if(culture[x][y].getNeighborhood() == "WolframV"){
-							culture[x][y].setNeighbors(getWolfram(x,y, 1));
-							newstate[x][y] = culture[x][y].iterate();}
-							
-						if(culture[x][y].getNeighborhood() == "WolframUL"){
-							culture[x][y].setNeighbors(getWolfram(x,y, 2));
-							newstate[x][y] = culture[x][y].iterate();}
-							
-						if(culture[x][y].getNeighborhood() == "WolframLL"){
-							culture[x][y].setNeighbors(getWolfram(x,y, 3));
-							newstate[x][y] = culture[x][y].iterate();}
-							
-						if(culture[x][y].getNeighborhood() == "Mirror"){
-							culture[x][y].setNeighbors(getSelf(culture[x][y].getInt("HX"), culture[x][y].getInt("HY")));
-							newstate[x][y] = culture[x][y].iterate();}
-							
-						
+							switch(culture[x][y].getParameter("Dim")){
+								case 0: culture[x][y].setSelf(getSelf(x,y)); break;
+								case 1: culture[x][y].setNeighbors(getWolfram(x,y,culture[x][y].getParameter("Dir"))); break;
+								case 2: culture[x][y].setNeighborhood(getMoore(x,y));
+								default:  culture[x][y].setSelf(getSelf(x,y)); break;}
+								culture[x][y].iterate();
+								newstate[x][y] = culture[x][y].getActive();
 					}}
 					
 					// cycles new values into current state
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
 								// set age for multicolor
-						if(opmode == 4){display.setAge(x,y,culture[x][y].getAge());}
-				
+						if(opmode == 4){display.setAge(x,y,culture[x][y].getState());}
+						
 						current[x][y] = newstate[x][y]; 
 						}}
 					display.setState(current);	
