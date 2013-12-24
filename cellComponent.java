@@ -113,7 +113,6 @@ public class cellComponent extends JComponent
 		 *Mode 2: state editing mode
 		 *Mode 3: Cell editing mode 
 		 *Mode 4: multicolor mode 
-		 *Mode 5: Fade rule
 		 */}
 		
 	public void setMag(int a){
@@ -136,9 +135,6 @@ public class cellComponent extends JComponent
 		if(age[x][y] == 16){ageclass[x][y] = 5;}
 		if(age[x][y] == 32){ageclass[x][y] = 6;}
 		if(age[x][y] == 64){ageclass[x][y] = 7;}
-	}
-	if (mode == 5){
-		
 	}
 	}
 	
