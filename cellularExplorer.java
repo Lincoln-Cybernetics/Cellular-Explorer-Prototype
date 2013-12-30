@@ -49,7 +49,7 @@ public class cellularExplorer implements ucListener{
 		public cellularExplorer(){
 			Alice = new masterControl();
 			v1 = new editEngine();
-			//Gandalf = new automatonOptionHandler();
+			
 			Alice.adducListener(this);
 			//sets up the window, adds the master controls
 			makeWin(1);
@@ -114,20 +114,7 @@ public class cellularExplorer implements ucListener{
 					case 6: v1.setCFO(Emily.cfoGet()); break;//cell random fill
 				}
 				}
-				//Primary Cell Picker
-				if(e.getSource() == Fred){
-					switch(e.getCommand()){
-						case 1: v1.castor.setCT(Fred.getCT()); break;// set primary celltype
-						case 2: v1.castor.setMBOT(Fred.getMBOT()); break;//set mbot type
-					}
-				}
-				//Secondary Cell Picker
-				if(e.getSource() == Gwen){
-					switch(e.getCommand()){
-						case 1: v1.pollux.setCT(Gwen.getCT()); break;// set secondary celltype
-						case 2: v1.pollux.setMBOT(Gwen.getMBOT());break;//set mbot type
-					}
-				}
+				
 				//Selection Controls
 				if(e.getSource() == Hank){
 					switch(e.getCommand()){
@@ -212,8 +199,8 @@ public class cellularExplorer implements ucListener{
 						  cPick.setVisible(true);
 						  Fred.setVisible(true);
 						  Gwen.setVisible(true);
-						  Fred.adducListener(this);
-						  Gwen.adducListener(this);
+						  Fred.adducListener(v1.castor); v1.castor.setCP(Fred);Fred.setCOH(v1.castor);
+						  Gwen.adducListener(v1.pollux); v1.pollux.setCP(Gwen);Gwen.setCOH(v1.pollux);
 						  break;
 						  
 				case 6:  sBox = new JFrame("Selection Tools");
