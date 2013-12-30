@@ -14,8 +14,8 @@ import java.util.Random;
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-public class cellOptionHandler{
-
+public class cellOptionHandler implements ucListener{
+cellPicker source;
 int celltype = 0;
 String mbotname = "2x2";
 int maturity = 1;
@@ -30,20 +30,25 @@ boolean[] sequence = new boolean[8];
 public cellOptionHandler(){
 }
 
+//sets the source for the cell info
+public void setCP( cellPicker lorenzo){
+	source = lorenzo;}
+
+//handles events from the cell info source
+public void handleControl( ucEvent e){
+	switch(e.getCommand()){
+		case 1: setCT(source.getCT()); break;
+		case 2: setMBOT(source.getMBOT()); break;
+	}
+	}
+
 //option setting methods
-public void setCT(int a){
+private void setCT(int a){
 	celltype = a;}
 	
-public void setMBOT(String nameo){ mbotname = nameo;}	
+private void setMBOT(String nameo){ mbotname = nameo;}	
 	
-public void setMaturity(int a){
-	maturity = a;}
-	
-public void setDirection(int a){
-	direction = a;}
 
-public void setInvert(boolean a){
-	inver = a;}
 
 public void setInt(String a, int b){
 	if(a == "MirrX"){ mirrorx = b;}
@@ -66,7 +71,7 @@ public int getCT(){ return celltype;}
 public cell getCell(){ cell marduk = generateCell(); return marduk;}
 
 
-private cell generateCell(){
+public cell generateCell(){
 	cell tiamat;
 	switch(celltype){
 		case 0: tiamat = new cell();break;
@@ -95,7 +100,7 @@ class randcellOptionHandler extends cellOptionHandler{
 	}
 		
 	// generate random cells
-	private cell generateCell(){
+	public cell generateCell(){
 	cell tiamat;
 	switch(celltype){
 		case 0: tiamat = new cell();break;
