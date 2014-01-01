@@ -17,7 +17,7 @@ import java.util.Random;
 public class cellOptionHandler implements ucListener{
 cellPicker source;
 int celltype = 0;
-String mbotname = "2x2";
+String mbotname = "Custom";
 int maturity = 1;
 int direction = 0;
 boolean inver = false;
@@ -26,7 +26,12 @@ boolean recursive = false;
 int mirrorx = 0;
 int mirrory = 0;
 boolean[] rule = new boolean[8];
+boolean[] bornon = new boolean[9];
+boolean[] surv = new boolean[9];
 boolean[] sequence = new boolean[8];
+boolean doesage = false;
+boolean doesfade = false;
+int fadenum = 0;
 public cellOptionHandler(){
 }
 
@@ -56,8 +61,26 @@ public void setInt(String a, int b){
 }
 
 public void setBool(String a, boolean b){
-	if(a == "Par"){parity = b;}
-	if(a == "Rec"){recursive = b;}
+	if(a == "Ages"){ doesage = b;}
+	if(a == "Fades"){ doesfade = b; fadenum = 256;} 
+	if(a == "B0"){ bornon[0] = b;}
+	if(a == "B1"){ bornon[1] = b;}
+	if(a == "B2"){ bornon[2] = b;}
+	if(a == "B3"){ bornon[3] = b;}
+	if(a == "B4"){ bornon[4] = b;}
+	if(a == "B5"){ bornon[5] = b;}
+	if(a == "B6"){ bornon[6] = b;}
+	if(a == "B7"){ bornon[7] = b;}
+	if(a == "B8"){ bornon[8] = b;}
+	if(a == "S0"){ surv[0] = b;}
+	if(a == "S1"){ surv[1] = b;}
+	if(a == "S2"){ surv[2] = b;}
+	if(a == "S3"){ surv[3] = b;}
+	if(a == "S4"){ surv[4] = b;}
+	if(a == "S5"){ surv[5] = b;}
+	if(a == "S6"){ surv[6] = b;}
+	if(a == "S7"){ surv[7] = b;}
+	if(a == "S8"){ surv[8] = b;}
 }
 
 public void setBoola( String a, boolean[] b){
@@ -73,12 +96,38 @@ public cell getCell(){ cell marduk = generateCell(); return marduk;}
 
 public cell generateCell(){
 	cell tiamat;
+	// makes the right type of cell
 	switch(celltype){
 		case 0: tiamat = new cell();break;
-		case 1: tiamat = new mbot(mbotname);break;
+		case 1: if(mbotname == "Custom"){tiamat = new mbot(); tiamat = setRules(tiamat);}else{tiamat = new mbot(mbotname);}break;
 		default: tiamat = new cell();break;}
+		// set options and parameters
+		if(tiamat.getControls("Age")){ tiamat.setOption("Ages", doesage);}
+		if(tiamat.getControls("Fade")){ tiamat.setOption("Fades", doesfade); tiamat.setParameter("Fade", fadenum);}
  return tiamat;
 }
+
+private cell setRules(cell isis){
+	// sets custom rules for MBOT cells
+	if(isis.getName() == "M.B.O.T."){ for(int n = 0; n<9; n++){ 
+		String bstr = "B0"; String sstr = "S0"; 
+		switch(n){
+			case 0: bstr = "B0"; sstr = "S0"; break;
+			case 1: bstr = "B1"; sstr = "S1"; break;
+			case 2: bstr = "B2"; sstr = "S2"; break;
+			case 3: bstr = "B3"; sstr = "S3"; break;
+			case 4: bstr = "B4"; sstr = "S4"; break;
+			case 5: bstr = "B5"; sstr = "S5"; break;
+			case 6: bstr = "B6"; sstr = "S6"; break;
+			case 7: bstr = "B7"; sstr = "S7"; break;
+			case 8: bstr = "B8"; sstr = "S8"; break;
+		}
+	isis.setOption(bstr, bornon[n]);
+	isis.setOption(sstr, surv[n]);}
+									}
+								
+		return isis;
+	}
 
 }
 
