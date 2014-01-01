@@ -134,6 +134,8 @@ public class mbot extends cell{
 		
 		//Get and set controls and options
 		
+		public String getName(){ return name;}
+		
 		public boolean getControls(String control){
 			if(control == "Age"){ return true;}
 			if(control == "Fade"){ return true;}
@@ -224,7 +226,7 @@ public class mbot extends cell{
 		
 		public int getState(){ return state;}
 		
-		public String getName(){ return name;}
+		
 		
 		// neighborhood setting methods
 		public void setSelf(boolean b){ self = b;}
