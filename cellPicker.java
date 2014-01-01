@@ -31,10 +31,10 @@ JComboBox cellpick;
 String[] Cells = new String[]{"Cell","MBOT"};
 
 JComboBox  MBOTPick;
-String[] MBOTCells = new String[]{ "2x2", "3/4 Life", "Amoeba", "Assimilation", "Coagulations", "Coral", "Day and Night", "Diamoeba", "Dot Life",
+String[] MBOTCells = new String[]{"Custom", "2x2", "3/4 Life", "Amoeba", "Assimilation", "Coagulations", "Coral", "Day and Night", "Diamoeba", "Dot Life",
 "Dry Life", "Fredkin", "Gnarl", "High Life", "Life", "Life without Death", "Live Free or Die", "Long Life", "Maze", "Mazectric",
 "Move", "Pseudo-life", "Replicator", "Seeds", "Serviettes", "Stains", "Vote", "Vote 4/5", "Walled Cities"};
-String MBOTtype = "2x2";
+String MBOTtype = "Custom";
 Checkbox[] opts = new Checkbox[20];
 JLabel jack;
 JLabel jill;
@@ -131,13 +131,11 @@ public cellPicker(){
 		cellpick.setMaximumSize(new Dimension(250, 10));
 		MBOTPick.setMaximumSize(new Dimension(250, 10));
 		for (int ab = 0; ab < opts.length; ab++){
-			opts[ab].setMaximumSize(new Dimension(10,10));opts[ab].setVisible(false); opts[ab].setEnabled(false);}
+			opts[ab].setMaximumSize(new Dimension(10,10));opts[ab].setVisible(false);
+			 opts[ab].setEnabled(false); opts[ab].addItemListener(this);}
 		jack.setVisible(false); jill.setVisible(false);
 		
 	
-	//setLayout(new FlowLayout());
-	//add(cellpick);
-	//add(MBOTPick);
 	MBOTPick.setVisible(false);
 	MBOTPick.setEnabled(false);
 	
@@ -150,18 +148,72 @@ public void setCOH(cellOptionHandler ned){ gate = ned;}
 
 public void actionPerformed(ActionEvent e){
 	if(e.getSource() == cellpick){command = 1; setCell(); fireucEvent();}
-	if(e.getSource() == MBOTPick){command = 2; MBOTtype = MBOTPick.getSelectedItem().toString(); fireucEvent();}
+	if(e.getSource() == MBOTPick){command = 2; MBOTtype = MBOTPick.getSelectedItem().toString(); setCell(); fireucEvent();}
 	
 	}
 
-public void itemStateChanged(ItemEvent e){}
+public void itemStateChanged(ItemEvent e){//age, fade, born, survives
+	boolean option = false;
+	for(int i = 0; i< opts.length; i++){
+		if(e.getItemSelectable() == opts[i]){
+		switch(i){
+			case 0: gate.setBool("Ages", opts[i].getState()); break;
+			case 1: gate.setBool("Fades", opts[i].getState()); break;
+			case 2: gate.setBool("B0", opts[i].getState()); break;
+			case 3: gate.setBool("B1", opts[i].getState()); break;
+			case 4: gate.setBool("B2", opts[i].getState()); break;
+			case 5: gate.setBool("B3", opts[i].getState()); break;
+			case 6: gate.setBool("B4", opts[i].getState()); break;
+			case 7: gate.setBool("B5", opts[i].getState()); break;
+			case 8: gate.setBool("B6", opts[i].getState()); break;
+			case 9: gate.setBool("B7", opts[i].getState()); break;
+			case 10: gate.setBool("B8", opts[i].getState()); break;
+			case 11: gate.setBool("S0", opts[i].getState()); break;
+			case 12: gate.setBool("S1", opts[i].getState()); break;
+			case 13: gate.setBool("S2", opts[i].getState()); break;
+			case 14: gate.setBool("S3", opts[i].getState()); break;
+			case 15: gate.setBool("S4", opts[i].getState()); break;
+			case 16: gate.setBool("S5", opts[i].getState()); break;
+			case 17: gate.setBool("S6", opts[i].getState()); break;
+			case 18: gate.setBool("S7", opts[i].getState()); break;
+			case 19: gate.setBool("S8", opts[i].getState()); break;
+			}
+		}
+	}
+}
 
 private void setCell(){
 	for(int cn = 0; cn < Cells.length; cn++){
 		if(cellpick.getSelectedItem() == Cells[cn]){ ct = cn;}
+		setOpts(gate.generateCell());
 		if(ct == 1){MBOTPick.setVisible(true); MBOTPick.setEnabled(true);} else{MBOTPick.setVisible(false); MBOTPick.setEnabled(false);}
 	}
 }
+
+private void setOpts(cell darwin){
+	boolean visifier = false;
+	String[] names = new String[]{"Age", "Fade", "Mat", "Born", "Survives"};
+	for(int concount = 0; concount< names.length; concount++){
+		switch(concount){
+			case 3: if(MBOTtype == "Custom"){visifier = true;} else{visifier = false;} break;
+			case 4: if(MBOTtype == "Custom"){visifier = true;} else{visifier = false;} break;
+			
+			default: visifier =  darwin.getControls(names[concount]);  break;
+		}
+		toggleControl(concount, visifier);
+	}
+}
+
+private void toggleControl(int a, boolean b){
+	switch(a){
+		case 0: opts[0].setVisible(b); opts[0].setEnabled(b); break;
+		case 1: opts[1].setVisible(b); opts[1].setEnabled(b); break;
+		case 2: break;
+		case 3: for(int c = 0; c < 9; c++){opts[c+2].setLabel(String.valueOf(c)); opts[c+2].setVisible(b); opts[c+2].setEnabled(b);} jack.setVisible(b); break;
+		case 4: for(int c = 0; c < 9; c++){opts[c+11].setLabel(String.valueOf(c)); opts[c+11].setVisible(b); opts[c+11].setEnabled(b);} jill.setVisible(b); break;
+	}
+}
+
 //event generation
 //adds listeners for command events
 public synchronized void adducListener(ucListener listener){
