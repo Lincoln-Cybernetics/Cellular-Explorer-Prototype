@@ -19,7 +19,7 @@ public class cell{
 	// describe the cell's neighborhood
 	int dim;//dimensionality
 	int radius;
-	
+	brush map;
 	// describe the current state of the cell
 	boolean active;
 	int state;
@@ -28,6 +28,7 @@ public class cell{
 	//neighborhood location variables
 	int hoodx;
 	int hoody;
+	boolean mirror;
 	
 	// neighborhood variables
 	boolean self;
@@ -48,13 +49,15 @@ public class cell{
 	
 	//constructor
 	public cell(){
+		map = new onebrush();
 		dim = 0;
 		radius = 0;
 		active = false;
 		state = 0;
-		name = "cell";
+		name = "Cell";
 		hoodx = -1;
 		hoody = -1;
+		mirror = false;
 		self = false;
 		mystate = 0;
 		age = 0;
@@ -62,34 +65,51 @@ public class cell{
 		fade = -1;
 		fades = false;}
 		
+		//initilization
+		public void setLocation(int x, int y){
+			map.locate(x,y);
+		}
+		
 		//Get and set controls and options
 		
 		public boolean getControls(String control){
 			if(control == "Age"){ return true;}
 			if(control == "Fade"){ return true;}
+			if(control == "Mirror"){ return true;}
 			 return false;}
 		
 		public boolean getOption(String opname){ 
 			if(opname == "Ages"){ return ages;}
 			if(opname == "Fades"){ return fades;}
+			if(opname == "Mirror"){ return mirror;}
 			return false;}
 		
 		public void setOption(String opname, boolean b){
 			if(opname == "Ages"){ages = b;if(b == false){if(active){age = 1;}else{age = 0;}}}
 			if(opname == "Fades"){fades = b; if(b){ages = true;}}
+			if(opname == "Mirror"){mirror = b; if(b){hoodx = -1; hoody = 0; name  ="Mirror";}else{hoodx = -1; hoody = -1; name = "Cell";}}
 			}
 		
 		public int getParameter(String paramname){ 
-			if(paramname == "Dim"){ return dim;}
+			if(paramname == "Dim"){ return -1;}
 			if(paramname == "Rad"){ return radius;}
+			if(paramname == "HoodSize"){return map.getBrushLength();}
+			if(paramname == "NextX"){return map.getNextX();}
+			if(paramname == "NextY"){return map.getNextY();}
 			if(paramname == "Age"){ return age;}
 			if(paramname == "Fade"){ return fade;}
+			if(paramname == "MirrX"){ return hoodx;}
+			if(paramname == "MirrY"){ return hoody;}
 			return -1;}
 		
 		public void setParameter(String paramname, int a){
 			if(paramname == "Age"){ age = a;}
 			if(paramname == "Fade"){fade = a;}
+			if(paramname == "MirrX"){hoodx = a; if(mirror){setLocation(hoodx, hoody);}}
+			if(paramname == "MirrY"){hoody = a;if(mirror){setLocation(hoodx, hoody);}}
 			}
+		
+		public void setRule(int a, boolean b){}
 		
 		public int getHoodX(){ return hoodx;}
 		
@@ -100,12 +120,15 @@ public class cell{
 		public void iterate(){
 			 calculate(); 
 			 if(ages){ if(active){ if(age == 0){age = 1;} else{age += 1;}}else{ age = 0;} state = age;}
+			 else{if(active){state = 1;}else{state = 0;}}
 			 if(fades){ if( age >= fade){ purgeState(); age = 0;}}
 			}
 		
-		private void calculate(){if(self){active = true;}else{active = false;}}
+		private void calculate(){if(neighbors[0]){active = true;}else{active = false;}}
 		
 		public void purgeState(){ active = false; state = 0;}
+		
+		public void activate(){ active = true; state = 1;}
 		
 		// current state returning methods
 		public boolean getActive(){ return active;}
