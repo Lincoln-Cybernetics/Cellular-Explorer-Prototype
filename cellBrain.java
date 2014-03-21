@@ -1,8 +1,5 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+
 import java.util.Random;
-import javax.swing.event.*;
 import java.util.*;
 
 /*Cellular Explorer Prototype proof of concept
@@ -21,31 +18,30 @@ import java.util.*;
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class cellBrain extends JComponent implements Runnable{ 
+class cellBrain  implements Runnable{ 
 
 	//main variables
 	
 	logicEngine controller;
 	cellComponent display;
-	int myopt = 1;
+	int myopt = 1;//option for iterate interrupts
 	int xsiz;
 	int ysiz; 
-	boolean[][] current; 	
-	boolean[][] newstate; 
-	
+	boolean[][] current; //current binary state of all cells	
+	boolean[][] newstate; //for updating
 	public cell[][] culture; 	
-	//selector harry;
-	int celltype;	
-	int maturity = 1;
-	// settings (speed, primary cell selection, secondary cell selection, maturity, secondary maturity, cell size, and array initialization)
-	
-
 	//general array counters Int x, and Int y are instantiated locally for each use
 	
 	//keep track of mouse position in edit mode
-	int xlocal;
-	int ylocal;
 	int ztime;
+	
+	//variables for automaton-level rules
+	boolean[] rule = new boolean[3];
+	int[] ruletimer = new int[3];
+	int[] ruletcount = new int[3];
+	boolean[][] boredboard;//comparison for the boredom rule
+	boolean bored2flag;//flag for boredom(2)
+	
 	// moore neighborhood brush
 	threebrush ariadne;
 	//Wolfram neighborhood brush
@@ -60,11 +56,12 @@ class cellBrain extends JComponent implements Runnable{
 	boolean singleselflag = false;
 	//rectangle selection
 	int rectselflag = 0;
-	boolean rectselfie = false;
+	
 	
 	//state editing flags
 	boolean editflag = false;
-	boolean sfflag = false;
+	boolean iiflag = false;
+	boolean interruptedflag = false;
 	int sfopt = 0;
 	int sdopt = 0;
 	boolean rcflag = false;
@@ -98,13 +95,15 @@ class cellBrain extends JComponent implements Runnable{
 		ysiz = 150;
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
+		boredboard = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
-		ariadne = new threebrush(xsiz, ysiz);
-		ariadne.setType(true);
-		andromeda = new spinbrush(xsiz, ysiz);
-		andromeda.setType(true);
+		ariadne = new threebrush();
+		//ariadne.setType(true);
+		andromeda = new spinbrush();
+		//andromeda.setType(true);
 		setXYwrap(false,false);
 		ztime = controller.getMasterSpeed();
+		//pP();
 			}
 	
 	//set size		
@@ -114,13 +113,15 @@ class cellBrain extends JComponent implements Runnable{
 		ysiz = b;
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
+		boredboard = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
-		ariadne = new threebrush(xsiz, ysiz);
-		ariadne.setType(true);
-		andromeda = new spinbrush(xsiz, ysiz);
-		andromeda.setType(true);
+		ariadne = new threebrush();
+		//ariadne.setType(true);
+		andromeda = new spinbrush();
+		//andromeda.setType(true);
 		setXYwrap(false,false);
-		ztime = controller.getMasterSpeed();	
+		ztime = controller.getMasterSpeed();
+		//pP();	
 			}
 		
 		// use Strings to create	
@@ -130,14 +131,15 @@ class cellBrain extends JComponent implements Runnable{
 		ysiz = 150;
 		current = new boolean[xsiz][ysiz];
 		newstate = new boolean[xsiz][ysiz];
+		boredboard = new boolean[xsiz][ysiz];
 		culture = new cell[xsiz][ysiz];
-		ariadne = new threebrush(xsiz, ysiz);
-		ariadne.setType(true);
-		andromeda = new spinbrush(xsiz, ysiz);
-		andromeda.setType(true);
+		ariadne = new threebrush();
+		//ariadne.setType(true);
+		andromeda = new spinbrush();
+		//andromeda.setType(true);
 		setXYwrap(false,false);
 		ztime = controller.getMasterSpeed();
-		
+		//pP();
 			}
 			
 		public void initBoard(){
@@ -161,7 +163,7 @@ class cellBrain extends JComponent implements Runnable{
 			//Play/Pause	
 				
 			public void pP(){
-				if (firstflag == true){firstflag = false;setPause(false); t.start();}
+				if (firstflag){setPause(true); t.start();}
 				else{ setPause(!pauseflag);}
 			}
 			
@@ -172,6 +174,11 @@ class cellBrain extends JComponent implements Runnable{
 			
 			public boolean getFirst(){
 				return firstflag;}
+				
+			// sets iterate interrupt
+			public void setII(int a){
+				iiflag = true; myopt = a;
+			}
 				
 				// mode setting methods
 				
@@ -193,8 +200,32 @@ class cellBrain extends JComponent implements Runnable{
 				
 				// set edge-wrapping
 				public void setXYwrap(boolean xwr, boolean ywr){xwrap = xwr; ywrap = ywr; 
-				 ariadne.setWrap(xwrap,ywrap); andromeda.setWrap(xwrap, ywrap);}
+				// ariadne.setWrap(xwrap,ywrap); andromeda.setWrap(xwrap, ywrap);
+				}
+				 
+				 // get wrap settings
+				 public boolean getWrap(String c){
+					 if (c == "X"){return xwrap;}
+					 if (c == "Y"){return ywrap;}
+					 return false;
+				 } 
 				
+				//checks for out of bounds points, 
+				//edge wrapping does apply for neighborhoods
+				private int checkAddress(String axis, int value){
+					if(axis == "X"){ 
+						if(value >= xsiz){if(xwrap){return value - xsiz;}else{return -1;}}
+						if(value < 0){if(xwrap){return xsiz + value;} else{return -1;}}
+						return value;
+					}
+					
+					if(axis == "Y"){
+						if(value >= ysiz){if(ywrap){return value - ysiz;}else{return -1;}}
+						if(value < 0){if(ywrap){return ysiz + value;}else{return -1;}}
+						return value;
+					}
+					return -1;
+				}
 				
 				//stores the type of display while editing	
 				public int getDispType(){
@@ -202,7 +233,9 @@ class cellBrain extends JComponent implements Runnable{
 				
 				//sends the current state to the display
 				public void refreshState(){
-					display.setState(current);}
+					display.setState(current);
+					
+					}
 					
 					// general editing methods
 					
@@ -227,7 +260,8 @@ class cellBrain extends JComponent implements Runnable{
 					if(x <= 0){x=0;}
 					if(y >= ysiz){y = ysiz-1;}
 					if(y <= 0){y=0;}
-					culture[x][y] = wilbur;}
+					culture[x][y] = wilbur;
+					culture[x][y].setLocation(x,y);}
 				
 				
 					
@@ -242,7 +276,10 @@ class cellBrain extends JComponent implements Runnable{
 					if(x <= 0){x=0;}
 					if(y >= ysiz){y = ysiz-1;}
 					if(y <= 0){y=0;}
+					if(b){culture[x][y].activate();} else{culture[x][y].purgeState();}
+					if(opmode == 4){display.setAge(x,y,culture[x][y].getState());}
 					current[x][y] = b;
+					
 				}
 				
 			
@@ -264,8 +301,8 @@ class cellBrain extends JComponent implements Runnable{
 					ariadne.locate(x,y);
 					for(int v = 0; v<=2; v++){
 					for(int h = 0; h<=2; h++){
-						int tempx = ariadne.getNextX();
-						int tempy = ariadne.getNextY();
+						int tempx = checkAddress("X", ariadne.getNextX());
+						int tempy = checkAddress("Y", ariadne.getNextY());
 						if(tempx == -1 || tempy == -1){neighbors[h][v] = false;}
 						else{ neighbors[h][v] = current[tempx][tempy];}}}
 						return neighbors;}
@@ -276,14 +313,76 @@ class cellBrain extends JComponent implements Runnable{
 			boolean[] wolfhood = new boolean[3];
 			andromeda.locate(x,y);
 			andromeda.setOrientation(o);
-			for(int v = 0; v<=2; v++){
-				int tempx = andromeda.getNextX();
-				int tempy = andromeda.getNextY();
+			for(int v = 0; v <= 2; v++){
+				int tempx = checkAddress("X", andromeda.getNextX());
+				int tempy = checkAddress("Y", andromeda.getNextY());
 				if(tempx == -1 || tempy == -1){wolfhood[v] = false;}
-				else{wolfhood[v] = current[tempx][tempy];}}
+				else{wolfhood[v] = current[tempx][tempy];}
+				} 
 				return wolfhood;
 			}
+			
+			//general-purpose neighborhood
+			public void getNeighbors(int x, int y){
+				int reps = culture[x][y].getParameter("HoodSize");
+				if(reps == 0){return;}
+				boolean[] info = new boolean[reps];
+				for(int d = 0; d <= reps-1; d++){
+					int tempx = checkAddress("X", culture[x][y].getParameter("NextX"));
+					int tempy = checkAddress("Y", culture[x][y].getParameter("NextY"));
+					if(tempx == -1 || tempy == -1){info[d] = false;}
+					else{info[d] = current[tempx][tempy];}
+				}
+				culture[x][y].setNeighbors(info);
+			}
 		
+		//Automaton-level rules
+		/* Rules
+		 * rule 0 = Compass Chaos (randomizes direction parameters)
+		 * rule 1 = Boredom(1) (Randomizes the state if the automaton is static too long)
+		 * rule 2 = Boredom(2) (Same as Boredom(1), but checks the state every other generation to filter out p2 oscilators)
+		 */
+		public void setRule(int rn, boolean rs){ 
+			rule[rn] = rs;
+			//Boredom(1) and Boredom(2) are mutually exclusive
+			if(rn == 1 && rs == true){rule[2] = false;}
+			if(rn == 2 && rs == true){rule[1] = false;}
+			}
+		
+		public void setRuleTimer(int rn, int rt){ ruletimer[rn] = rt;}
+		
+		public void invokeRule(int r){
+			switch(r){
+				//Compass Chaos rule
+				case 0: 
+				ruletcount[0] += 1; if(ruletcount[0] >= ruletimer[0]){ruletcount[0] = 0;
+				for(int y = 0; y <=ysiz-1; y++){
+							for(int x = 0; x <= xsiz-1; x++){
+								Random iceberg = new Random();
+								culture[x][y].setParameter("Dir", iceberg.nextInt(8));}}
+							}
+								break;
+				//Boredom(1) and Boredom(2) rules
+				case 1: 
+				int n = 1; if(bored2flag){n = 2;}
+				boolean exciteflag = false;
+				for(int y = 0; y <=ysiz-1; y++){
+							for(int x = 0; x <= xsiz-1; x++){
+								if(current[x][y] == boredboard[x][y]){}
+								else{exciteflag = true; boredboard[x][y] = current[x][y];}
+							}}
+							if(exciteflag){ruletcount[n] = 0;}
+							else{ruletcount[n] += 1;}
+							if(ruletcount[n] >= ruletimer[n]){
+								for(int y = 0; y <=ysiz-1; y++){
+								for(int x = 0; x <= xsiz-1; x++){
+								Random nosehair = new Random();
+								current[x][y]= nosehair.nextBoolean();}}}
+								break;
+							
+				default : break;
+			}
+		}
 	
 		
 		//main logic methods
@@ -291,44 +390,61 @@ class cellBrain extends JComponent implements Runnable{
 		public void iterate(){
 			if(mayIterate()){
 			int x; int y;
-			 if (sfflag){ controller.iterateInterrupt(myopt);
-				  sfflag = false;}
-				   
+			
+			//check automaton-level rules
+			for(int q = 0; q < rule.length; q++){
+				if(q != 2){
+				if(rule[q]){ invokeRule(q);}}
+				else{if(rule[2]){if(bored2flag == false){bored2flag = true; invokeRule(1);}else{bored2flag = false;}}}
+			} 
+			
+			//iterate interrupt
+			 if (iiflag){ controller.iterateInterrupt(myopt);
+				  iiflag = false;}
+				   else{
 					//gets new values from the cells
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
 							switch(culture[x][y].getParameter("Dim")){
-								case 0: culture[x][y].setSelf(getSelf(x,y)); break;
-								case 1: culture[x][y].setNeighbors(getWolfram(x,y,culture[x][y].getParameter("Dir"))); break;
-								case 2: culture[x][y].setNeighborhood(getMoore(x,y));
+								case -1: getNeighbors(x,y); break;
+								case 0: if(culture[x][y].getOption("Mirror")){culture[x][y].setSelf(getSelf(culture[x][y].getParameter("MirrX"),culture[x][y].getParameter("MirrY")));}
+										else{culture[x][y].setSelf(getSelf(x,y));}break;
+								case 1:  if(culture[x][y].getOption("Mirror")){culture[x][y].setNeighbors(getWolfram(culture[x][y].getParameter("MirrX"),culture[x][y].getParameter("MirrY"),culture[x][y].getParameter("Dir")));}
+										else{culture[x][y].setNeighbors(getWolfram(x,y,culture[x][y].getParameter("Dir")));} break;
+								case 2: if(culture[x][y].getOption("Mirror")){culture[x][y].setNeighborhood(getMoore(culture[x][y].getParameter("MirrX"),culture[x][y].getParameter("MirrY")));}
+										else{culture[x][y].setNeighborhood(getMoore(x,y));} break;
 								default:  culture[x][y].setSelf(getSelf(x,y)); break;}
+								// iterates the cells
 								culture[x][y].iterate();
+								// gets the binary stateof each cell
 								newstate[x][y] = culture[x][y].getActive();
+							
 					}}
 					
-					// cycles new values into current state
+					
 					for(y=0;y<=ysiz-1;y++){
 						for(x=0;x<=xsiz-1;x++){
-								// set age for multicolor
+						// set age for multicolor
 						if(opmode == 4){display.setAge(x,y,culture[x][y].getState());}
-						
+						// cycles new values into current state
 						current[x][y] = newstate[x][y]; 
 						}}
-					display.setState(current);	
-				
+					//display.setState(current);
+					refreshState();	
+					controller.iterateNotify();
+				}
 				}}
 			
 			// runs the main thread
 			public void run(){
-				int x=0;
-				int y=0;
 				paused = false;
 			
 					
 					
 				while(true){
-					//update display
-					display.setState(current);
+					//output current state
+					if(firstflag){firstflag = false; refreshState();}
+					//else{display.setState(current);}
 						
 					//pauses the program
 					try{	while (pauseflag ==true){
@@ -336,7 +452,8 @@ class cellBrain extends JComponent implements Runnable{
 			  Thread.sleep(1);} 
 			   }  catch(InterruptedException ie) {}
 			   paused = false;
-			 
+			   
+			 //main cell logic
 			 iterate();
 			 
 						//timeout between grid-wide iterations
