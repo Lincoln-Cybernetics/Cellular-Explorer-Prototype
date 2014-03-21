@@ -19,6 +19,7 @@ public class wolfram extends cell{
 	// describe the cell's neighborhood
 	int dim;//dimensionality
 	int radius;
+	brush map;
 	
 	// describe the current state of the cell
 	boolean active;
@@ -29,6 +30,7 @@ public class wolfram extends cell{
 	int hoodx;
 	int hoody;
 	int direction;
+	boolean mirror;
 	// in Wolfram, direction indicates the direction traveled 
 	//from the center cell towards the least significant bit in the neighborhood
 	
@@ -58,13 +60,15 @@ public class wolfram extends cell{
 	
 	//constructor
 	public wolfram(){
-		dim = 1;
+		map = new spinbrush();
+		dim = -1;
 		radius = 1;
 		active = false;
 		state = 0;
 		name = "Wolfram";
 		hoodx = -1;
 		hoody = -1;
+		mirror = false;
 		direction = 0;
 		self = false;
 		mystate = 0;
@@ -77,19 +81,23 @@ public class wolfram extends cell{
 		rule = new boolean[8];
 		neighbors = new boolean[3];
 		}
-		
+		//initilization
+		public void setLocation(int x, int y){
+			map.locate(x,y);
+		}
 		
 		//Get and set controls and options
 		
-		public boolean getControls(String control){
+		@Override public boolean getControls(String control){
 			if(control == "Age"){ return true;}
 			if(control == "Fade"){ return true;}
-			if(control == "WDir"){ return true;}
 			if(control == "WolfRule"){ return true;}
 			if(control == "Mat"){ return true;}
+			if(control == "Orient"){ return true;}
+			if(control == "Mirror"){ return true;}
 			 return false;}
 		
-		public boolean getOption(String opname){ 
+		@Override public boolean getOption(String opname){ 
 			if(opname == "Ages"){ return ages;}
 			if(opname == "Fades"){ return fades;}
 			if(opname == "WR0"){return rule[0];}
@@ -100,9 +108,10 @@ public class wolfram extends cell{
 			if(opname == "WR5"){return rule[5];}
 			if(opname == "WR6"){return rule[6];}
 			if(opname == "WR7"){return rule[7];}
+			if(opname == "Mirror"){ return mirror;}
 			return false;}
 		
-		public void setOption(String opname, boolean b){
+		@Override public void setOption(String opname, boolean b){
 			if(opname == "Ages"){ages = b;if(b == false){if(active){age = 1;}else{age = 0;}}}
 			if(opname == "Fades"){fades = b; if(b){ages = true;}}
 			if(opname == "WR0"){rule[0] = b;}
@@ -113,25 +122,37 @@ public class wolfram extends cell{
 			if(opname == "WR5"){rule[5] = b;}
 			if(opname == "WR6"){rule[6] = b;}
 			if(opname == "WR7"){rule[7] = b;}
+			if(opname == "Mirror"){mirror = b; if(b){hoodx = -1; hoody = 0; name  ="Mirror-"+name;}else{hoodx = -1; hoody = -1; name = "Wolfram";}}
 			}
 		
-		public int getParameter(String paramname){ 
+		@Override public int getParameter(String paramname){ 
 			if(paramname == "Dim"){ return dim;}
 			if(paramname == "Rad"){ return radius;}
+			if(paramname == "HoodSize"){return map.getBrushLength();}
+			if(paramname == "NextX"){return map.getNextX();}
+			if(paramname == "NextY"){return map.getNextY();}
 			if(paramname == "Age"){ return age;}
 			if(paramname == "Fade"){ return fade;}
 			if(paramname == "Dir"){ return direction;}
 			if(paramname == "Mat"){ return mat;}
 			if(paramname == "Matcount"){ return matcount;}
+			if(paramname == "MirrX"){ return hoodx;}
+			if(paramname == "MirrY"){ return hoody;}
+			if(paramname == "WolfRule"){int wn = 0; if(rule[7]){wn += 128;} if(rule[6]){wn += 64;} if(rule[5]){wn += 32;} if(rule[4]){wn += 16;}
+				if(rule[3]){wn += 8;} if(rule[2]){wn += 4;} if(rule[1]){wn += 2;} if(rule[0]){wn += 1;} return wn;}
 			return -1;}
 		
-		public void setParameter(String paramname, int a){
+		@Override public void setParameter(String paramname, int a){
 			if(paramname == "Age"){ age = a;}
 			if(paramname == "Fade"){fade = a;}
-			if(paramname == "Dir"){ direction = a; if(direction < 0){ direction = 0;} if(direction > 3){direction = 3;}}
+			if(paramname == "Dir"){ direction = a; if(direction < 0){ direction = 0;} if(direction > 3){direction %= 4;}map.setOrientation(direction);}
 			if(paramname == "Mat"){ mat = a;}
 			if(paramname == "Matcount"){ matcount = a;}
+			if(paramname == "MirrX"){hoodx = a;if(mirror){setLocation(hoodx, hoody);}}
+			if(paramname == "MirrY"){hoody = a;if(mirror){setLocation(hoodx, hoody);}}
 			}
+			
+		public void setRule(int a, boolean b){if(a < 8){rule[a] = b;}}
 		
 		public int getHoodX(){ return hoodx;}
 		
@@ -139,20 +160,25 @@ public class wolfram extends cell{
 		
 		//main logic methods
 		
-		public void iterate(){
+		@Override public void iterate(){
 			 matcount += 1;
-			 if(matcount == mat){matcount = 0;
+			 if(matcount >= mat){matcount = 0;
 			 calculate(); }
 			 if(ages){ if(active){ if(age == 0){age = 1;} else{age += 1;}}else{ age = 0;} state = age;}
+			 else{if(active){state = 1;}else{state = 0;}}
 			 if(fades){ if( age >= fade){ purgeState(); age = 0;}}
+			
 			}
 		
-		private void calculate(){int cellstate = 0; if(neighbors[2]){cellstate += 1;} 
-					if(neighbors[1]){cellstate += 2;} if(neighbors[0]){cellstate += 4;}
-					if(rule[cellstate]){active = true;}else{active = false;}
+		private void calculate(){int cellstate = 0; if(neighbors[2]){cellstate ++;}else{} 
+					if(neighbors[1]){cellstate += 2;}else{}  if(neighbors[0]){cellstate +=4;}else{} 
+					active = rule[cellstate];
+					
 				}
 		
 		public void purgeState(){ active = false; state = 0;}
+		
+		public void activate(){ active = true; state = 1;}
 		
 		// current state returning methods
 		public boolean getActive(){ return active;}
@@ -164,7 +190,8 @@ public class wolfram extends cell{
 		// neighborhood setting methods
 		public void setSelf(boolean b){ self = b;}
 		
-		public void setNeighbors( boolean[] truckdrivin){neighbors = truckdrivin;}
+		public void setNeighbors( boolean[] truckdrivin){neighbors = truckdrivin;//boolean temp = neighbors[0]; neighbors[0] = neighbors[2]; neighbors[2] = temp;
+		}
 		
 		public void setNeighborhood( boolean[][] spozak){neighborhood = spozak;}
 		
